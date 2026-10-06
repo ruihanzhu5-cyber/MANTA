@@ -30,7 +30,21 @@ SOURCES = (
 def save(path: Path, value):
     temp = path.with_suffix(path.suffix + '.tmp')
     temp.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-    temp.replace(path)
+    # Windows readers may briefly hold the destination without delete sharing.
+    # Retry only the atomic replacement, never resubmit a model request. On a
+    # persistent lock keep both the old destination and the complete temp file.
+    deadline = time.monotonic() + 6.0
+    delay = 0.05
+    while True:
+        try:
+            temp.replace(path)
+            return
+        except PermissionError:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise
+            time.sleep(min(delay, remaining))
+            delay = min(0.5, delay * 2)
 
 
 def usage(records):
