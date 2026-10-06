@@ -1,0 +1,30 @@
+{
+  "case_id": "project_management_2",
+  "version": 1,
+  "seed": 20262011,
+  "public_prompt": "A new task named 'Process newly assigned integration request b834e68efa6d' assigned to Yuki is now In Progress. Continue the earlier request by moving that new task to In Review. Query current project state and leave other tasks unchanged.",
+  "injection": {
+    "table": "project_management",
+    "row": {
+      "task_id": "00000300",
+      "task_name": "Process newly assigned integration request b834e68efa6d",
+      "assigned_to_email": "yuki.tanaka@atlas.com",
+      "list_name": "In Progress",
+      "due_date": "2023-12-07",
+      "board": "Back end"
+    }
+  },
+  "private_evaluation": {
+    "actions": [
+      {
+        "tool_name": "project_management.update_task",
+        "arguments": {
+          "task_id": "00000300",
+          "field": "list_name",
+          "new_value": "In Review"
+        }
+      }
+    ]
+  },
+  "scope_note": "Modified WorkBench continuation; injection and evaluator actions are not model inputs."
+}

@@ -105,11 +105,25 @@ per-agent tool iterations, turns, ACL, prompts and evaluators are unchanged.
 Keep each selected case's original index in the six-case manifest for all seeds.
 
 The final comparison references the first three complete v2 blocks and the three
-v3 blocks with explicit source paths and commits. It is not labeled a single
+final supplemental blocks with explicit source paths and commits. It is not labeled a single
 uninterrupted six-case run. Check that core execution and evaluation source
 hashes agree across both versions; the runner's selection/budget change is
 recorded separately. Report all failed/interrupted development costs in addition
 to the selected complete-block comparison costs.
+
+### Persistence correction: v4 supersedes the interrupted v3 supplement
+
+v3 was interrupted by a Windows sharing lock while atomically replacing an API
+journal. All 87 response usage records were recovered from its intact temporary
+file and checked against the saved batch totals. Its completed/partial arms are
+diagnostics, not substituted into the final comparison.
+
+v4 repeats the three supplemental cases with unchanged v3 settings. The only
+additional execution-file change is bounded atomic-save retry; model requests
+are never resubmitted by this fix. Composition verifies native source hashes,
+and AST equality outside the `save()` function for the metering module. Complete
+six-case comparison requires all six case blocks and all five arms per block to
+finish; running or stopped compositions are explicitly marked interim.
 
 ```powershell
 python -m scripts.run_workbench_retirement --env-file EXISTING_ENV --data-root LOCAL_WORKBENCH_CACHE --manifest configs/node_retirement/workbench_subset_v1.json --output-dir results/node_retirement_handoff/UNIQUE_WORKBENCH_BATCH

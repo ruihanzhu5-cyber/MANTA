@@ -17,18 +17,18 @@
     <div>
       <div class="eyebrow">MANTA / Node Retirement Research</div>
       <h1>先看清一次交接，<br>再验证一套系统。</h1>
-      <p>当前只做 2 批：先跑一个自建交接场景，再筛选 6 个 WorkBench 任务，各比较五组、跑一遍。</p>
-      <span class="badge">代码已实现 · 19 项离线测试通过 · v2 五组 API 已完成</span>
+      <p>两类小规模比较已完成：1 个自建交接场景 + 6 个改造 WorkBench 任务，各比较五组。修复与中断重跑另行记录。</p>
+      <span class="badge">35 次比较已完成 · 165 项记录核验通过</span>
     </div>
     <div class="hero-summary">
-      <div class="eyebrow">当前计划规模</div>
+      <div class="eyebrow">当前小规模比较范围 · 排错重跑另计</div>
       <div class="hero-number">35<small>次</small></div>
       <p>7 个不同 case：1 个自建 + 6 个 WorkBench。每个先保存一次退出前状态，再分成 5 组继续执行。</p>
     </div>
   </header>
 
   <div class="strip" aria-label="计划概览">
-    <div class="stat"><strong>2 批 / 7 case</strong><span>先验证交接，再跑工具任务</span></div>
+    <div class="stat"><strong>2 类 / 7 case</strong><span>自建交接场景 + 改造工具任务</span></div>
     <div class="stat"><strong>7 个退出前状态</strong><span>每个保存状态分成 5 组</span></div>
     <div class="stat"><strong id="completed-count">0 次</strong><span id="completed-caption">当前网页已加载的完成记录</span></div>
   </div>
@@ -42,19 +42,19 @@
         <p>一个成员转交订阅所有权、保留处理游标后退出。再来一个新事件，看接手者能否继续处理。尚未测试本地记忆或在途任务迁移。这里的“新任务执行”，就是在决定保留或退出后，再交给团队一条新订单，检查能否完成。</p>
         <div class="count">5<small>次新任务执行</small></div>
         <div class="formula">1 个场景 × 1 次重复 × 5 个对照组</div>
-        <dl><dt>已实现 / 已测试 / 已运行</dt><dd>代码已实现，19 项离线测试通过；v2 五组已完成。v1 在退出前的任务中失败，原始记录保留。</dd><dt>要看清什么</dt><dd>订阅所有权是否实际改变；谁处理了新事件；有没有丢失或重复处理。</dd><dt>下一批的启动条件</dt><dd>分析首批日志，确认分叉、权限和判分可靠，并测得请求量与 token。</dd></dl>
+        <dl><dt>已实现 / 已测试 / 已运行</dt><dd>代码已实现，当前共 68 项离线测试通过；v2 五组已完成。v1 在退出前的任务中失败，原始记录保留。</dd><dt>要看清什么</dt><dd>订阅所有权是否实际改变；谁处理了新事件；有没有丢失或重复处理。</dd><dt>已完成的推进条件</dt><dd>首批日志已分析，已记录分叉、权限、判分、请求量和 token。</dd></dl>
       </article>
       <article class="phase">
-        <div class="phase-top"><span class="index">02</span><span class="badge">候选已记录 · 未运行</span></div>
+        <div class="phase-top"><span class="index">02</span><span class="badge">已完成 30 / 30 · 五组均 6 / 6 成功</span></div>
         <h3>WorkBench 小规模对照</h3>
-        <p>目标选 calendar、project_management、email 各 2 个 case，改成退出后还有新请求的两阶段任务。</p>
+        <p>calendar、project_management、email 各 2 个 case，已适配成退出后还有新请求的两阶段任务。</p>
         <div class="count">30<small>次新任务执行</small></div>
         <div class="formula">6 个任务 × 1 遍 × 5 个对照组</div>
-        <dl><dt>6 个候选已记录，尚未冻结</dt><dd>候选编号：calendar_20、calendar_40、email_31、email_53、project_management_2、project_management_40。已记录文件/行号/题目哈希和选择理由；仍需验证工具边界与改造评分后冻结，尚未调用 API。</dd><dt>怎么避免挑结果</dt><dd>按资格筛选，不按方法表现挑选；新增阶段明确标成“WorkBench 改造任务”。</dd><dt>要看清什么</dt><dd>交接机制在实际工具工作流里能否运行，有没有新增失败和成本。</dd></dl>
+        <dl><dt>6 个任务已冻结</dt><dd>calendar_20、calendar_40、email_31、email_53、project_management_2、project_management_40。文件、行号、题目哈希和选择理由已记录，适配与评估已通过离线验证，v1 工具问题已修复；v2 前三例完成，email_53 触发整例预算上限。提高整例预算、修复 Windows 日志占用后，v4 已完成后三例，五组的模型、轮数和评分保持一致。另有 14 项任务选择/索引检查通过。</dd><dt>怎么避免挑结果</dt><dd>按资格筛选，不按方法表现挑选；新增阶段明确标成“WorkBench 改造任务”。</dd><dt>要看清什么</dt><dd>交接机制在实际工具工作流里能否运行，有没有新增失败和成本。</dd></dl>
       </article>
     </div>
     <p class="note">第一批用于开发与排错，第二批每个 case 先跑一遍，只作小规模探索。两批分开记录，不能据此声称普遍有效。</p>
-    <div class="callout"><strong>真实工作顺序：</strong>先改代码（已实现） → 离线验证（19 项通过） → 当前真实 API 五组（v2 已完成） → 分析日志（已记录） → WorkBench 资格检查并冻结任务 ID → 30 次小规模对照。<br>本页不是自动监控器。进度说明是保存时的快照，最新结果需要加载运行 JSON。</div>
+    <div class="callout"><strong>真实工作顺序：</strong>先改代码（已实现） → 离线验证（68 项通过） → 自建场景真实 API 五组（v2 已完成） → 分析日志（已记录） → WorkBench 资格检查并冻结任务 ID（已完成） → 修复工具兼容问题 → v2 前三例完成 → v4 补充后三例（已完成）。<br>上方说明是保存时的快照。下方 WorkBench 区域可在本机 HTTP 页面读取运行文件；也可手动加载 JSON。</div>
   </section>
 
   <section class="panel" style="margin-top:22px" aria-labelledby="system-heading">
@@ -66,7 +66,7 @@
       <div class="branches" style="grid-template-columns:repeat(3,1fr)"><span>没有剩余职责 → 退出</span><span>可合法交接 → 交接后退出</span><span>无人可接手 → 保留</span></div><div class="arrow">↓</div>
       <div class="flow-step">工具环境落实权限与状态变化 → 团队接着做新任务</div>
     </div>
-    <p class="callout"><strong>已实现：</strong>原生执行状态复制、订阅所有权交接、停止调度、真实工具判分、API 计量。<br><strong>尚未实现：</strong>自动候选提名、通用职责识别、本地记忆与未完成工作迁移、退出后恢复、WorkBench 两阶段适配。<br>独立评测器负责比较五组，不把正确答案告诉退出控制器。</p>
+    <p class="callout"><strong>已实现并离线验证：</strong>原生执行状态复制、订阅所有权交接、停止调度、真实工具判分、API 计量，以及 WorkBench 两阶段任务适配与状态评估。WorkBench 的分工所有权不限制既有工具权限，直接删除后的合法备份者仍可自行接手。<br><strong>尚未实现：</strong>自动候选提名、通用职责识别、本地记忆与未完成工作迁移、退出后恢复。<br>独立评测器负责比较五组，不把正确答案告诉退出控制器。</p>
   </section>
   <div class="two-col">
     <section class="panel" aria-labelledby="estimate-heading">
@@ -113,7 +113,19 @@
     </div>
   </section>
 
-  <aside class="optional"><div><strong>可选未来扩展 · 不计入当前 35 次</strong><p>此前讨论的自建五类 × 三遍 × 五组（75 次）、10–20 个 WorkBench 任务、更大的 1,500 次实验与长程退出测试，均为未来选项，尚未启动。当前先完成这两批小实验。</p></div><span class="badge">可选 · 未启动</span></aside>
+  <section class="panel" style="margin-top:22px" aria-labelledby="wb-heading">
+    <div class="results-head"><div><div class="eyebrow" style="color:var(--blue)">第二批 · 单独统计</div><h2 id="wb-heading">WorkBench 六个任务的实际进展</h2><p class="intro">每行一个已冻结任务，每列一种处理方式。未运行与退出前失败跳过，会单独标明。</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="file-label" id="wb-refresh" type="button">读取最新结果</button><label class="file-label">加载批次 JSON<input class="visually-hidden" id="wb-file" type="file" accept=".json,application/json"></label></div></div>
+    <label class="subtle" style="display:block;margin-top:10px"><input id="wb-auto" type="checkbox"> 每 15 秒读取一次本机结果文件</label>
+    <p class="subtle" id="wb-source-note">本机 HTTP 页面可读取固定相对路径的 result.json；直接打开 HTML 时，请加载 JSON 或使用最终内嵌快照。不访问模型 API。</p>
+    <div class="result-summary" id="wb-summary" aria-live="polite"></div>
+    <div class="error" id="wb-error" role="alert"></div>
+    <div class="table-wrap"><table><caption class="visually-hidden">WorkBench 六任务五组结果</caption><thead><tr><th>源任务 ID</th><th>退出前状态</th><th>保留</th><th>直接删</th><th>简单保护</th><th>检查不交接</th><th>检查并交接</th><th>任务实际 API 请求</th></tr></thead><tbody id="wb-case-rows"></tbody></table></div>
+    <div class="table-wrap"><table><caption class="visually-hidden">WorkBench 各组累计完成与用量</caption><thead><tr><th>处理方式</th><th>已判分</th><th>任务通过</th><th>严格通过</th><th>已记录总 token</th><th>已记录 API 请求</th></tr></thead><tbody id="wb-arm-rows"></tbody></table></div>
+    <p class="note">“任务通过”检查新请求的实际状态变化；“严格通过”还要求没有重复操作尝试或意外副作用。退出前任务失败的 case 不进入五组比较，整行标为跳过；缺失用量显示“未记录”，不会当作零。各组 token 只累计该组已记录的执行，批次总量还包含退出前任务和失败请求。这里与上方自建交接实验分别统计。最终比较明确引用 v2 前三例与 v4 后三例的完整对照块；v2 中断的邮件转发任务仅作诊断，不混入比较。</p>
+  </section>
+
+  <section class="panel" style="margin-top:22px"><h2>本轮结论与下一步</h2><p class="intro">WorkBench 五组都是 6/6 成功，未观察到显式交接的额外成功率收益。交接比保留少用 26.88% 的新任务执行 token，但比直接删除只低 3.12%，且 6 例中有 4 例更贵；一次小规模比较不能证明稳定成本优势。</p><p>下一轮先实现受限信息可见性、真实待办交接、接收确认和失败回滚；再比较“公共信息能恢复”与“需要转交待办”一组成对变体：2 个变体 × 5 组 = 10 次团队执行。此计划尚未执行。</p><p class="subtle">全部开发记录含排错：1,098 次请求，已知 5,163,862 tokens，另有 1 个中断请求用量未知。最终比较来自 v2 前三例＋v4 后三例，原始结果和每例源码均保留。分步离线检查 68＋14＋2 项通过。</p><p><a href="../results/node_retirement_handoff/workbench6_20261006_comparison/REPORT.md">完整实验报告</a> · <a href="../results/node_retirement_handoff/EXPERIMENT_LEDGER.md">逐次实验台账</a> · <a href="node-retirement-next-iteration.md">下一轮具体方案</a></p></section>
+  <aside class="optional"><div><strong>可选未来扩展 · 不计入当前 35 次</strong><p>此前讨论的自建五类 × 三遍 × 五组（75 次）、10–20 个 WorkBench 任务、更大的 1,500 次实验与长程退出测试，均为未来选项，尚未启动。两类小实验已完成；下一轮建议先做一组成对变体，尚未启动。</p></div><span class="badge">可选 · 未启动</span></aside>
   <footer class="footer"><span>MANTA 节点退出研究 · 原生执行器 / 真实 API / 可复位工具环境</span><span>计划版本：2026-10-06</span></footer>
 </main>
 <script>
@@ -193,8 +205,9 @@
       const prefixResult=outcome(data.prefix.evaluation), prefixUsage=usageNumbers(data.prefix.usage);
       addSummary('退出前的任务：' + (prefixResult === true ? '成功' : prefixResult === false ? '失败' : '未判分') + '；API 请求：' + fmt(prefixUsage[2]));
     }
-    $('completed-count').textContent=finished + ' 次';
-    $('completed-caption').textContent='所选文件中已判分的新任务执行';
+    window.loadedS5Count=finished;
+    $('completed-count').textContent=(finished+(window.loadedWorkbenchCount||0)) + ' 次';
+    $('completed-caption').textContent='已加载的两类比较记录；排错重跑另计';
     $('loaded-note').textContent='这里只显示所选文件，不是整个研究的累计结果。未记录的用量显示“未记录”，不会按 0 计算；总量取自 api_totals，可能包含退出前的任务与失败重试。模型实际完成了什么，仍需结合原始工具日志核验。';
     $('empty-state').hidden=true;$('loaded-results').hidden=false;
   }
@@ -212,6 +225,107 @@
     try { renderResult(window.NODE_RETIREMENT_RESULT, '网页内嵌结果快照'); }
     catch (error) { $('result-error').textContent='内嵌结果无法加载：' + error.message; }
   }
+</script>
+<script>
+  // Final report may replace null with a verified compact batch snapshot.
+  window.NODE_WORKBENCH_RESULT = {"status": "completed", "planned_cases": ["calendar_20", "calendar_40", "email_31", "email_53", "project_management_2", "project_management_40"], "planned_post_executions": 30, "api_totals": {"api_attempts": 612, "api_responses": 612, "input_tokens": 2762227, "output_tokens": 158653, "total_tokens": 2920880, "billed_cost_usd": null}, "source_commits": ["a9d35b914255d970d5c2bb0b3344dfc6d936158f", "d7a5fe6083f354a98ee25d8f6ec21bb46b2a2a75"], "provenance_note": "First three complete v2 blocks plus the supplemental batch; supplement changes only aggregate case budget, runner selection and bounded log-save retries. This is not one uninterrupted run. v2 email_53 is excluded in full, including its successful arms, and retained in development costs. Per-case status distinguishes completed, running and stopped blocks.", "cases": {"calendar_20": {"status": "completed", "prefix": {"evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["calendar"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 34, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring."}, "usage": {"api_attempts": 21, "api_responses": 21, "input_tokens": 89708, "output_tokens": 5990, "total_tokens": 95698, "billed_cost_usd": null}, "checkpoint_sha256": "d844decf0ca045e0c5c6cf800da33f7a51fad2a789615847e08962396ef28286"}, "api_totals": {"api_attempts": 86, "api_responses": 86, "input_tokens": 395593, "output_tokens": 28379, "total_tokens": 423972, "billed_cost_usd": null}, "arms": {"check": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["calendar"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 33, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 16, "api_responses": 16, "input_tokens": 86842, "output_tokens": 5016, "total_tokens": 91858, "billed_cost_usd": null}}, "handoff": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["calendar"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 23, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 11, "api_responses": 11, "input_tokens": 49070, "output_tokens": 4237, "total_tokens": 53307, "billed_cost_usd": null}}, "keep": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["calendar"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 28, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 15, "api_responses": 15, "input_tokens": 67904, "output_tokens": 4895, "total_tokens": 72799, "billed_cost_usd": null}}, "simple": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["calendar"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 23, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 12, "api_responses": 12, "input_tokens": 53404, "output_tokens": 4302, "total_tokens": 57706, "billed_cost_usd": null}}, "direct": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["calendar"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 23, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 11, "api_responses": 11, "input_tokens": 48665, "output_tokens": 3939, "total_tokens": 52604, "billed_cost_usd": null}}}}, "calendar_40": {"status": "completed", "prefix": {"evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["calendar"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 24, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring."}, "usage": {"api_attempts": 20, "api_responses": 20, "input_tokens": 72164, "output_tokens": 4698, "total_tokens": 76862, "billed_cost_usd": null}, "checkpoint_sha256": "c01cddf793bb3c4bcd75487c787fdf866bb9537ede8ef7ecbb4e0e6e08de8598"}, "api_totals": {"api_attempts": 99, "api_responses": 99, "input_tokens": 412522, "output_tokens": 29799, "total_tokens": 442321, "billed_cost_usd": null}, "arms": {"handoff": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["calendar"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 23, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 15, "api_responses": 15, "input_tokens": 63726, "output_tokens": 4838, "total_tokens": 68564, "billed_cost_usd": null}}, "check": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["calendar"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 27, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 18, "api_responses": 18, "input_tokens": 78491, "output_tokens": 5608, "total_tokens": 84099, "billed_cost_usd": null}}, "direct": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["calendar"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 23, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 15, "api_responses": 15, "input_tokens": 62807, "output_tokens": 4637, "total_tokens": 67444, "billed_cost_usd": null}}, "keep": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["calendar"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 26, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 16, "api_responses": 16, "input_tokens": 71135, "output_tokens": 5086, "total_tokens": 76221, "billed_cost_usd": null}}, "simple": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["calendar"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 24, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 15, "api_responses": 15, "input_tokens": 64199, "output_tokens": 4932, "total_tokens": 69131, "billed_cost_usd": null}}}}, "email_31": {"status": "completed", "prefix": {"evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["email"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 20, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring."}, "usage": {"api_attempts": 19, "api_responses": 19, "input_tokens": 83087, "output_tokens": 3722, "total_tokens": 86809, "billed_cost_usd": null}, "checkpoint_sha256": "810b73f7faffe526409edf5eeac4cb8c847860b85005d147d978d7a990c54a52"}, "api_totals": {"api_attempts": 93, "api_responses": 93, "input_tokens": 410588, "output_tokens": 22831, "total_tokens": 433419, "billed_cost_usd": null}, "arms": {"simple": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["email"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 14, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 13, "api_responses": 13, "input_tokens": 55994, "output_tokens": 3483, "total_tokens": 59477, "billed_cost_usd": null}}, "handoff": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["email"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 17, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 14, "api_responses": 14, "input_tokens": 62090, "output_tokens": 3532, "total_tokens": 65622, "billed_cost_usd": null}}, "keep": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["email"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 18, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 17, "api_responses": 17, "input_tokens": 79194, "output_tokens": 4394, "total_tokens": 83588, "billed_cost_usd": null}}, "check": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["email"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 20, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 18, "api_responses": 18, "input_tokens": 75903, "output_tokens": 4203, "total_tokens": 80106, "billed_cost_usd": null}}, "direct": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["email"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 13, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 12, "api_responses": 12, "input_tokens": 54320, "output_tokens": 3497, "total_tokens": 57817, "billed_cost_usd": null}}}}, "email_53": {"status": "completed", "prefix": {"evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["email"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 20, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring."}, "usage": {"api_attempts": 17, "api_responses": 17, "input_tokens": 69032, "output_tokens": 3772, "total_tokens": 72804, "billed_cost_usd": null}, "checkpoint_sha256": "7ff1f68903e7c01e143559a0e0f558937e9fb080bf977ed8a2d4239dc93c59cd"}, "api_totals": {"api_attempts": 121, "api_responses": 121, "input_tokens": 607946, "output_tokens": 25619, "total_tokens": 633565, "billed_cost_usd": null}, "arms": {"check": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["email"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 41, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 26, "api_responses": 26, "input_tokens": 138812, "output_tokens": 5281, "total_tokens": 144093, "billed_cost_usd": null}}, "keep": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["email"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 35, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 24, "api_responses": 24, "input_tokens": 127749, "output_tokens": 4811, "total_tokens": 132560, "billed_cost_usd": null}}, "handoff": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["email"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 19, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 15, "api_responses": 15, "input_tokens": 73521, "output_tokens": 3627, "total_tokens": 77148, "billed_cost_usd": null}}, "direct": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["email"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 32, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 20, "api_responses": 20, "input_tokens": 100960, "output_tokens": 3987, "total_tokens": 104947, "billed_cost_usd": null}}, "simple": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["email"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 31, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 19, "api_responses": 19, "input_tokens": 97872, "output_tokens": 4141, "total_tokens": 102013, "billed_cost_usd": null}}}}, "project_management_2": {"status": "completed", "prefix": {"evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["project_management"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 30, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring."}, "usage": {"api_attempts": 21, "api_responses": 21, "input_tokens": 80339, "output_tokens": 4478, "total_tokens": 84817, "billed_cost_usd": null}, "checkpoint_sha256": "0e92fbb1b3663053c96101320662d6f22b0724b578355016270d8b8ccb25604a"}, "api_totals": {"api_attempts": 95, "api_responses": 95, "input_tokens": 411020, "output_tokens": 24335, "total_tokens": 435355, "billed_cost_usd": null}, "arms": {"keep": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["project_management"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 26, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 17, "api_responses": 17, "input_tokens": 84357, "output_tokens": 4534, "total_tokens": 88891, "billed_cost_usd": null}}, "handoff": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["project_management"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 23, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 16, "api_responses": 16, "input_tokens": 66753, "output_tokens": 3766, "total_tokens": 70519, "billed_cost_usd": null}}, "direct": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["project_management"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 20, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 13, "api_responses": 13, "input_tokens": 56800, "output_tokens": 3754, "total_tokens": 60554, "billed_cost_usd": null}}, "simple": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["project_management"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 16, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 12, "api_responses": 12, "input_tokens": 49709, "output_tokens": 3475, "total_tokens": 53184, "billed_cost_usd": null}}, "check": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["project_management"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 22, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 16, "api_responses": 16, "input_tokens": 73062, "output_tokens": 4328, "total_tokens": 77390, "billed_cost_usd": null}}}}, "project_management_40": {"status": "completed", "prefix": {"evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["project_management"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 43, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring."}, "usage": {"api_attempts": 24, "api_responses": 24, "input_tokens": 99710, "output_tokens": 5261, "total_tokens": 104971, "billed_cost_usd": null}, "checkpoint_sha256": "1de1b40a238e15828a06e766d7bd1b527144f342740aab998b8edf284643f52d"}, "api_totals": {"api_attempts": 118, "api_responses": 118, "input_tokens": 524558, "output_tokens": 27690, "total_tokens": 552248, "billed_cost_usd": null}, "arms": {"direct": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["project_management"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 31, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 17, "api_responses": 17, "input_tokens": 73254, "output_tokens": 4182, "total_tokens": 77436, "billed_cost_usd": null}}, "simple": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["project_management"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 27, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 17, "api_responses": 17, "input_tokens": 83795, "output_tokens": 4368, "total_tokens": 88163, "billed_cost_usd": null}}, "handoff": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["project_management"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 32, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 17, "api_responses": 17, "input_tokens": 68058, "output_tokens": 4465, "total_tokens": 72523, "billed_cost_usd": null}}, "keep": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["project_management"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 34, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 22, "api_responses": 22, "input_tokens": 98572, "output_tokens": 4941, "total_tokens": 103513, "billed_cost_usd": null}}, "check": {"status": "completed", "evaluation": {"task_success": true, "strict_success": true, "state_exact_match": true, "mismatched_tables": [], "changed_tables": ["project_management"], "mutation_attempts": 1, "state_changing_tool_calls": 1, "duplicate_mutation_attempts": 0, "expected_state_changes": 1, "post_tool_calls": 29, "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.", "post_only": true}, "usage": {"api_attempts": 21, "api_responses": 21, "input_tokens": 101169, "output_tokens": 4473, "total_tokens": 105642, "billed_cost_usd": null}}}}}};
+  (() => {
+    const ids = ['calendar_20','calendar_40','email_31','email_53','project_management_2','project_management_40'];
+    const arms = ['keep','direct','simple','check','handoff'];
+    const names = ['保留','直接删','简单保护','检查不交接','检查并交接'];
+    const localHTTP = ['http:','https:'].includes(location.protocol) && ['localhost','127.0.0.1','[::1]','::1'].includes(location.hostname);
+    const resultPath = '../results/node_retirement_handoff/workbench6_20261006_comparison/result.json';
+    let timer = null, busy = false, lastData = null;
+    const byId = id => document.getElementById(id);
+    const number = (obj,key) => obj && typeof obj[key] === 'number' && Number.isFinite(obj[key]) && obj[key]>=0 ? obj[key] : null;
+    const show = value => value === null ? '未记录' : value.toLocaleString('zh-CN');
+    function textCell(row,text) { const td=document.createElement('td');td.textContent=text;row.append(td);return td; }
+    function mark(row,text,kind='') {const td=document.createElement('td'),span=document.createElement('span');span.className='status'+(kind?' '+kind:'');span.textContent=text;td.append(span);row.append(td);return td;}
+    function summary(text) {const el=document.createElement('span');el.textContent=text;byId('wb-summary').append(el);}
+    function render(data, source) {
+      if (!data || !data.cases || typeof data.cases!=='object' || Array.isArray(data.cases)) throw new Error('批次文件需要 cases 对象。');
+      byId('wb-case-rows').replaceChildren();byId('wb-arm-rows').replaceChildren();byId('wb-summary').replaceChildren();
+      const totals=arms.map(()=>({done:0,passed:0,strict:0,strictKnown:0,tokens:0,tokenRecords:0,calls:0,callRecords:0}));
+      let completed=0, skipped=0;
+      for (const id of ids) {
+        const record=data.cases[id] || {}, prefix=record.prefix?.evaluation?.task_success;
+        const skip=record.status==='prefix_failed' || prefix===false;
+        if(skip) skipped++;
+        const row=document.createElement('tr');textCell(row,id);
+        mark(row,skip?'失败 → 五组跳过':prefix===true?'已通过':record.status==='running'?'执行中':'未记录',skip?'warn':prefix===true?'good':'');
+        for (let i=0;i<arms.length;i++) {
+          const arm=record.arms?.[arms[i]], result=arm?.evaluation?.task_success;
+          if (!arm) {mark(row,skip?'跳过':'未运行');continue;}
+          const evaluated=typeof result==='boolean';
+          const done=arm.status==='completed'||evaluated;
+          if(done)completed++;
+          if(evaluated) {totals[i].done++; if(result)totals[i].passed++;}
+          const strict=arm.evaluation?.strict_success;
+          if(typeof strict==='boolean'){totals[i].strictKnown++;if(strict)totals[i].strict++;}
+          const tokens=number(arm.usage,'total_tokens'), calls=number(arm.usage,'api_attempts');
+          if(tokens!==null){totals[i].tokens+=tokens;totals[i].tokenRecords++;}
+          if(calls!==null){totals[i].calls+=calls;totals[i].callRecords++;}
+          let label=evaluated?(result?'通过':'未通过'):(['error','failed','stopped'].includes(arm.status)?'中断 / 未判分':done?'完成 / 未判分':'执行中');
+          if(result===true&&strict===false)label='通过 · 严格未通过';
+          const td=mark(row,label,result===false?'bad':result===true?(strict===false?'warn':'good'):'');
+          td.title='总 token：'+show(tokens)+'；API 请求：'+show(calls)+'；重复操作尝试：'+show(number(arm.evaluation,'duplicate_mutation_attempts'));
+        }
+        textCell(row,show(number(record.api_totals,'api_attempts')));
+        byId('wb-case-rows').append(row);
+      }
+      totals.forEach((item,i)=>{
+        const row=document.createElement('tr');textCell(row,names[i]);textCell(row,item.done+' / 6');
+        textCell(row,item.done?item.passed+' / '+item.done:'未判分');
+        textCell(row,item.strictKnown?item.strict+' / '+item.strictKnown:'未判分');
+        textCell(row,item.tokenRecords?show(item.tokens)+'（'+item.tokenRecords+' 组记录）':'未记录');
+        textCell(row,item.callRecords?show(item.calls)+'（'+item.callRecords+' 组记录）':'未记录');
+        byId('wb-arm-rows').append(row);
+      });
+      const statuses={running:'运行中',completed:'已完成',completed_with_prefix_failures:'结束 · 含退出前失败',stopped:'已停止',failed:'失败'};
+      summary('批次状态：'+(statuses[data.status] || data.status || '未加载'));
+      summary('已完成新任务执行：'+completed+' / 30');
+      summary('退出前失败：'+skipped+' 个任务；跳过 '+(skipped*5)+' 次新任务执行');
+      summary('批次 API 请求：'+show(number(data.api_totals,'api_attempts')));
+      summary('批次总 token：'+show(number(data.api_totals,'total_tokens')));
+      window.loadedWorkbenchCount=completed;
+      byId('completed-count').textContent=((window.loadedS5Count||0)+completed)+' 次';
+      byId('completed-caption').textContent='已加载的两类比较记录；排错重跑另计';
+      byId('wb-source-note').textContent='数据来源：'+source+'。读取时间：'+new Date().toLocaleString('zh-CN')+'。只读取已写入文件的记录，正在进行但尚未保存的调用不会提前显示。';
+      lastData=data;
+    }
+    async function refresh() {
+      if(busy)return;
+      byId('wb-error').textContent='';
+      if(!localHTTP){byId('wb-error').textContent='当前不是 localhost HTTP 页面。请使用“加载批次 JSON”，或查看内嵌快照；不会访问远程站点。';return;}
+      busy=true;byId('wb-refresh').disabled=true;
+      try {
+        const response=await fetch(resultPath,{cache:'no-store',credentials:'omit',signal:AbortSignal.timeout(10000)});
+        if(!response.ok)throw new Error('HTTP '+response.status);
+        render(await response.json(),'本机运行文件');
+      } catch(error) {byId('wb-error').textContent='本次读取未成功（'+error.message+'）。'+(lastData?'保留上一次结果快照；本次失败不表示实验失败。':'尚无已加载结果，可稍后刷新或手动加载 JSON。');}
+      finally{busy=false;byId('wb-refresh').disabled=false;}
+    }
+    byId('wb-refresh').addEventListener('click',refresh);
+    byId('wb-auto').disabled=!localHTTP;
+    byId('wb-auto').addEventListener('change',event=>{
+      if(timer!==null){clearInterval(timer);timer=null;}
+      if(event.target.checked&&localHTTP){refresh();timer=setInterval(refresh,15000);}
+    });
+    byId('wb-file').addEventListener('change',async event=>{
+      const file=event.target.files[0];if(!file)return;
+      if(timer!==null){clearInterval(timer);timer=null;}byId('wb-auto').checked=false;
+      try{
+        if(file.size>80*1024*1024)throw new Error('文件超过 80 MB，请使用批次汇总 JSON。');
+        const data=JSON.parse(await file.text());render(data,file.name);byId('wb-error').textContent='';
+      }catch(error){byId('wb-error').textContent='无法加载：'+error.message+'。保留已有显示。';}
+    });
+    render({status:'未加载',cases:{}},'等待加载，以下为冻结任务清单');
+    lastData=null;
+    if(window.NODE_WORKBENCH_RESULT!==null){
+      try{render(window.NODE_WORKBENCH_RESULT,'内嵌真实结果快照');}
+      catch(error){byId('wb-error').textContent='内嵌结果无法加载：'+error.message;}
+    }
+  })();
 </script>
 </body>
 </html>

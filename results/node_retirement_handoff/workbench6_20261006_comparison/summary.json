@@ -1,0 +1,1172 @@
+{
+  "status": "completed",
+  "source_commit": "d7a5fe6083f354a98ee25d8f6ec21bb46b2a2a75",
+  "source_commits": [
+    "a9d35b914255d970d5c2bb0b3344dfc6d936158f",
+    "d7a5fe6083f354a98ee25d8f6ec21bb46b2a2a75"
+  ],
+  "provenance_note": "First three complete v2 blocks plus the supplemental batch; supplement changes only aggregate case budget, runner selection and bounded log-save retries. This is not one uninterrupted run. v2 email_53 is excluded in full, including its successful arms, and retained in development costs. Per-case status distinguishes completed, running and stopped blocks.",
+  "case_status_counts": {
+    "completed": 6
+  },
+  "planned_post_executions": 30,
+  "completed_post_executions": 30,
+  "api_totals": {
+    "api_attempts": 612,
+    "api_responses": 612,
+    "input_tokens": 2762227,
+    "output_tokens": 158653,
+    "total_tokens": 2920880,
+    "billed_cost_usd": null
+  },
+  "arms": {
+    "keep": {
+      "attempted": 6,
+      "success": 6,
+      "strict_success": 6,
+      "input_tokens": 528911,
+      "output_tokens": 28661,
+      "total_tokens": 557572,
+      "api_attempts": 111,
+      "deployment_tokens_including_prefix": 1079533,
+      "duplicate_mutation_attempts": 0,
+      "state_changing_tool_calls": 6
+    },
+    "direct": {
+      "attempted": 6,
+      "success": 6,
+      "strict_success": 6,
+      "input_tokens": 396806,
+      "output_tokens": 23996,
+      "total_tokens": 420802,
+      "api_attempts": 88,
+      "deployment_tokens_including_prefix": 942763,
+      "duplicate_mutation_attempts": 0,
+      "state_changing_tool_calls": 6
+    },
+    "simple": {
+      "attempted": 6,
+      "success": 6,
+      "strict_success": 6,
+      "input_tokens": 404973,
+      "output_tokens": 24701,
+      "total_tokens": 429674,
+      "api_attempts": 88,
+      "deployment_tokens_including_prefix": 951635,
+      "duplicate_mutation_attempts": 0,
+      "state_changing_tool_calls": 6
+    },
+    "check": {
+      "attempted": 6,
+      "success": 6,
+      "strict_success": 6,
+      "input_tokens": 554279,
+      "output_tokens": 28909,
+      "total_tokens": 583188,
+      "api_attempts": 115,
+      "deployment_tokens_including_prefix": 1105149,
+      "duplicate_mutation_attempts": 0,
+      "state_changing_tool_calls": 6
+    },
+    "handoff": {
+      "attempted": 6,
+      "success": 6,
+      "strict_success": 6,
+      "input_tokens": 383218,
+      "output_tokens": 24465,
+      "total_tokens": 407683,
+      "api_attempts": 88,
+      "deployment_tokens_including_prefix": 929644,
+      "duplicate_mutation_attempts": 0,
+      "state_changing_tool_calls": 6
+    }
+  },
+  "paired_keep_vs_handoff": [
+    {
+      "case": "calendar_20",
+      "keep_success": true,
+      "handoff_success": true,
+      "post_tokens_saved": 19492
+    },
+    {
+      "case": "calendar_40",
+      "keep_success": true,
+      "handoff_success": true,
+      "post_tokens_saved": 7657
+    },
+    {
+      "case": "email_31",
+      "keep_success": true,
+      "handoff_success": true,
+      "post_tokens_saved": 17966
+    },
+    {
+      "case": "email_53",
+      "keep_success": true,
+      "handoff_success": true,
+      "post_tokens_saved": 55412
+    },
+    {
+      "case": "project_management_2",
+      "keep_success": true,
+      "handoff_success": true,
+      "post_tokens_saved": 18372
+    },
+    {
+      "case": "project_management_40",
+      "keep_success": true,
+      "handoff_success": true,
+      "post_tokens_saved": 30990
+    }
+  ],
+  "rows": [
+    {
+      "case": "calendar_20",
+      "arm": "check",
+      "decision": "keep",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "calendar"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 33,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 16,
+        "api_responses": 16,
+        "input_tokens": 86842,
+        "output_tokens": 5016,
+        "total_tokens": 91858,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "calendar_20",
+      "arm": "handoff",
+      "decision": "handoff_and_retire",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "calendar"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 23,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 11,
+        "api_responses": 11,
+        "input_tokens": 49070,
+        "output_tokens": 4237,
+        "total_tokens": 53307,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "calendar_20",
+      "arm": "keep",
+      "decision": "keep",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "calendar"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 28,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 15,
+        "api_responses": 15,
+        "input_tokens": 67904,
+        "output_tokens": 4895,
+        "total_tokens": 72799,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "calendar_20",
+      "arm": "simple",
+      "decision": "retire",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "calendar"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 23,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 12,
+        "api_responses": 12,
+        "input_tokens": 53404,
+        "output_tokens": 4302,
+        "total_tokens": 57706,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "calendar_20",
+      "arm": "direct",
+      "decision": "retire",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "calendar"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 23,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 11,
+        "api_responses": 11,
+        "input_tokens": 48665,
+        "output_tokens": 3939,
+        "total_tokens": 52604,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "calendar_40",
+      "arm": "handoff",
+      "decision": "handoff_and_retire",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "calendar"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 23,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 15,
+        "api_responses": 15,
+        "input_tokens": 63726,
+        "output_tokens": 4838,
+        "total_tokens": 68564,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "calendar_40",
+      "arm": "check",
+      "decision": "keep",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "calendar"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 27,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 18,
+        "api_responses": 18,
+        "input_tokens": 78491,
+        "output_tokens": 5608,
+        "total_tokens": 84099,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "calendar_40",
+      "arm": "direct",
+      "decision": "retire",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "calendar"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 23,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 15,
+        "api_responses": 15,
+        "input_tokens": 62807,
+        "output_tokens": 4637,
+        "total_tokens": 67444,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "calendar_40",
+      "arm": "keep",
+      "decision": "keep",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "calendar"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 26,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 16,
+        "api_responses": 16,
+        "input_tokens": 71135,
+        "output_tokens": 5086,
+        "total_tokens": 76221,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "calendar_40",
+      "arm": "simple",
+      "decision": "retire",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "calendar"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 24,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 15,
+        "api_responses": 15,
+        "input_tokens": 64199,
+        "output_tokens": 4932,
+        "total_tokens": 69131,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "email_31",
+      "arm": "simple",
+      "decision": "retire",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "email"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 14,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 13,
+        "api_responses": 13,
+        "input_tokens": 55994,
+        "output_tokens": 3483,
+        "total_tokens": 59477,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "email_31",
+      "arm": "handoff",
+      "decision": "handoff_and_retire",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "email"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 17,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 14,
+        "api_responses": 14,
+        "input_tokens": 62090,
+        "output_tokens": 3532,
+        "total_tokens": 65622,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "email_31",
+      "arm": "keep",
+      "decision": "keep",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "email"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 18,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 17,
+        "api_responses": 17,
+        "input_tokens": 79194,
+        "output_tokens": 4394,
+        "total_tokens": 83588,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "email_31",
+      "arm": "check",
+      "decision": "keep",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "email"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 20,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 18,
+        "api_responses": 18,
+        "input_tokens": 75903,
+        "output_tokens": 4203,
+        "total_tokens": 80106,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "email_31",
+      "arm": "direct",
+      "decision": "retire",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "email"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 13,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 12,
+        "api_responses": 12,
+        "input_tokens": 54320,
+        "output_tokens": 3497,
+        "total_tokens": 57817,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "email_53",
+      "arm": "check",
+      "decision": "keep",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "email"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 41,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 26,
+        "api_responses": 26,
+        "input_tokens": 138812,
+        "output_tokens": 5281,
+        "total_tokens": 144093,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "email_53",
+      "arm": "keep",
+      "decision": "keep",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "email"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 35,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 24,
+        "api_responses": 24,
+        "input_tokens": 127749,
+        "output_tokens": 4811,
+        "total_tokens": 132560,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "email_53",
+      "arm": "handoff",
+      "decision": "handoff_and_retire",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "email"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 19,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 15,
+        "api_responses": 15,
+        "input_tokens": 73521,
+        "output_tokens": 3627,
+        "total_tokens": 77148,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "email_53",
+      "arm": "direct",
+      "decision": "retire",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "email"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 32,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 20,
+        "api_responses": 20,
+        "input_tokens": 100960,
+        "output_tokens": 3987,
+        "total_tokens": 104947,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "email_53",
+      "arm": "simple",
+      "decision": "retire",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "email"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 31,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 19,
+        "api_responses": 19,
+        "input_tokens": 97872,
+        "output_tokens": 4141,
+        "total_tokens": 102013,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "project_management_2",
+      "arm": "keep",
+      "decision": "keep",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "project_management"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 26,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 17,
+        "api_responses": 17,
+        "input_tokens": 84357,
+        "output_tokens": 4534,
+        "total_tokens": 88891,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "project_management_2",
+      "arm": "handoff",
+      "decision": "handoff_and_retire",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "project_management"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 23,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 16,
+        "api_responses": 16,
+        "input_tokens": 66753,
+        "output_tokens": 3766,
+        "total_tokens": 70519,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "project_management_2",
+      "arm": "direct",
+      "decision": "retire",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "project_management"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 20,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 13,
+        "api_responses": 13,
+        "input_tokens": 56800,
+        "output_tokens": 3754,
+        "total_tokens": 60554,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "project_management_2",
+      "arm": "simple",
+      "decision": "retire",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "project_management"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 16,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 12,
+        "api_responses": 12,
+        "input_tokens": 49709,
+        "output_tokens": 3475,
+        "total_tokens": 53184,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "project_management_2",
+      "arm": "check",
+      "decision": "keep",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "project_management"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 22,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 16,
+        "api_responses": 16,
+        "input_tokens": 73062,
+        "output_tokens": 4328,
+        "total_tokens": 77390,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "project_management_40",
+      "arm": "direct",
+      "decision": "retire",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "project_management"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 31,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 17,
+        "api_responses": 17,
+        "input_tokens": 73254,
+        "output_tokens": 4182,
+        "total_tokens": 77436,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "project_management_40",
+      "arm": "simple",
+      "decision": "retire",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "project_management"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 27,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 17,
+        "api_responses": 17,
+        "input_tokens": 83795,
+        "output_tokens": 4368,
+        "total_tokens": 88163,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "project_management_40",
+      "arm": "handoff",
+      "decision": "handoff_and_retire",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "project_management"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 32,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 17,
+        "api_responses": 17,
+        "input_tokens": 68058,
+        "output_tokens": 4465,
+        "total_tokens": 72523,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "project_management_40",
+      "arm": "keep",
+      "decision": "keep",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "project_management"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 34,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 22,
+        "api_responses": 22,
+        "input_tokens": 98572,
+        "output_tokens": 4941,
+        "total_tokens": 103513,
+        "billed_cost_usd": null
+      }
+    },
+    {
+      "case": "project_management_40",
+      "arm": "check",
+      "decision": "keep",
+      "evaluation": {
+        "task_success": true,
+        "strict_success": true,
+        "state_exact_match": true,
+        "mismatched_tables": [],
+        "changed_tables": [
+          "project_management"
+        ],
+        "mutation_attempts": 1,
+        "state_changing_tool_calls": 1,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 29,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 21,
+        "api_responses": 21,
+        "input_tokens": 101169,
+        "output_tokens": 4473,
+        "total_tokens": 105642,
+        "billed_cost_usd": null
+      }
+    }
+  ],
+  "wrapper_errors": [],
+  "audit_checks": {
+    "frozen_sources_unchanged": true,
+    "manifest_hash": true,
+    "calendar_20:api_totals": true,
+    "calendar_20:raw_usage": true,
+    "calendar_20:checkpoint_hash": true,
+    "calendar_20:prefix_usage": true,
+    "calendar_20:check:usage": true,
+    "calendar_20:check:shared_prefix": true,
+    "calendar_20:check:acl": true,
+    "calendar_20:check:authorized_writes": true,
+    "calendar_20:handoff:usage": true,
+    "calendar_20:handoff:shared_prefix": true,
+    "calendar_20:handoff:acl": true,
+    "calendar_20:handoff:retired_actor": true,
+    "calendar_20:handoff:authorized_writes": true,
+    "calendar_20:keep:usage": true,
+    "calendar_20:keep:shared_prefix": true,
+    "calendar_20:keep:acl": true,
+    "calendar_20:keep:authorized_writes": true,
+    "calendar_20:simple:usage": true,
+    "calendar_20:simple:shared_prefix": true,
+    "calendar_20:simple:acl": true,
+    "calendar_20:simple:retired_actor": true,
+    "calendar_20:simple:authorized_writes": true,
+    "calendar_20:direct:usage": true,
+    "calendar_20:direct:shared_prefix": true,
+    "calendar_20:direct:acl": true,
+    "calendar_20:direct:retired_actor": true,
+    "calendar_20:direct:authorized_writes": true,
+    "calendar_40:api_totals": true,
+    "calendar_40:raw_usage": true,
+    "calendar_40:checkpoint_hash": true,
+    "calendar_40:prefix_usage": true,
+    "calendar_40:handoff:usage": true,
+    "calendar_40:handoff:shared_prefix": true,
+    "calendar_40:handoff:acl": true,
+    "calendar_40:handoff:retired_actor": true,
+    "calendar_40:handoff:authorized_writes": true,
+    "calendar_40:check:usage": true,
+    "calendar_40:check:shared_prefix": true,
+    "calendar_40:check:acl": true,
+    "calendar_40:check:authorized_writes": true,
+    "calendar_40:direct:usage": true,
+    "calendar_40:direct:shared_prefix": true,
+    "calendar_40:direct:acl": true,
+    "calendar_40:direct:retired_actor": true,
+    "calendar_40:direct:authorized_writes": true,
+    "calendar_40:keep:usage": true,
+    "calendar_40:keep:shared_prefix": true,
+    "calendar_40:keep:acl": true,
+    "calendar_40:keep:authorized_writes": true,
+    "calendar_40:simple:usage": true,
+    "calendar_40:simple:shared_prefix": true,
+    "calendar_40:simple:acl": true,
+    "calendar_40:simple:retired_actor": true,
+    "calendar_40:simple:authorized_writes": true,
+    "email_31:api_totals": true,
+    "email_31:raw_usage": true,
+    "email_31:checkpoint_hash": true,
+    "email_31:prefix_usage": true,
+    "email_31:simple:usage": true,
+    "email_31:simple:shared_prefix": true,
+    "email_31:simple:acl": true,
+    "email_31:simple:retired_actor": true,
+    "email_31:simple:authorized_writes": true,
+    "email_31:handoff:usage": true,
+    "email_31:handoff:shared_prefix": true,
+    "email_31:handoff:acl": true,
+    "email_31:handoff:retired_actor": true,
+    "email_31:handoff:authorized_writes": true,
+    "email_31:keep:usage": true,
+    "email_31:keep:shared_prefix": true,
+    "email_31:keep:acl": true,
+    "email_31:keep:authorized_writes": true,
+    "email_31:check:usage": true,
+    "email_31:check:shared_prefix": true,
+    "email_31:check:acl": true,
+    "email_31:check:authorized_writes": true,
+    "email_31:direct:usage": true,
+    "email_31:direct:shared_prefix": true,
+    "email_31:direct:acl": true,
+    "email_31:direct:retired_actor": true,
+    "email_31:direct:authorized_writes": true,
+    "email_53:api_totals": true,
+    "email_53:raw_usage": true,
+    "email_53:checkpoint_hash": true,
+    "email_53:prefix_usage": true,
+    "email_53:check:usage": true,
+    "email_53:check:shared_prefix": true,
+    "email_53:check:acl": true,
+    "email_53:check:authorized_writes": true,
+    "email_53:keep:usage": true,
+    "email_53:keep:shared_prefix": true,
+    "email_53:keep:acl": true,
+    "email_53:keep:authorized_writes": true,
+    "email_53:handoff:usage": true,
+    "email_53:handoff:shared_prefix": true,
+    "email_53:handoff:acl": true,
+    "email_53:handoff:retired_actor": true,
+    "email_53:handoff:authorized_writes": true,
+    "email_53:direct:usage": true,
+    "email_53:direct:shared_prefix": true,
+    "email_53:direct:acl": true,
+    "email_53:direct:retired_actor": true,
+    "email_53:direct:authorized_writes": true,
+    "email_53:simple:usage": true,
+    "email_53:simple:shared_prefix": true,
+    "email_53:simple:acl": true,
+    "email_53:simple:retired_actor": true,
+    "email_53:simple:authorized_writes": true,
+    "project_management_2:api_totals": true,
+    "project_management_2:raw_usage": true,
+    "project_management_2:checkpoint_hash": true,
+    "project_management_2:prefix_usage": true,
+    "project_management_2:keep:usage": true,
+    "project_management_2:keep:shared_prefix": true,
+    "project_management_2:keep:acl": true,
+    "project_management_2:keep:authorized_writes": true,
+    "project_management_2:handoff:usage": true,
+    "project_management_2:handoff:shared_prefix": true,
+    "project_management_2:handoff:acl": true,
+    "project_management_2:handoff:retired_actor": true,
+    "project_management_2:handoff:authorized_writes": true,
+    "project_management_2:direct:usage": true,
+    "project_management_2:direct:shared_prefix": true,
+    "project_management_2:direct:acl": true,
+    "project_management_2:direct:retired_actor": true,
+    "project_management_2:direct:authorized_writes": true,
+    "project_management_2:simple:usage": true,
+    "project_management_2:simple:shared_prefix": true,
+    "project_management_2:simple:acl": true,
+    "project_management_2:simple:retired_actor": true,
+    "project_management_2:simple:authorized_writes": true,
+    "project_management_2:check:usage": true,
+    "project_management_2:check:shared_prefix": true,
+    "project_management_2:check:acl": true,
+    "project_management_2:check:authorized_writes": true,
+    "project_management_40:api_totals": true,
+    "project_management_40:raw_usage": true,
+    "project_management_40:checkpoint_hash": true,
+    "project_management_40:prefix_usage": true,
+    "project_management_40:direct:usage": true,
+    "project_management_40:direct:shared_prefix": true,
+    "project_management_40:direct:acl": true,
+    "project_management_40:direct:retired_actor": true,
+    "project_management_40:direct:authorized_writes": true,
+    "project_management_40:simple:usage": true,
+    "project_management_40:simple:shared_prefix": true,
+    "project_management_40:simple:acl": true,
+    "project_management_40:simple:retired_actor": true,
+    "project_management_40:simple:authorized_writes": true,
+    "project_management_40:handoff:usage": true,
+    "project_management_40:handoff:shared_prefix": true,
+    "project_management_40:handoff:acl": true,
+    "project_management_40:handoff:retired_actor": true,
+    "project_management_40:handoff:authorized_writes": true,
+    "project_management_40:keep:usage": true,
+    "project_management_40:keep:shared_prefix": true,
+    "project_management_40:keep:acl": true,
+    "project_management_40:keep:authorized_writes": true,
+    "project_management_40:check:usage": true,
+    "project_management_40:check:shared_prefix": true,
+    "project_management_40:check:acl": true,
+    "project_management_40:check:authorized_writes": true,
+    "batch_api_totals": true
+  },
+  "response_finish_reasons": {
+    "stop": 175,
+    "tool_calls": 416,
+    "length": 21
+  },
+  "returned_models": {
+    "deepseek-flash": 612
+  },
+  "audit_all_passed": true,
+  "scope": "six modified WorkBench tasks, one repeat; descriptive development results only"
+}

@@ -1,0 +1,30 @@
+{
+  "case_id": "project_management_40",
+  "version": 1,
+  "seed": 20262012,
+  "public_prompt": "Dmitri remains absent. A new task named 'Process newly assigned integration request 0774760f8e7d' has been assigned to Dmitri and is In Progress. Continue the earlier reassignment rule: find that new task and assign it to Jinsoo. Keep its status and other tasks unchanged.",
+  "injection": {
+    "table": "project_management",
+    "row": {
+      "task_id": "00000300",
+      "task_name": "Process newly assigned integration request 0774760f8e7d",
+      "assigned_to_email": "dmitri.ivanov@atlas.com",
+      "list_name": "In Progress",
+      "due_date": "2023-12-07",
+      "board": "Back end"
+    }
+  },
+  "private_evaluation": {
+    "actions": [
+      {
+        "tool_name": "project_management.update_task",
+        "arguments": {
+          "task_id": "00000300",
+          "field": "assigned_to_email",
+          "new_value": "jinsoo.kim@atlas.com"
+        }
+      }
+    ]
+  },
+  "scope_note": "Modified WorkBench continuation; injection and evaluator actions are not model inputs."
+}
