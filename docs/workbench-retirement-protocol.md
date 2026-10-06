@@ -75,6 +75,21 @@ This one-repeat six-task subset cannot establish broad non-inferiority, security
 improvement, or general token savings. Compare paired outcomes and overhead,
 diagnose failures, and propose the next system iteration from those traces.
 
+## Development version correction (2026-10-06)
+
+The first live batch was interrupted after two calendar blocks completed and
+email execution exposed two implementation defects: native email search sorted
+mixed string/Timestamp values after sending a message; the experimental JSON
+adapter mishandled NumPy arrays from directory lookup. Its raw running snapshot
+is preserved with `STOPPED.json`, including one unfinished request whose usage
+is unknown. Email failures in that version are not retirement effects.
+
+After regression tests, v2 reruns all six frozen source cases and all five arms
+from fresh live prefixes. The source IDs, future-generation seed, model settings,
+budgets, arm ordering and scoring criteria remain the same. Results from the two
+code versions are reported separately; the successful old calendar observations
+are not pooled into the corrected comparison.
+
 ```powershell
 python -m scripts.run_workbench_retirement --env-file EXISTING_ENV --data-root LOCAL_WORKBENCH_CACHE --manifest configs/node_retirement/workbench_subset_v1.json --output-dir results/node_retirement_handoff/UNIQUE_WORKBENCH_BATCH
 ```

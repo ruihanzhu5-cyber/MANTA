@@ -2,19 +2,25 @@
 import json
 from dataclasses import replace
 
+import numpy as np
 import pandas as pd
 import pytest
 
 from benchmark.workbench import WorkBenchSandbox
 from MAS.self_evolved.spec import AgentNode, GroupSpec, TopologySpec
-from MAS.self_evolved.workbench_handoff import DEFAULT_AGENTS, TABLES, WorkbenchHandoffSandbox
+from MAS.self_evolved.workbench_handoff import (
+    DEFAULT_AGENTS,
+    TABLES,
+    WorkbenchHandoffSandbox,
+    _json_value,
+)
 
 
 @pytest.fixture
 def sandbox(monkeypatch):
     def local_reset(native):
         native.calendar_events = pd.DataFrame([['00000001','review','a@example.com','2023-12-01 10:00:00','30']], columns=['event_id','event_name','participant_email','event_start','duration'])
-        native.emails = pd.DataFrame([['1','inbox','a@example.com','review',pd.Timestamp('2023-11-30'),'hello']], columns=['email_id','folder','email_address','subject','date','body'])
+        native.emails = pd.DataFrame([['1','inbox','a@example.com','review','2023-11-29 12:00:00','hello']], columns=['email_id','inbox/outbox','sender/recipient','subject','sent_datetime','body'])
         native.analytics_data = pd.DataFrame({'visitor_id':['1'], 'user_engaged':[True]})
         native.plots_data = pd.DataFrame(columns=['file_path'])
         native.project_tasks = pd.DataFrame([['00000001','review','a@example.com','To Do','2023-12-01','board','list']], columns=['task_id','task_name','assigned_to_email','status','due_date','board','list_name'])
@@ -28,8 +34,8 @@ def topology():
     return TopologySpec(version=0, agents=tuple(AgentNode(a,'root',structural_role='coordinator' if a=='agent_0' else 'worker') for a in DEFAULT_AGENTS), groups=(GroupSpec('root','star',DEFAULT_AGENTS,leader_id='agent_0'),), root_group_id='root')
 
 
-def call(sb, actor, name, **args):
-    tool = next(t for t in sb.tools_for(actor) if t['name']==name)
+def call(sb, actor, tool_name, **args):
+    tool = next(t for t in sb.tools_for(actor) if t['name']==tool_name)
     return tool['handler'](args)
 
 
@@ -38,6 +44,7 @@ def update(sb, actor='agent_1', value='updated'):
 
 
 def test_snapshot_all_seven_tables_json_roundtrip_without_io(sandbox, monkeypatch):
+    sandbox.native.emails['sent_datetime'] = [pd.Timestamp('2023-11-29 12:00:00')]
     snapshot = json.loads(json.dumps(sandbox.snapshot(), allow_nan=False))
     assert set(snapshot['tables'])==set(TABLES)
     monkeypatch.setattr(WorkBenchSandbox,'__init__',lambda *a,**k:pytest.fail('restore must not initialize from files'))
@@ -144,3 +151,48 @@ def test_check_preserves_continuing_assignment(sandbox):
     spec,decision=sandbox.assess_and_apply('check',topology(),'agent_1')
     assert spec==topology()
     assert decision['action']=='keep'
+
+
+@pytest.mark.parametrize('values', [[], ['a@example.com'], ['a@example.com','b@example.com']])
+def test_numpy_directory_results_are_json_arrays(values):
+    converted = _json_value(np.array(values, dtype=object))
+    assert converted == values
+    assert json.loads(json.dumps(converted, allow_nan=False)) == values
+
+
+def test_native_directory_empty_single_multiple_through_wrapper(sandbox):
+    sandbox.native.company_directory = pd.DataFrame({'email_address':['amy@example.com','amy.team@example.com']})
+    assert call(sandbox,'agent_3','company_directory.find_email_address',name='missing') == []
+    assert call(sandbox,'agent_3','company_directory.find_email_address',name='amy@') == ['amy@example.com']
+    assert call(sandbox,'agent_3','company_directory.find_email_address',name='amy') == ['amy@example.com','amy.team@example.com']
+    assert all(not entry['state_changed'] for entry in sandbox.logs)
+    json.dumps(sandbox.snapshot(), allow_nan=False)
+
+
+def test_native_email_search_after_reply_sorts_mixed_dates_without_mutating(sandbox):
+    native=sandbox.native
+    assert native.invoke('email.reply_email',{'email_id':'1','body':'Confirmed'}) == 'Email replied successfully.'
+    assert isinstance(native.emails.iloc[0]['sent_datetime'],str)
+    assert isinstance(native.emails.iloc[1]['sent_datetime'],pd.Timestamp)
+    before=native.emails.copy(deep=True)
+    result=native.invoke('email.search_emails',{'query':'review'})
+    assert [row['email_id'] for row in result] == ['2','1']
+    assert isinstance(result[0]['sent_datetime'],pd.Timestamp)
+    assert isinstance(result[1]['sent_datetime'],str)
+    assert [row['email_id'] for row in native.invoke('email.search_emails',{'query':'review','date_min':'2023-11-30'})] == ['2']
+    assert [row['email_id'] for row in native.invoke('email.search_emails',{'query':'review','date_max':'2023-11-29'})] == ['1']
+    pd.testing.assert_frame_equal(before,native.emails)
+
+
+def test_email_search_roundtrip_after_reply_keeps_same_tool_results(sandbox):
+    sandbox._meta['domain']='email'
+    assert call(sandbox,'agent_1','email.reply_email',email_id='1',body='Confirmed') == 'Email replied successfully.'
+    snapshot=sandbox.snapshot()
+    expected=call(sandbox,'agent_2','email.search_emails',query='review')
+    restored=WorkbenchHandoffSandbox.from_snapshot(json.loads(json.dumps(snapshot)))
+    actual=call(restored,'agent_2','email.search_emails',query='review')
+    assert actual == expected
+    assert [row['email_id'] for row in actual] == ['2','1']
+    assert not restored.logs[-1]['state_changed']
+    assert isinstance(restored.native.emails.iloc[0]['sent_datetime'],str)
+    assert isinstance(restored.native.emails.iloc[1]['sent_datetime'],pd.Timestamp)

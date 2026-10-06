@@ -30,6 +30,12 @@ def _json_value(value):
         return {str(k): _json_value(v) for k, v in value.items()}
     if isinstance(value, (list, tuple)):
         return [_json_value(v) for v in value]
+    # Native company_directory returns a numpy ndarray, including empty or
+    # multi-match arrays. Convert containers before scalar missing-value tests;
+    # pd.isna(array) returns an array whose truth value is ambiguous.
+    to_list = getattr(value, 'tolist', None)
+    if callable(to_list):
+        return _json_value(to_list())
     if isinstance(value, (pd.Timestamp, datetime)):
         return value.isoformat()
     if value is None or isinstance(value, (str, bool, int)):

@@ -248,7 +248,13 @@ class WorkBenchSandbox:
         filtered = self.emails.apply(filter_email, axis=1)
         emails = (
             self.emails[filtered]
-            .sort_values("sent_datetime", ascending=False)
+            # CSV-loaded rows contain strings while native send/reply appends
+            # a Timestamp. Sort by parsed instants without rewriting the stored
+            # values or changing the tool's returned payload.
+            .sort_values(
+                "sent_datetime", ascending=False,
+                key=lambda values: values.map(pd.Timestamp),
+            )
             .to_dict(orient="records")
         )
         if date_min:
