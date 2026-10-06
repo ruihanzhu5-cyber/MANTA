@@ -1,0 +1,451 @@
+{
+  "schema_version": 1,
+  "status": "frozen_for_development_batch",
+  "created_date": "2026-10-06",
+  "execution_status": "not_started_at_freeze",
+  "purpose": "Draft source-case candidates for a later limited retirement pilot; modified WorkBench continuations are not original WorkBench benchmark scores.",
+  "planned_scope": {
+    "domains": [
+      "calendar",
+      "email",
+      "project_management"
+    ],
+    "cases_per_domain": 2,
+    "case_count": 6,
+    "repeats_per_case": 1,
+    "arms": [
+      "keep",
+      "direct",
+      "simple",
+      "check",
+      "handoff"
+    ],
+    "post_executions": 30,
+    "api_requests": "Not estimated here; each execution can require several API calls.",
+    "run_now": true
+  },
+  "selection_policy": {
+    "basis": "Original query, source data and adapter implementation only; no historical model experiment outcomes used.",
+    "id_rule": "WorkBenchAdapter.load_tasks enumerates CSV rows from zero and sets task_id to domain + underscore + row index. This differs from a project tool task_id.",
+    "source_csv_id_note": "Inspected CSVs contain task, outcome, base_template, chosen_template, domains; no independent ID column exists, hence original_id_fields is empty.",
+    "hashing": {
+      "file": "SHA-256 of exact file bytes",
+      "query": "SHA-256 of exact query UTF-8 bytes without normalization",
+      "row": "SHA-256 of complete DictReader row JSON, ensure_ascii=False, sort_keys=True, separators=(comma,colon), UTF-8. Outcome is included only inside the hash input."
+    }
+  },
+  "adapter_source": {
+    "path": "benchmark/workbench/__init__.py",
+    "sha256": "c99bcfe01738fe4c17a6325355c09a49e5f4696fe45f4715748146541a20000c",
+    "load_tasks_lines": [
+      1015,
+      1043
+    ],
+    "reset_and_snapshot_lines": [
+      95,
+      136
+    ],
+    "hardcoded_current_time": "2023-11-30T00:00:00"
+  },
+  "source_state_files": [
+    {
+      "relative_path": "data/processed/analytics_data.csv",
+      "sha256": "9f02ac1311812721fa4d521aaf91e2d3a4320d1409cfd5b43f130ee476cae709"
+    },
+    {
+      "relative_path": "data/processed/calendar_events.csv",
+      "sha256": "9f029b17eb05e6b837946b50f15b63e59c939a544ba293075d98ac301554d636"
+    },
+    {
+      "relative_path": "data/processed/customer_relationship_manager_data.csv",
+      "sha256": "18427f6443cfd04a9ae95ffb3720c9ee349131666e0ad6c813deaac242968f6f"
+    },
+    {
+      "relative_path": "data/processed/emails.csv",
+      "sha256": "35c0a3af40acddc9aa48d0289e75cc44785e33abedfa3e48ca3f7b2fb679f4c3"
+    },
+    {
+      "relative_path": "data/processed/project_tasks.csv",
+      "sha256": "ef4941767aa7ec5c85f481d90d9fc9aef9f7424d972701d2149e0ef55e56b07d"
+    },
+    {
+      "relative_path": "data/raw/email_addresses.csv",
+      "sha256": "d9227ee1a072e528c3735afea166a56e5d2e88f4c98dc7a0beba035ff0efcc2a"
+    }
+  ],
+  "exclusion_criteria": [
+    "No-op original task with no matching source record for its requested mutation.",
+    "Ambiguous wording or broken reply-body delimiters when a well-formed alternative exists.",
+    "Bulk query exceeding the native five-result search limit without a verified partitioning strategy.",
+    "Pure final-text task with no observable new post-checkpoint state change.",
+    "Real external messaging, nonresettable service, unsupported tool or domain outside this batch.",
+    "Choosing cases based on historical model success/failure.",
+    "Continuation already completed in the prefix or requiring future answer disclosure to the retirement controller."
+  ],
+  "concrete_exclusions": [
+    {
+      "task_id": "project_management_0",
+      "reason": "Source state has no In Progress tasks for kofi."
+    },
+    {
+      "task_id": "project_management_1",
+      "reason": "Source state has no In Progress tasks for aisha."
+    },
+    {
+      "task_id": "email_30",
+      "reason": "Original query has an unclosed quote around the requested reply body; email_31 is well-formed."
+    },
+    {
+      "task_id": "email_50",
+      "reason": "Latest matching raw message is later than HARDCODED_CURRENT_TIME on the same day. email_53 provides the same template with a unique latest message before the clock and only three matches, avoiding a clock repair in the pilot."
+    }
+  ],
+  "before_freeze_requirements": [
+    "Implement and test independent restoration of all mutable WorkBench tables and any added assignment/subscription/cursor/dedup state.",
+    "Validate each original task through deterministic local tools and private evaluator without model API calls before freezing.",
+    "calendar.search_events returns only five rows in file order. Use explicit date bounds and check next/first ranking.",
+    "email.search_emails returns latest five all-word matches without an inbox-only filter. Test that prefix-generated outbox messages are not mistaken for newly received messages.",
+    "Choose concrete fresh IDs/timestamps/payloads only after checkpoint and retirement decisions; replay identical events across all five branches.",
+    "Explicitly version any workflow assignments, ACLs or review obligations introduced for this experiment; they are not automatically native WorkBench features.",
+    "Score real new state changes and duplicate actions, not final prose or tool success strings.",
+    "Do not force direct-removal failure by construction. Surviving agents may use shared state or independent search; retain successful direct outcomes.",
+    "Freeze six IDs, adaptations, source hashes, budget and scoring before the later 30-execution run. This draft starts no experiment."
+  ],
+  "candidates": [
+    {
+      "status": "frozen_for_development_batch",
+      "task_id": "calendar_20",
+      "domain": "calendar",
+      "source": {
+        "relative_path": "data/processed/tasks_and_outcomes/v1/calendar_tasks_and_outcomes.csv",
+        "sha256": "196d2706626af0fc222e666bc830044150b870b2761713df774877c549ce83eb",
+        "row_index_0based": 20,
+        "row_sha256": "26cc169f569cb6c7baca24a84910d106422de7c0a0446a3abfce0b3b5b5dc0fc",
+        "original_id_fields": {},
+        "original_columns": [
+          "task",
+          "outcome",
+          "base_template",
+          "chosen_template",
+          "domains"
+        ]
+      },
+      "query": "please move my first meeting with kofi on December 4 by 1.5 hours",
+      "query_sha256": "81def88cdd2b7174259f1bd40a3ad5d5befd841a77dd5e9b4b8304e0337da1cb",
+      "domains": [
+        "calendar"
+      ],
+      "template": {
+        "base_template": "Push back my first meeting with {name} on {natural_language_date} by {duration}s",
+        "chosen_template": "please move my first meeting with {name} on {natural_language_date} by {duration}s"
+      },
+      "eligibility": "offline_source_and_continuation_state_checks_passed",
+      "selection_reason": "Bounded date/person search identifies a real meeting; the supported timestamp update leaves a natural continuing scheduling assignment.",
+      "resettable": true,
+      "reset_basis": "WorkBenchSandbox.reset_state reloads local CSV data; all relevant tool handlers mutate only in-memory tables. Full branch snapshot/restore remains to be implemented and tested.",
+      "source_operation_checks": {
+        "matching_source_records": 1,
+        "count_scope": "task-specific query match",
+        "native_handler_support_checked": true,
+        "historical_model_results_used": false
+      },
+      "native_tools": [
+        "company_directory.find_email_address",
+        "calendar.search_events",
+        "calendar.get_event_information_by_id",
+        "calendar.update_event"
+      ],
+      "proposed_adaptation": {
+        "label": "modified_workbench_two_stage",
+        "phase1": "Execute the original rescheduling request and retain stable meeting identity, participant scope and handled-request history.",
+        "post_checkpoint_information_and_task": "After the checkpoint, publish a participant correction specifying a new meeting duration chosen only after retirement; query and update that same meeting using tools.",
+        "handoff": "Transfer the scheduling assignment and processed-request ledger to an already authorized calendar member.",
+        "state_based_scoring": "Check the new duration, preservation of the prior time change, one successful update and unchanged other meetings.",
+        "concrete_future_values": "not_generated_or_frozen"
+      },
+      "ground_truth_policy": "Original answer/outcome omitted. A separate evaluator may load it privately; never copy BenchmarkTask.metadata.answer or future expected state into agent/controller inputs."
+    },
+    {
+      "status": "frozen_for_development_batch",
+      "task_id": "calendar_40",
+      "domain": "calendar",
+      "source": {
+        "relative_path": "data/processed/tasks_and_outcomes/v1/calendar_tasks_and_outcomes.csv",
+        "sha256": "196d2706626af0fc222e666bc830044150b870b2761713df774877c549ce83eb",
+        "row_index_0based": 40,
+        "row_sha256": "4ffc164ca047a879511e4d014cf8f27f32800d5df16e7d8f98e08a64507e9cbc",
+        "original_id_fields": {},
+        "original_columns": [
+          "task",
+          "outcome",
+          "base_template",
+          "chosen_template",
+          "domains"
+        ]
+      },
+      "query": "can you rename the next process review meeting to Customer Insight Forum",
+      "query_sha256": "84392273c987674369d981633a1b89879017e8a67e824022a87a16949de0bc60",
+      "domains": [
+        "calendar"
+      ],
+      "template": {
+        "base_template": "Rename the next {event_name} meeting to {new_event_name}",
+        "chosen_template": "can you rename the next {event_name} meeting to {new_event_name}"
+      },
+      "eligibility": "offline_source_and_continuation_state_checks_passed",
+      "selection_reason": "A named next-meeting query has one future match at the adapter clock. A later new meeting supplies a genuinely new continuation.",
+      "resettable": true,
+      "reset_basis": "WorkBenchSandbox.reset_state reloads local CSV data; all relevant tool handlers mutate only in-memory tables. Full branch snapshot/restore remains to be implemented and tested.",
+      "source_operation_checks": {
+        "matching_source_records": 1,
+        "count_scope": "future named meetings",
+        "native_handler_support_checked": true,
+        "historical_model_results_used": false
+      },
+      "native_tools": [
+        "calendar.search_events",
+        "calendar.get_event_information_by_id",
+        "calendar.update_event"
+      ],
+      "proposed_adaptation": {
+        "label": "modified_workbench_two_stage",
+        "phase1": "Execute the original rename and retain the continuing series assignment with stable meeting identity.",
+        "post_checkpoint_information_and_task": "After retirement add a new event in the same business series identically to every branch; request a new time adjustment to that newly added event. Its ID, time and requested offset are not in the prefix.",
+        "handoff": "Transfer the series assignment and previously handled-request identifiers; no future event payload is handed over.",
+        "state_based_scoring": "Check the new event timestamp, unchanged original renamed event and unchanged unrelated records.",
+        "concrete_future_values": "not_generated_or_frozen"
+      },
+      "ground_truth_policy": "Original answer/outcome omitted. A separate evaluator may load it privately; never copy BenchmarkTask.metadata.answer or future expected state into agent/controller inputs."
+    },
+    {
+      "status": "frozen_for_development_batch",
+      "task_id": "email_31",
+      "domain": "email",
+      "source": {
+        "relative_path": "data/processed/tasks_and_outcomes/v1/email_tasks_and_outcomes.csv",
+        "sha256": "70b4fa7a98a8cc767721fe0e877cc5c41b60e4a9c95eb27af5f5ba605548bb33",
+        "row_index_0based": 31,
+        "row_sha256": "09e90c2c1b5af90fb6275098c224f105b8a7200372dc774b7b5d675a4af04b2f",
+        "original_id_fields": {},
+        "original_columns": [
+          "task",
+          "outcome",
+          "base_template",
+          "chosen_template",
+          "domains"
+        ]
+      },
+      "query": "Reply to yuki's last email about 'Update on Corporate Social Responsibility Initiative' with 'Thanks for the update - I will get back to you tomorrow.'",
+      "query_sha256": "3ecfbfcf84fc59f0788a0363ac9761aeae30949c9448892fc25bd9de5956f66c",
+      "domains": [
+        "email"
+      ],
+      "template": {
+        "base_template": "Reply to {name}'s last email about '{subject}' with 'Thanks for the update - I will get back to you tomorrow.'",
+        "chosen_template": "Reply to {name}'s last email about '{subject}' with 'Thanks for the update - I will get back to you tomorrow.'"
+      },
+      "eligibility": "offline_source_and_continuation_state_checks_passed",
+      "selection_reason": "Well-formed reply request has two matching inbox records and a unique latest timestamp. The real reply handler appends a local outbox record.",
+      "resettable": true,
+      "reset_basis": "WorkBenchSandbox.reset_state reloads local CSV data; all relevant tool handlers mutate only in-memory tables. Full branch snapshot/restore remains to be implemented and tested.",
+      "source_operation_checks": {
+        "matching_source_records": 2,
+        "count_scope": "task-specific query match",
+        "native_handler_support_checked": true,
+        "historical_model_results_used": false
+      },
+      "native_tools": [
+        "email.search_emails",
+        "email.get_email_information_by_id",
+        "email.reply_email"
+      ],
+      "proposed_adaptation": {
+        "label": "modified_workbench_two_stage",
+        "phase1": "Execute the original reply, retaining thread scope and handled inbound-message identifiers.",
+        "post_checkpoint_information_and_task": "After retirement insert a newer incoming message from the same sender on the same subject with a fresh body token; request a reply acknowledging that new token after reading the message.",
+        "handoff": "Transfer the thread monitoring assignment and handled-message ledger to a member with pre-existing mail permissions.",
+        "state_based_scoring": "Require exactly one new local outbox reply to the sender containing the new token; an old fixed reply or final prose cannot pass.",
+        "concrete_future_values": "not_generated_or_frozen"
+      },
+      "ground_truth_policy": "Original answer/outcome omitted. A separate evaluator may load it privately; never copy BenchmarkTask.metadata.answer or future expected state into agent/controller inputs."
+    },
+    {
+      "status": "frozen_for_development_batch",
+      "task_id": "email_53",
+      "domain": "email",
+      "source": {
+        "relative_path": "data/processed/tasks_and_outcomes/v1/email_tasks_and_outcomes.csv",
+        "sha256": "70b4fa7a98a8cc767721fe0e877cc5c41b60e4a9c95eb27af5f5ba605548bb33",
+        "row_index_0based": 53,
+        "row_sha256": "4a1fa65d72d57bb276006afd56e50e58373b061a1f1b4afd0eb8dca2548112f8",
+        "original_id_fields": {},
+        "original_columns": [
+          "task",
+          "outcome",
+          "base_template",
+          "chosen_template",
+          "domains"
+        ]
+      },
+      "query": "can you forward the latest email about 'Update on Corporate Governance Workshop' to yuki",
+      "query_sha256": "1b1377988a4ff33e1e4eb621b8efaf4421576f1947ff27c9a8d6b9b790e36d35",
+      "domains": [
+        "email"
+      ],
+      "template": {
+        "base_template": "Forward the latest email about '{subject}' to {recipient_name}",
+        "chosen_template": "can you forward the latest email about '{subject}' to {recipient_name}"
+      },
+      "eligibility": "offline_source_and_continuation_state_checks_passed",
+      "selection_reason": "Latest-message forwarding has three matching inbox records, a unique latest timestamp before the fixed clock, and supported recipient lookup/forward operations. A new incoming body distinguishes continuation from replay.",
+      "resettable": true,
+      "reset_basis": "WorkBenchSandbox.reset_state reloads local CSV data; all relevant tool handlers mutate only in-memory tables. Full branch snapshot/restore remains to be implemented and tested.",
+      "source_operation_checks": {
+        "matching_source_records": 3,
+        "count_scope": "exact subject matches",
+        "all_matches_inbox": true,
+        "unique_latest_timestamp": true,
+        "latest_before_hardcoded_clock": true,
+        "native_handler_support_checked": true,
+        "historical_model_results_used": false
+      },
+      "native_tools": [
+        "company_directory.find_email_address",
+        "email.search_emails",
+        "email.get_email_information_by_id",
+        "email.forward_email"
+      ],
+      "proposed_adaptation": {
+        "label": "modified_workbench_two_stage",
+        "phase1": "Execute the original forward, retaining subject scope, resolved recipient and handled-message identifiers.",
+        "post_checkpoint_information_and_task": "After retirement insert a newer inbox message of the same subject with a new body token; request forwarding that new message to the original recipient.",
+        "handoff": "Transfer the subject monitoring assignment and handled-message ledger without future message content.",
+        "state_based_scoring": "Check one new outbox forward to the correct recipient containing the exact new message body; reject duplicate or stale forwards.",
+        "concrete_future_values": "not_generated_or_frozen"
+      },
+      "ground_truth_policy": "Original answer/outcome omitted. A separate evaluator may load it privately; never copy BenchmarkTask.metadata.answer or future expected state into agent/controller inputs."
+    },
+    {
+      "status": "frozen_for_development_batch",
+      "task_id": "project_management_2",
+      "domain": "project_management",
+      "source": {
+        "relative_path": "data/processed/tasks_and_outcomes/v1/project_management_tasks_and_outcomes.csv",
+        "sha256": "5953f6a8ac714ecf6ad0ecf12df8aa986d8ac56b68f247e9781df2018c475057",
+        "row_index_0based": 2,
+        "row_sha256": "67bf1d5937d1e1977a157b93f5d49c2ef7f3b666481142561598feb31da731d8",
+        "original_id_fields": {},
+        "original_columns": [
+          "task",
+          "outcome",
+          "base_template",
+          "chosen_template",
+          "domains"
+        ]
+      },
+      "query": "Move all of yuki's tasks that are in progress to in review",
+      "query_sha256": "984a415421b8bcf73226526a703b9712fc3d7b7b1a473774ba244d9bdd208644",
+      "domains": [
+        "project_management"
+      ],
+      "template": {
+        "base_template": "Move all of {name}'s tasks that are in progress to in review",
+        "chosen_template": "Move all of {name}'s tasks that are in progress to in review"
+      },
+      "eligibility": "offline_source_and_continuation_state_checks_passed",
+      "selection_reason": "There is one actual In Progress task for yuki. This is a real state transition rather than an empty original mutation.",
+      "resettable": true,
+      "reset_basis": "WorkBenchSandbox.reset_state reloads local CSV data; all relevant tool handlers mutate only in-memory tables. Full branch snapshot/restore remains to be implemented and tested.",
+      "source_operation_checks": {
+        "matching_source_records": 1,
+        "count_scope": "task-specific query match",
+        "native_handler_support_checked": true,
+        "historical_model_results_used": false
+      },
+      "native_tools": [
+        "project_management.search_tasks",
+        "project_management.get_task_information_by_id",
+        "project_management.update_task"
+      ],
+      "proposed_adaptation": {
+        "label": "modified_workbench_two_stage",
+        "phase1": "Execute the original move to In Review; retain assignee scope and handled-task identifiers.",
+        "post_checkpoint_information_and_task": "After retirement add one valid new In Progress task for the same person with a fresh ID and title; issue the continuing request to move it to In Review.",
+        "handoff": "Transfer the continuing queue assignment and handled-task ledger to a preauthorized project member.",
+        "state_based_scoring": "Check the new task list state and a single transition; preserve unrelated Backlog, Completed and existing In Review records.",
+        "concrete_future_values": "not_generated_or_frozen"
+      },
+      "ground_truth_policy": "Original answer/outcome omitted. A separate evaluator may load it privately; never copy BenchmarkTask.metadata.answer or future expected state into agent/controller inputs."
+    },
+    {
+      "status": "frozen_for_development_batch",
+      "task_id": "project_management_40",
+      "domain": "project_management",
+      "source": {
+        "relative_path": "data/processed/tasks_and_outcomes/v1/project_management_tasks_and_outcomes.csv",
+        "sha256": "5953f6a8ac714ecf6ad0ecf12df8aa986d8ac56b68f247e9781df2018c475057",
+        "row_index_0based": 40,
+        "row_sha256": "bd9a1e036c26d722487e286734394ae8547a684b7c133876d8512234580c8590",
+        "original_id_fields": {},
+        "original_columns": [
+          "task",
+          "outcome",
+          "base_template",
+          "chosen_template",
+          "domains"
+        ]
+      },
+      "query": "dmitri is sick so reassign their in progress tasks to jinsoo.",
+      "query_sha256": "e4f0853283ac2dd44358045dd22d4d47abc97aeded6f5226b7699b14beda9d62",
+      "domains": [
+        "project_management"
+      ],
+      "template": {
+        "base_template": "{name_1} is sick so reassign their in progress tasks to {name_2}.",
+        "chosen_template": "{name_1} is sick so reassign their in progress tasks to {name_2}."
+      },
+      "eligibility": "offline_source_and_continuation_state_checks_passed",
+      "selection_reason": "One real In Progress task belongs to the absent employee; the requested recipient already exists as a valid assignee.",
+      "resettable": true,
+      "reset_basis": "WorkBenchSandbox.reset_state reloads local CSV data; all relevant tool handlers mutate only in-memory tables. Full branch snapshot/restore remains to be implemented and tested.",
+      "source_operation_checks": {
+        "matching_source_records": 1,
+        "count_scope": "task-specific query match",
+        "native_handler_support_checked": true,
+        "historical_model_results_used": false
+      },
+      "native_tools": [
+        "company_directory.find_email_address",
+        "project_management.search_tasks",
+        "project_management.get_task_information_by_id",
+        "project_management.update_task"
+      ],
+      "proposed_adaptation": {
+        "label": "modified_workbench_two_stage",
+        "phase1": "Execute the original reassignment; retain the continuing absence rule, legal destination and handled-task identifiers.",
+        "post_checkpoint_information_and_task": "After retirement add a valid new In Progress task assigned to the absent employee with a fresh ID; apply the same continuing reassignment request.",
+        "handoff": "Transfer the absence rule and handled-task ledger to a member with unchanged project permissions.",
+        "state_based_scoring": "Check the newly added task assignee, exactly one update and preservation of all unrelated task assignments.",
+        "concrete_future_values": "not_generated_or_frozen"
+      },
+      "ground_truth_policy": "Original answer/outcome omitted. A separate evaluator may load it privately; never copy BenchmarkTask.metadata.answer or future expected state into agent/controller inputs."
+    }
+  ],
+  "freeze_date": "2026-10-06",
+  "offline_gate": "54 tests passed including 30 deterministic native continuations; no model outputs used for selection",
+  "frozen_protocol": {
+    "source": "docs/workbench-retirement-protocol.md",
+    "api_requests_per_case": 120,
+    "max_input_tokens_per_case": 650000,
+    "max_output_tokens_per_case": 90000,
+    "max_seconds_per_case": 1800,
+    "max_tool_iterations": 10,
+    "prefix_failure": "record and skip five post arms; no selective retry",
+    "direct_backup_can_execute": true,
+    "nomination": "fixed completed-prefix primary",
+    "model": "deepseek-flash",
+    "temperature": 0,
+    "thinking": "disabled",
+    "max_output_tokens_per_request": 768
+  }
+}

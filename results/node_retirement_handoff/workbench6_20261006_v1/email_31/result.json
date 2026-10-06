@@ -1,0 +1,1891 @@
+{
+  "schema_version": 1,
+  "case": "email_31",
+  "status": "running",
+  "source_info": {
+    "case_id": "email_31",
+    "domain": "email",
+    "source": {
+      "relative_path": "data/processed/tasks_and_outcomes/v1/email_tasks_and_outcomes.csv",
+      "sha256": "70b4fa7a98a8cc767721fe0e877cc5c41b60e4a9c95eb27af5f5ba605548bb33",
+      "row_index_0based": 31,
+      "row_sha256": "09e90c2c1b5af90fb6275098c224f105b8a7200372dc774b7b5d675a4af04b2f",
+      "original_id_fields": {},
+      "original_columns": [
+        "task",
+        "outcome",
+        "base_template",
+        "chosen_template",
+        "domains"
+      ]
+    },
+    "query": "Reply to yuki's last email about 'Update on Corporate Social Responsibility Initiative' with 'Thanks for the update - I will get back to you tomorrow.'",
+    "query_sha256": "3ecfbfcf84fc59f0788a0363ac9761aeae30949c9448892fc25bd9de5956f66c",
+    "manifest_sha256": "44659ef66c5d2e2bfc7a66925ee7a9d852e77fb2290f5e652ce22bfdb76d82cf",
+    "manifest_status": "frozen_for_development_batch",
+    "benchmark_label": "modified_workbench_two_stage"
+  },
+  "arm_order": [
+    "simple",
+    "handoff",
+    "keep",
+    "check",
+    "direct"
+  ],
+  "arms": {
+    "simple": {
+      "status": "completed",
+      "decision": {
+        "arm": "simple",
+        "candidate": "agent_1",
+        "action": "retire",
+        "reason": "no_policy_block",
+        "handoff": null,
+        "workflow_before": {
+          "workflow": "continuing_workbench_email",
+          "domain": "email",
+          "active_agents": [
+            "agent_0",
+            "agent_1",
+            "agent_2",
+            "agent_3",
+            "agent_4"
+          ],
+          "authorized_agents": [
+            "agent_1",
+            "agent_2"
+          ],
+          "assignment": {
+            "continuing": true,
+            "domain": "email",
+            "owner": "agent_1",
+            "progress": [
+              {
+                "actor": "agent_1",
+                "arguments": {
+                  "body": "Thanks for the update - I will get back to you tomorrow.",
+                  "email_id": "00000446"
+                },
+                "changed_tables": [
+                  "emails"
+                ],
+                "log_index": 6,
+                "result": "Email replied successfully.",
+                "tool_name": "email.reply_email"
+              }
+            ]
+          },
+          "tools_allowed": {
+            "agent_0": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ],
+            "agent_1": [
+              "company_directory.find_email_address",
+              "email.delete_email",
+              "email.forward_email",
+              "email.get_email_information_by_id",
+              "email.reply_email",
+              "email.search_emails",
+              "email.send_email",
+              "workflow_status"
+            ],
+            "agent_2": [
+              "company_directory.find_email_address",
+              "email.delete_email",
+              "email.forward_email",
+              "email.get_email_information_by_id",
+              "email.reply_email",
+              "email.search_emails",
+              "email.send_email",
+              "workflow_status"
+            ],
+            "agent_3": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ],
+            "agent_4": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ]
+          },
+          "rule": "Assignment owner coordinates the work. Any active preauthorized member may use its tools, including recovery when an owner retires. Ownership does not grant or restrict tool permission."
+        },
+        "workflow_after": {
+          "workflow": "continuing_workbench_email",
+          "domain": "email",
+          "active_agents": [
+            "agent_0",
+            "agent_2",
+            "agent_3",
+            "agent_4"
+          ],
+          "authorized_agents": [
+            "agent_1",
+            "agent_2"
+          ],
+          "assignment": {
+            "continuing": true,
+            "domain": "email",
+            "owner": "agent_1",
+            "progress": [
+              {
+                "actor": "agent_1",
+                "arguments": {
+                  "body": "Thanks for the update - I will get back to you tomorrow.",
+                  "email_id": "00000446"
+                },
+                "changed_tables": [
+                  "emails"
+                ],
+                "log_index": 6,
+                "result": "Email replied successfully.",
+                "tool_name": "email.reply_email"
+              }
+            ]
+          },
+          "tools_allowed": {
+            "agent_0": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ],
+            "agent_2": [
+              "company_directory.find_email_address",
+              "email.delete_email",
+              "email.forward_email",
+              "email.get_email_information_by_id",
+              "email.reply_email",
+              "email.search_emails",
+              "email.send_email",
+              "workflow_status"
+            ],
+            "agent_3": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ],
+            "agent_4": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ]
+          },
+          "rule": "Assignment owner coordinates the work. Any active preauthorized member may use its tools, including recovery when an owner retires. Ownership does not grant or restrict tool permission."
+        }
+      },
+      "decision_seconds": 0.094,
+      "checkpoint_sha256": "d777f1ff9dc0fe5bc21eb86ff263827f9d62e0834efe77addec8dd47854d93d9",
+      "topology_after": {
+        "version": 1,
+        "root_group_id": "root",
+        "rationale": "explicit leaf retirement: agent_1",
+        "agents": [
+          {
+            "agent_id": "agent_0",
+            "group_id": "root",
+            "structural_role": "coordinator",
+            "stage_role": "worker",
+            "persona_hint": "",
+            "allowed_tools": [
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "company_directory.find_email_address",
+              "workflow_status"
+            ],
+            "context": {
+              "visible_kinds": [],
+              "visible_from": [],
+              "share_scope": "group",
+              "evidence_access": "own",
+              "summary_only": false,
+              "max_packet_chars": 0
+            }
+          },
+          {
+            "agent_id": "agent_2",
+            "group_id": "root",
+            "structural_role": "worker",
+            "stage_role": "worker",
+            "persona_hint": "",
+            "allowed_tools": [
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "email.send_email",
+              "email.delete_email",
+              "email.forward_email",
+              "email.reply_email",
+              "company_directory.find_email_address",
+              "workflow_status"
+            ],
+            "context": {
+              "visible_kinds": [],
+              "visible_from": [],
+              "share_scope": "group",
+              "evidence_access": "own",
+              "summary_only": false,
+              "max_packet_chars": 0
+            }
+          },
+          {
+            "agent_id": "agent_3",
+            "group_id": "root",
+            "structural_role": "worker",
+            "stage_role": "worker",
+            "persona_hint": "",
+            "allowed_tools": [
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "company_directory.find_email_address",
+              "workflow_status"
+            ],
+            "context": {
+              "visible_kinds": [],
+              "visible_from": [],
+              "share_scope": "group",
+              "evidence_access": "own",
+              "summary_only": false,
+              "max_packet_chars": 0
+            }
+          },
+          {
+            "agent_id": "agent_4",
+            "group_id": "root",
+            "structural_role": "worker",
+            "stage_role": "worker",
+            "persona_hint": "",
+            "allowed_tools": [
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "company_directory.find_email_address",
+              "workflow_status"
+            ],
+            "context": {
+              "visible_kinds": [],
+              "visible_from": [],
+              "share_scope": "group",
+              "evidence_access": "own",
+              "summary_only": false,
+              "max_packet_chars": 0
+            }
+          }
+        ],
+        "groups": [
+          {
+            "group_id": "root",
+            "pattern": "star",
+            "member_ids": [
+              "agent_0",
+              "agent_2",
+              "agent_3",
+              "agent_4"
+            ],
+            "parent_agent_id": null,
+            "leader_id": "agent_0"
+          }
+        ],
+        "extra_edges": []
+      },
+      "evaluation": {
+        "task_success": false,
+        "strict_success": false,
+        "state_exact_match": false,
+        "mismatched_tables": [
+          "email"
+        ],
+        "changed_tables": [],
+        "mutation_attempts": 0,
+        "state_changing_tool_calls": 0,
+        "duplicate_mutation_attempts": 0,
+        "expected_state_changes": 1,
+        "post_tool_calls": 12,
+        "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring.",
+        "post_only": true
+      },
+      "usage": {
+        "api_attempts": 13,
+        "api_responses": 13,
+        "input_tokens": 46549,
+        "output_tokens": 3774,
+        "total_tokens": 50323,
+        "billed_cost_usd": null
+      },
+      "execution_seconds": 34.422,
+      "actual_model_actors": [
+        "agent_0",
+        "agent_2",
+        "agent_3",
+        "agent_4"
+      ],
+      "post_output_artifact": null,
+      "post_tool_log": [
+        {
+          "index": 24,
+          "actor": "agent_2",
+          "tool_name": "workflow_status",
+          "operation": "workflow_status",
+          "arguments": {},
+          "result": {
+            "workflow": "continuing_workbench_email",
+            "domain": "email",
+            "active_agents": [
+              "agent_0",
+              "agent_2",
+              "agent_3",
+              "agent_4"
+            ],
+            "authorized_agents": [
+              "agent_1",
+              "agent_2"
+            ],
+            "assignment": {
+              "continuing": true,
+              "domain": "email",
+              "owner": "agent_1",
+              "progress": [
+                {
+                  "actor": "agent_1",
+                  "arguments": {
+                    "body": "Thanks for the update - I will get back to you tomorrow.",
+                    "email_id": "00000446"
+                  },
+                  "changed_tables": [
+                    "emails"
+                  ],
+                  "log_index": 6,
+                  "result": "Email replied successfully.",
+                  "tool_name": "email.reply_email"
+                }
+              ]
+            },
+            "tools_allowed": {
+              "agent_0": [
+                "company_directory.find_email_address",
+                "email.get_email_information_by_id",
+                "email.search_emails",
+                "workflow_status"
+              ],
+              "agent_2": [
+                "company_directory.find_email_address",
+                "email.delete_email",
+                "email.forward_email",
+                "email.get_email_information_by_id",
+                "email.reply_email",
+                "email.search_emails",
+                "email.send_email",
+                "workflow_status"
+              ],
+              "agent_3": [
+                "company_directory.find_email_address",
+                "email.get_email_information_by_id",
+                "email.search_emails",
+                "workflow_status"
+              ],
+              "agent_4": [
+                "company_directory.find_email_address",
+                "email.get_email_information_by_id",
+                "email.search_emails",
+                "workflow_status"
+              ]
+            },
+            "rule": "Assignment owner coordinates the work. Any active preauthorized member may use its tools, including recovery when an owner retires. Ownership does not grant or restrict tool permission."
+          },
+          "mutation": false,
+          "state_changed": false,
+          "duplicate": false,
+          "write_tool": false,
+          "delta": {},
+          "before_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "after_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "assignment_owner_at_call": "agent_1",
+          "actor_active": true,
+          "actor_authorized": true
+        },
+        {
+          "index": 25,
+          "actor": "agent_2",
+          "tool_name": "email.search_emails",
+          "operation": "email.search_emails",
+          "arguments": {
+            "query": "Update on Corporate Social Responsibility Initiative"
+          },
+          "result": {
+            "ok": false,
+            "error": "TypeError",
+            "detail": "'<' not supported between instances of 'Timestamp' and 'str'"
+          },
+          "mutation": false,
+          "state_changed": false,
+          "duplicate": false,
+          "write_tool": false,
+          "delta": {},
+          "before_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "after_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "assignment_owner_at_call": "agent_1",
+          "actor_active": true,
+          "actor_authorized": true
+        },
+        {
+          "index": 26,
+          "actor": "agent_2",
+          "tool_name": "email.search_emails",
+          "operation": "email.search_emails",
+          "arguments": {
+            "query": "Corporate Social Responsibility",
+            "date_min": "2023-11-29",
+            "date_max": "2023-11-30"
+          },
+          "result": {
+            "ok": false,
+            "error": "TypeError",
+            "detail": "'<' not supported between instances of 'Timestamp' and 'str'"
+          },
+          "mutation": false,
+          "state_changed": false,
+          "duplicate": false,
+          "write_tool": false,
+          "delta": {},
+          "before_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "after_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "assignment_owner_at_call": "agent_1",
+          "actor_active": true,
+          "actor_authorized": true
+        },
+        {
+          "index": 27,
+          "actor": "agent_3",
+          "tool_name": "workflow_status",
+          "operation": "workflow_status",
+          "arguments": {},
+          "result": {
+            "workflow": "continuing_workbench_email",
+            "domain": "email",
+            "active_agents": [
+              "agent_0",
+              "agent_2",
+              "agent_3",
+              "agent_4"
+            ],
+            "authorized_agents": [
+              "agent_1",
+              "agent_2"
+            ],
+            "assignment": {
+              "continuing": true,
+              "domain": "email",
+              "owner": "agent_1",
+              "progress": [
+                {
+                  "actor": "agent_1",
+                  "arguments": {
+                    "body": "Thanks for the update - I will get back to you tomorrow.",
+                    "email_id": "00000446"
+                  },
+                  "changed_tables": [
+                    "emails"
+                  ],
+                  "log_index": 6,
+                  "result": "Email replied successfully.",
+                  "tool_name": "email.reply_email"
+                }
+              ]
+            },
+            "tools_allowed": {
+              "agent_0": [
+                "company_directory.find_email_address",
+                "email.get_email_information_by_id",
+                "email.search_emails",
+                "workflow_status"
+              ],
+              "agent_2": [
+                "company_directory.find_email_address",
+                "email.delete_email",
+                "email.forward_email",
+                "email.get_email_information_by_id",
+                "email.reply_email",
+                "email.search_emails",
+                "email.send_email",
+                "workflow_status"
+              ],
+              "agent_3": [
+                "company_directory.find_email_address",
+                "email.get_email_information_by_id",
+                "email.search_emails",
+                "workflow_status"
+              ],
+              "agent_4": [
+                "company_directory.find_email_address",
+                "email.get_email_information_by_id",
+                "email.search_emails",
+                "workflow_status"
+              ]
+            },
+            "rule": "Assignment owner coordinates the work. Any active preauthorized member may use its tools, including recovery when an owner retires. Ownership does not grant or restrict tool permission."
+          },
+          "mutation": false,
+          "state_changed": false,
+          "duplicate": false,
+          "write_tool": false,
+          "delta": {},
+          "before_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "after_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "assignment_owner_at_call": "agent_1",
+          "actor_active": true,
+          "actor_authorized": false
+        },
+        {
+          "index": 28,
+          "actor": "agent_3",
+          "tool_name": "email.search_emails",
+          "operation": "email.search_emails",
+          "arguments": {
+            "query": "Update on Corporate Social Responsibility Initiative"
+          },
+          "result": {
+            "ok": false,
+            "error": "TypeError",
+            "detail": "'<' not supported between instances of 'Timestamp' and 'str'"
+          },
+          "mutation": false,
+          "state_changed": false,
+          "duplicate": false,
+          "write_tool": false,
+          "delta": {},
+          "before_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "after_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "assignment_owner_at_call": "agent_1",
+          "actor_active": true,
+          "actor_authorized": false
+        },
+        {
+          "index": 29,
+          "actor": "agent_3",
+          "tool_name": "email.search_emails",
+          "operation": "email.search_emails",
+          "arguments": {
+            "query": "Corporate Social Responsibility",
+            "date_min": "2023-11-01",
+            "date_max": "2023-11-30"
+          },
+          "result": {
+            "ok": false,
+            "error": "TypeError",
+            "detail": "'<' not supported between instances of 'Timestamp' and 'str'"
+          },
+          "mutation": false,
+          "state_changed": false,
+          "duplicate": false,
+          "write_tool": false,
+          "delta": {},
+          "before_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "after_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "assignment_owner_at_call": "agent_1",
+          "actor_active": true,
+          "actor_authorized": false
+        },
+        {
+          "index": 30,
+          "actor": "agent_4",
+          "tool_name": "workflow_status",
+          "operation": "workflow_status",
+          "arguments": {},
+          "result": {
+            "workflow": "continuing_workbench_email",
+            "domain": "email",
+            "active_agents": [
+              "agent_0",
+              "agent_2",
+              "agent_3",
+              "agent_4"
+            ],
+            "authorized_agents": [
+              "agent_1",
+              "agent_2"
+            ],
+            "assignment": {
+              "continuing": true,
+              "domain": "email",
+              "owner": "agent_1",
+              "progress": [
+                {
+                  "actor": "agent_1",
+                  "arguments": {
+                    "body": "Thanks for the update - I will get back to you tomorrow.",
+                    "email_id": "00000446"
+                  },
+                  "changed_tables": [
+                    "emails"
+                  ],
+                  "log_index": 6,
+                  "result": "Email replied successfully.",
+                  "tool_name": "email.reply_email"
+                }
+              ]
+            },
+            "tools_allowed": {
+              "agent_0": [
+                "company_directory.find_email_address",
+                "email.get_email_information_by_id",
+                "email.search_emails",
+                "workflow_status"
+              ],
+              "agent_2": [
+                "company_directory.find_email_address",
+                "email.delete_email",
+                "email.forward_email",
+                "email.get_email_information_by_id",
+                "email.reply_email",
+                "email.search_emails",
+                "email.send_email",
+                "workflow_status"
+              ],
+              "agent_3": [
+                "company_directory.find_email_address",
+                "email.get_email_information_by_id",
+                "email.search_emails",
+                "workflow_status"
+              ],
+              "agent_4": [
+                "company_directory.find_email_address",
+                "email.get_email_information_by_id",
+                "email.search_emails",
+                "workflow_status"
+              ]
+            },
+            "rule": "Assignment owner coordinates the work. Any active preauthorized member may use its tools, including recovery when an owner retires. Ownership does not grant or restrict tool permission."
+          },
+          "mutation": false,
+          "state_changed": false,
+          "duplicate": false,
+          "write_tool": false,
+          "delta": {},
+          "before_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "after_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "assignment_owner_at_call": "agent_1",
+          "actor_active": true,
+          "actor_authorized": false
+        },
+        {
+          "index": 31,
+          "actor": "agent_4",
+          "tool_name": "email.search_emails",
+          "operation": "email.search_emails",
+          "arguments": {
+            "query": "Update on Corporate Social Responsibility Initiative"
+          },
+          "result": {
+            "ok": false,
+            "error": "TypeError",
+            "detail": "'<' not supported between instances of 'Timestamp' and 'str'"
+          },
+          "mutation": false,
+          "state_changed": false,
+          "duplicate": false,
+          "write_tool": false,
+          "delta": {},
+          "before_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "after_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "assignment_owner_at_call": "agent_1",
+          "actor_active": true,
+          "actor_authorized": false
+        },
+        {
+          "index": 32,
+          "actor": "agent_4",
+          "tool_name": "email.search_emails",
+          "operation": "email.search_emails",
+          "arguments": {
+            "query": "Corporate Social Responsibility",
+            "date_min": "2023-11-01",
+            "date_max": "2023-11-30"
+          },
+          "result": {
+            "ok": false,
+            "error": "TypeError",
+            "detail": "'<' not supported between instances of 'Timestamp' and 'str'"
+          },
+          "mutation": false,
+          "state_changed": false,
+          "duplicate": false,
+          "write_tool": false,
+          "delta": {},
+          "before_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "after_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "assignment_owner_at_call": "agent_1",
+          "actor_active": true,
+          "actor_authorized": false
+        },
+        {
+          "index": 33,
+          "actor": "agent_0",
+          "tool_name": "workflow_status",
+          "operation": "workflow_status",
+          "arguments": {},
+          "result": {
+            "workflow": "continuing_workbench_email",
+            "domain": "email",
+            "active_agents": [
+              "agent_0",
+              "agent_2",
+              "agent_3",
+              "agent_4"
+            ],
+            "authorized_agents": [
+              "agent_1",
+              "agent_2"
+            ],
+            "assignment": {
+              "continuing": true,
+              "domain": "email",
+              "owner": "agent_1",
+              "progress": [
+                {
+                  "actor": "agent_1",
+                  "arguments": {
+                    "body": "Thanks for the update - I will get back to you tomorrow.",
+                    "email_id": "00000446"
+                  },
+                  "changed_tables": [
+                    "emails"
+                  ],
+                  "log_index": 6,
+                  "result": "Email replied successfully.",
+                  "tool_name": "email.reply_email"
+                }
+              ]
+            },
+            "tools_allowed": {
+              "agent_0": [
+                "company_directory.find_email_address",
+                "email.get_email_information_by_id",
+                "email.search_emails",
+                "workflow_status"
+              ],
+              "agent_2": [
+                "company_directory.find_email_address",
+                "email.delete_email",
+                "email.forward_email",
+                "email.get_email_information_by_id",
+                "email.reply_email",
+                "email.search_emails",
+                "email.send_email",
+                "workflow_status"
+              ],
+              "agent_3": [
+                "company_directory.find_email_address",
+                "email.get_email_information_by_id",
+                "email.search_emails",
+                "workflow_status"
+              ],
+              "agent_4": [
+                "company_directory.find_email_address",
+                "email.get_email_information_by_id",
+                "email.search_emails",
+                "workflow_status"
+              ]
+            },
+            "rule": "Assignment owner coordinates the work. Any active preauthorized member may use its tools, including recovery when an owner retires. Ownership does not grant or restrict tool permission."
+          },
+          "mutation": false,
+          "state_changed": false,
+          "duplicate": false,
+          "write_tool": false,
+          "delta": {},
+          "before_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "after_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "assignment_owner_at_call": "agent_1",
+          "actor_active": true,
+          "actor_authorized": false
+        },
+        {
+          "index": 34,
+          "actor": "agent_0",
+          "tool_name": "email.search_emails",
+          "operation": "email.search_emails",
+          "arguments": {
+            "query": "Update on Corporate Social Responsibility Initiative"
+          },
+          "result": {
+            "ok": false,
+            "error": "TypeError",
+            "detail": "'<' not supported between instances of 'Timestamp' and 'str'"
+          },
+          "mutation": false,
+          "state_changed": false,
+          "duplicate": false,
+          "write_tool": false,
+          "delta": {},
+          "before_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "after_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "assignment_owner_at_call": "agent_1",
+          "actor_active": true,
+          "actor_authorized": false
+        },
+        {
+          "index": 35,
+          "actor": "agent_0",
+          "tool_name": "email.search_emails",
+          "operation": "email.search_emails",
+          "arguments": {
+            "query": "Update on Corporate Social Responsibility Initiative",
+            "date_min": "2023-11-01",
+            "date_max": "2023-11-30"
+          },
+          "result": {
+            "ok": false,
+            "error": "TypeError",
+            "detail": "'<' not supported between instances of 'Timestamp' and 'str'"
+          },
+          "mutation": false,
+          "state_changed": false,
+          "duplicate": false,
+          "write_tool": false,
+          "delta": {},
+          "before_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "after_sha256": "8eadea66f0e4043bb4418c78049bc501f93e54fed7233c48ade1c2862b084d0e",
+          "assignment_owner_at_call": "agent_1",
+          "actor_active": true,
+          "actor_authorized": false
+        }
+      ]
+    },
+    "handoff": {
+      "status": "decision_complete",
+      "decision": {
+        "arm": "handoff",
+        "candidate": "agent_1",
+        "action": "handoff_and_retire",
+        "reason": "assignment_transferred",
+        "handoff": {
+          "from": "agent_1",
+          "to": "agent_2",
+          "acl_changed": false,
+          "progress": [
+            {
+              "actor": "agent_1",
+              "arguments": {
+                "body": "Thanks for the update - I will get back to you tomorrow.",
+                "email_id": "00000446"
+              },
+              "changed_tables": [
+                "emails"
+              ],
+              "log_index": 6,
+              "result": "Email replied successfully.",
+              "tool_name": "email.reply_email"
+            }
+          ]
+        },
+        "workflow_before": {
+          "workflow": "continuing_workbench_email",
+          "domain": "email",
+          "active_agents": [
+            "agent_0",
+            "agent_1",
+            "agent_2",
+            "agent_3",
+            "agent_4"
+          ],
+          "authorized_agents": [
+            "agent_1",
+            "agent_2"
+          ],
+          "assignment": {
+            "continuing": true,
+            "domain": "email",
+            "owner": "agent_1",
+            "progress": [
+              {
+                "actor": "agent_1",
+                "arguments": {
+                  "body": "Thanks for the update - I will get back to you tomorrow.",
+                  "email_id": "00000446"
+                },
+                "changed_tables": [
+                  "emails"
+                ],
+                "log_index": 6,
+                "result": "Email replied successfully.",
+                "tool_name": "email.reply_email"
+              }
+            ]
+          },
+          "tools_allowed": {
+            "agent_0": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ],
+            "agent_1": [
+              "company_directory.find_email_address",
+              "email.delete_email",
+              "email.forward_email",
+              "email.get_email_information_by_id",
+              "email.reply_email",
+              "email.search_emails",
+              "email.send_email",
+              "workflow_status"
+            ],
+            "agent_2": [
+              "company_directory.find_email_address",
+              "email.delete_email",
+              "email.forward_email",
+              "email.get_email_information_by_id",
+              "email.reply_email",
+              "email.search_emails",
+              "email.send_email",
+              "workflow_status"
+            ],
+            "agent_3": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ],
+            "agent_4": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ]
+          },
+          "rule": "Assignment owner coordinates the work. Any active preauthorized member may use its tools, including recovery when an owner retires. Ownership does not grant or restrict tool permission."
+        },
+        "workflow_after": {
+          "workflow": "continuing_workbench_email",
+          "domain": "email",
+          "active_agents": [
+            "agent_0",
+            "agent_2",
+            "agent_3",
+            "agent_4"
+          ],
+          "authorized_agents": [
+            "agent_1",
+            "agent_2"
+          ],
+          "assignment": {
+            "continuing": true,
+            "domain": "email",
+            "owner": "agent_2",
+            "progress": [
+              {
+                "actor": "agent_1",
+                "arguments": {
+                  "body": "Thanks for the update - I will get back to you tomorrow.",
+                  "email_id": "00000446"
+                },
+                "changed_tables": [
+                  "emails"
+                ],
+                "log_index": 6,
+                "result": "Email replied successfully.",
+                "tool_name": "email.reply_email"
+              }
+            ]
+          },
+          "tools_allowed": {
+            "agent_0": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ],
+            "agent_2": [
+              "company_directory.find_email_address",
+              "email.delete_email",
+              "email.forward_email",
+              "email.get_email_information_by_id",
+              "email.reply_email",
+              "email.search_emails",
+              "email.send_email",
+              "workflow_status"
+            ],
+            "agent_3": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ],
+            "agent_4": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ]
+          },
+          "rule": "Assignment owner coordinates the work. Any active preauthorized member may use its tools, including recovery when an owner retires. Ownership does not grant or restrict tool permission."
+        }
+      },
+      "decision_seconds": 0.078,
+      "checkpoint_sha256": "d777f1ff9dc0fe5bc21eb86ff263827f9d62e0834efe77addec8dd47854d93d9",
+      "topology_after": {
+        "version": 1,
+        "root_group_id": "root",
+        "rationale": "explicit leaf retirement: agent_1",
+        "agents": [
+          {
+            "agent_id": "agent_0",
+            "group_id": "root",
+            "structural_role": "coordinator",
+            "stage_role": "worker",
+            "persona_hint": "",
+            "allowed_tools": [
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "company_directory.find_email_address",
+              "workflow_status"
+            ],
+            "context": {
+              "visible_kinds": [],
+              "visible_from": [],
+              "share_scope": "group",
+              "evidence_access": "own",
+              "summary_only": false,
+              "max_packet_chars": 0
+            }
+          },
+          {
+            "agent_id": "agent_2",
+            "group_id": "root",
+            "structural_role": "worker",
+            "stage_role": "worker",
+            "persona_hint": "",
+            "allowed_tools": [
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "email.send_email",
+              "email.delete_email",
+              "email.forward_email",
+              "email.reply_email",
+              "company_directory.find_email_address",
+              "workflow_status"
+            ],
+            "context": {
+              "visible_kinds": [],
+              "visible_from": [],
+              "share_scope": "group",
+              "evidence_access": "own",
+              "summary_only": false,
+              "max_packet_chars": 0
+            }
+          },
+          {
+            "agent_id": "agent_3",
+            "group_id": "root",
+            "structural_role": "worker",
+            "stage_role": "worker",
+            "persona_hint": "",
+            "allowed_tools": [
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "company_directory.find_email_address",
+              "workflow_status"
+            ],
+            "context": {
+              "visible_kinds": [],
+              "visible_from": [],
+              "share_scope": "group",
+              "evidence_access": "own",
+              "summary_only": false,
+              "max_packet_chars": 0
+            }
+          },
+          {
+            "agent_id": "agent_4",
+            "group_id": "root",
+            "structural_role": "worker",
+            "stage_role": "worker",
+            "persona_hint": "",
+            "allowed_tools": [
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "company_directory.find_email_address",
+              "workflow_status"
+            ],
+            "context": {
+              "visible_kinds": [],
+              "visible_from": [],
+              "share_scope": "group",
+              "evidence_access": "own",
+              "summary_only": false,
+              "max_packet_chars": 0
+            }
+          }
+        ],
+        "groups": [
+          {
+            "group_id": "root",
+            "pattern": "star",
+            "member_ids": [
+              "agent_0",
+              "agent_2",
+              "agent_3",
+              "agent_4"
+            ],
+            "parent_agent_id": null,
+            "leader_id": "agent_0"
+          }
+        ],
+        "extra_edges": []
+      }
+    },
+    "keep": {
+      "status": "decision_complete",
+      "decision": {
+        "arm": "keep",
+        "candidate": "agent_1",
+        "action": "keep",
+        "reason": "keep_control",
+        "handoff": null,
+        "workflow_before": {
+          "workflow": "continuing_workbench_email",
+          "domain": "email",
+          "active_agents": [
+            "agent_0",
+            "agent_1",
+            "agent_2",
+            "agent_3",
+            "agent_4"
+          ],
+          "authorized_agents": [
+            "agent_1",
+            "agent_2"
+          ],
+          "assignment": {
+            "continuing": true,
+            "domain": "email",
+            "owner": "agent_1",
+            "progress": [
+              {
+                "actor": "agent_1",
+                "arguments": {
+                  "body": "Thanks for the update - I will get back to you tomorrow.",
+                  "email_id": "00000446"
+                },
+                "changed_tables": [
+                  "emails"
+                ],
+                "log_index": 6,
+                "result": "Email replied successfully.",
+                "tool_name": "email.reply_email"
+              }
+            ]
+          },
+          "tools_allowed": {
+            "agent_0": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ],
+            "agent_1": [
+              "company_directory.find_email_address",
+              "email.delete_email",
+              "email.forward_email",
+              "email.get_email_information_by_id",
+              "email.reply_email",
+              "email.search_emails",
+              "email.send_email",
+              "workflow_status"
+            ],
+            "agent_2": [
+              "company_directory.find_email_address",
+              "email.delete_email",
+              "email.forward_email",
+              "email.get_email_information_by_id",
+              "email.reply_email",
+              "email.search_emails",
+              "email.send_email",
+              "workflow_status"
+            ],
+            "agent_3": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ],
+            "agent_4": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ]
+          },
+          "rule": "Assignment owner coordinates the work. Any active preauthorized member may use its tools, including recovery when an owner retires. Ownership does not grant or restrict tool permission."
+        }
+      },
+      "decision_seconds": 0.0,
+      "checkpoint_sha256": "d777f1ff9dc0fe5bc21eb86ff263827f9d62e0834efe77addec8dd47854d93d9",
+      "topology_after": {
+        "version": 0,
+        "root_group_id": "root",
+        "rationale": "fixed WorkBench team, shared source-state prefix",
+        "agents": [
+          {
+            "agent_id": "agent_0",
+            "group_id": "root",
+            "structural_role": "coordinator",
+            "stage_role": "worker",
+            "persona_hint": "",
+            "allowed_tools": [
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "company_directory.find_email_address",
+              "workflow_status"
+            ],
+            "context": {
+              "visible_kinds": [],
+              "visible_from": [],
+              "share_scope": "group",
+              "evidence_access": "own",
+              "summary_only": false,
+              "max_packet_chars": 0
+            }
+          },
+          {
+            "agent_id": "agent_1",
+            "group_id": "root",
+            "structural_role": "worker",
+            "stage_role": "worker",
+            "persona_hint": "",
+            "allowed_tools": [
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "email.send_email",
+              "email.delete_email",
+              "email.forward_email",
+              "email.reply_email",
+              "company_directory.find_email_address",
+              "workflow_status"
+            ],
+            "context": {
+              "visible_kinds": [],
+              "visible_from": [],
+              "share_scope": "group",
+              "evidence_access": "own",
+              "summary_only": false,
+              "max_packet_chars": 0
+            }
+          },
+          {
+            "agent_id": "agent_2",
+            "group_id": "root",
+            "structural_role": "worker",
+            "stage_role": "worker",
+            "persona_hint": "",
+            "allowed_tools": [
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "email.send_email",
+              "email.delete_email",
+              "email.forward_email",
+              "email.reply_email",
+              "company_directory.find_email_address",
+              "workflow_status"
+            ],
+            "context": {
+              "visible_kinds": [],
+              "visible_from": [],
+              "share_scope": "group",
+              "evidence_access": "own",
+              "summary_only": false,
+              "max_packet_chars": 0
+            }
+          },
+          {
+            "agent_id": "agent_3",
+            "group_id": "root",
+            "structural_role": "worker",
+            "stage_role": "worker",
+            "persona_hint": "",
+            "allowed_tools": [
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "company_directory.find_email_address",
+              "workflow_status"
+            ],
+            "context": {
+              "visible_kinds": [],
+              "visible_from": [],
+              "share_scope": "group",
+              "evidence_access": "own",
+              "summary_only": false,
+              "max_packet_chars": 0
+            }
+          },
+          {
+            "agent_id": "agent_4",
+            "group_id": "root",
+            "structural_role": "worker",
+            "stage_role": "worker",
+            "persona_hint": "",
+            "allowed_tools": [
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "company_directory.find_email_address",
+              "workflow_status"
+            ],
+            "context": {
+              "visible_kinds": [],
+              "visible_from": [],
+              "share_scope": "group",
+              "evidence_access": "own",
+              "summary_only": false,
+              "max_packet_chars": 0
+            }
+          }
+        ],
+        "groups": [
+          {
+            "group_id": "root",
+            "pattern": "star",
+            "member_ids": [
+              "agent_0",
+              "agent_1",
+              "agent_2",
+              "agent_3",
+              "agent_4"
+            ],
+            "parent_agent_id": null,
+            "leader_id": "agent_0"
+          }
+        ],
+        "extra_edges": []
+      }
+    },
+    "check": {
+      "status": "decision_complete",
+      "decision": {
+        "arm": "check",
+        "candidate": "agent_1",
+        "action": "keep",
+        "reason": "continuing_assignment_needs_owner",
+        "handoff": null,
+        "workflow_before": {
+          "workflow": "continuing_workbench_email",
+          "domain": "email",
+          "active_agents": [
+            "agent_0",
+            "agent_1",
+            "agent_2",
+            "agent_3",
+            "agent_4"
+          ],
+          "authorized_agents": [
+            "agent_1",
+            "agent_2"
+          ],
+          "assignment": {
+            "continuing": true,
+            "domain": "email",
+            "owner": "agent_1",
+            "progress": [
+              {
+                "actor": "agent_1",
+                "arguments": {
+                  "body": "Thanks for the update - I will get back to you tomorrow.",
+                  "email_id": "00000446"
+                },
+                "changed_tables": [
+                  "emails"
+                ],
+                "log_index": 6,
+                "result": "Email replied successfully.",
+                "tool_name": "email.reply_email"
+              }
+            ]
+          },
+          "tools_allowed": {
+            "agent_0": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ],
+            "agent_1": [
+              "company_directory.find_email_address",
+              "email.delete_email",
+              "email.forward_email",
+              "email.get_email_information_by_id",
+              "email.reply_email",
+              "email.search_emails",
+              "email.send_email",
+              "workflow_status"
+            ],
+            "agent_2": [
+              "company_directory.find_email_address",
+              "email.delete_email",
+              "email.forward_email",
+              "email.get_email_information_by_id",
+              "email.reply_email",
+              "email.search_emails",
+              "email.send_email",
+              "workflow_status"
+            ],
+            "agent_3": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ],
+            "agent_4": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ]
+          },
+          "rule": "Assignment owner coordinates the work. Any active preauthorized member may use its tools, including recovery when an owner retires. Ownership does not grant or restrict tool permission."
+        }
+      },
+      "decision_seconds": 0.0,
+      "checkpoint_sha256": "d777f1ff9dc0fe5bc21eb86ff263827f9d62e0834efe77addec8dd47854d93d9",
+      "topology_after": {
+        "version": 0,
+        "root_group_id": "root",
+        "rationale": "fixed WorkBench team, shared source-state prefix",
+        "agents": [
+          {
+            "agent_id": "agent_0",
+            "group_id": "root",
+            "structural_role": "coordinator",
+            "stage_role": "worker",
+            "persona_hint": "",
+            "allowed_tools": [
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "company_directory.find_email_address",
+              "workflow_status"
+            ],
+            "context": {
+              "visible_kinds": [],
+              "visible_from": [],
+              "share_scope": "group",
+              "evidence_access": "own",
+              "summary_only": false,
+              "max_packet_chars": 0
+            }
+          },
+          {
+            "agent_id": "agent_1",
+            "group_id": "root",
+            "structural_role": "worker",
+            "stage_role": "worker",
+            "persona_hint": "",
+            "allowed_tools": [
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "email.send_email",
+              "email.delete_email",
+              "email.forward_email",
+              "email.reply_email",
+              "company_directory.find_email_address",
+              "workflow_status"
+            ],
+            "context": {
+              "visible_kinds": [],
+              "visible_from": [],
+              "share_scope": "group",
+              "evidence_access": "own",
+              "summary_only": false,
+              "max_packet_chars": 0
+            }
+          },
+          {
+            "agent_id": "agent_2",
+            "group_id": "root",
+            "structural_role": "worker",
+            "stage_role": "worker",
+            "persona_hint": "",
+            "allowed_tools": [
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "email.send_email",
+              "email.delete_email",
+              "email.forward_email",
+              "email.reply_email",
+              "company_directory.find_email_address",
+              "workflow_status"
+            ],
+            "context": {
+              "visible_kinds": [],
+              "visible_from": [],
+              "share_scope": "group",
+              "evidence_access": "own",
+              "summary_only": false,
+              "max_packet_chars": 0
+            }
+          },
+          {
+            "agent_id": "agent_3",
+            "group_id": "root",
+            "structural_role": "worker",
+            "stage_role": "worker",
+            "persona_hint": "",
+            "allowed_tools": [
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "company_directory.find_email_address",
+              "workflow_status"
+            ],
+            "context": {
+              "visible_kinds": [],
+              "visible_from": [],
+              "share_scope": "group",
+              "evidence_access": "own",
+              "summary_only": false,
+              "max_packet_chars": 0
+            }
+          },
+          {
+            "agent_id": "agent_4",
+            "group_id": "root",
+            "structural_role": "worker",
+            "stage_role": "worker",
+            "persona_hint": "",
+            "allowed_tools": [
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "company_directory.find_email_address",
+              "workflow_status"
+            ],
+            "context": {
+              "visible_kinds": [],
+              "visible_from": [],
+              "share_scope": "group",
+              "evidence_access": "own",
+              "summary_only": false,
+              "max_packet_chars": 0
+            }
+          }
+        ],
+        "groups": [
+          {
+            "group_id": "root",
+            "pattern": "star",
+            "member_ids": [
+              "agent_0",
+              "agent_1",
+              "agent_2",
+              "agent_3",
+              "agent_4"
+            ],
+            "parent_agent_id": null,
+            "leader_id": "agent_0"
+          }
+        ],
+        "extra_edges": []
+      }
+    },
+    "direct": {
+      "status": "decision_complete",
+      "decision": {
+        "arm": "direct",
+        "candidate": "agent_1",
+        "action": "retire",
+        "reason": "direct_removal",
+        "handoff": null,
+        "workflow_before": {
+          "workflow": "continuing_workbench_email",
+          "domain": "email",
+          "active_agents": [
+            "agent_0",
+            "agent_1",
+            "agent_2",
+            "agent_3",
+            "agent_4"
+          ],
+          "authorized_agents": [
+            "agent_1",
+            "agent_2"
+          ],
+          "assignment": {
+            "continuing": true,
+            "domain": "email",
+            "owner": "agent_1",
+            "progress": [
+              {
+                "actor": "agent_1",
+                "arguments": {
+                  "body": "Thanks for the update - I will get back to you tomorrow.",
+                  "email_id": "00000446"
+                },
+                "changed_tables": [
+                  "emails"
+                ],
+                "log_index": 6,
+                "result": "Email replied successfully.",
+                "tool_name": "email.reply_email"
+              }
+            ]
+          },
+          "tools_allowed": {
+            "agent_0": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ],
+            "agent_1": [
+              "company_directory.find_email_address",
+              "email.delete_email",
+              "email.forward_email",
+              "email.get_email_information_by_id",
+              "email.reply_email",
+              "email.search_emails",
+              "email.send_email",
+              "workflow_status"
+            ],
+            "agent_2": [
+              "company_directory.find_email_address",
+              "email.delete_email",
+              "email.forward_email",
+              "email.get_email_information_by_id",
+              "email.reply_email",
+              "email.search_emails",
+              "email.send_email",
+              "workflow_status"
+            ],
+            "agent_3": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ],
+            "agent_4": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ]
+          },
+          "rule": "Assignment owner coordinates the work. Any active preauthorized member may use its tools, including recovery when an owner retires. Ownership does not grant or restrict tool permission."
+        },
+        "workflow_after": {
+          "workflow": "continuing_workbench_email",
+          "domain": "email",
+          "active_agents": [
+            "agent_0",
+            "agent_2",
+            "agent_3",
+            "agent_4"
+          ],
+          "authorized_agents": [
+            "agent_1",
+            "agent_2"
+          ],
+          "assignment": {
+            "continuing": true,
+            "domain": "email",
+            "owner": "agent_1",
+            "progress": [
+              {
+                "actor": "agent_1",
+                "arguments": {
+                  "body": "Thanks for the update - I will get back to you tomorrow.",
+                  "email_id": "00000446"
+                },
+                "changed_tables": [
+                  "emails"
+                ],
+                "log_index": 6,
+                "result": "Email replied successfully.",
+                "tool_name": "email.reply_email"
+              }
+            ]
+          },
+          "tools_allowed": {
+            "agent_0": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ],
+            "agent_2": [
+              "company_directory.find_email_address",
+              "email.delete_email",
+              "email.forward_email",
+              "email.get_email_information_by_id",
+              "email.reply_email",
+              "email.search_emails",
+              "email.send_email",
+              "workflow_status"
+            ],
+            "agent_3": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ],
+            "agent_4": [
+              "company_directory.find_email_address",
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "workflow_status"
+            ]
+          },
+          "rule": "Assignment owner coordinates the work. Any active preauthorized member may use its tools, including recovery when an owner retires. Ownership does not grant or restrict tool permission."
+        }
+      },
+      "decision_seconds": 0.094,
+      "checkpoint_sha256": "d777f1ff9dc0fe5bc21eb86ff263827f9d62e0834efe77addec8dd47854d93d9",
+      "topology_after": {
+        "version": 1,
+        "root_group_id": "root",
+        "rationale": "explicit leaf retirement: agent_1",
+        "agents": [
+          {
+            "agent_id": "agent_0",
+            "group_id": "root",
+            "structural_role": "coordinator",
+            "stage_role": "worker",
+            "persona_hint": "",
+            "allowed_tools": [
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "company_directory.find_email_address",
+              "workflow_status"
+            ],
+            "context": {
+              "visible_kinds": [],
+              "visible_from": [],
+              "share_scope": "group",
+              "evidence_access": "own",
+              "summary_only": false,
+              "max_packet_chars": 0
+            }
+          },
+          {
+            "agent_id": "agent_2",
+            "group_id": "root",
+            "structural_role": "worker",
+            "stage_role": "worker",
+            "persona_hint": "",
+            "allowed_tools": [
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "email.send_email",
+              "email.delete_email",
+              "email.forward_email",
+              "email.reply_email",
+              "company_directory.find_email_address",
+              "workflow_status"
+            ],
+            "context": {
+              "visible_kinds": [],
+              "visible_from": [],
+              "share_scope": "group",
+              "evidence_access": "own",
+              "summary_only": false,
+              "max_packet_chars": 0
+            }
+          },
+          {
+            "agent_id": "agent_3",
+            "group_id": "root",
+            "structural_role": "worker",
+            "stage_role": "worker",
+            "persona_hint": "",
+            "allowed_tools": [
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "company_directory.find_email_address",
+              "workflow_status"
+            ],
+            "context": {
+              "visible_kinds": [],
+              "visible_from": [],
+              "share_scope": "group",
+              "evidence_access": "own",
+              "summary_only": false,
+              "max_packet_chars": 0
+            }
+          },
+          {
+            "agent_id": "agent_4",
+            "group_id": "root",
+            "structural_role": "worker",
+            "stage_role": "worker",
+            "persona_hint": "",
+            "allowed_tools": [
+              "email.get_email_information_by_id",
+              "email.search_emails",
+              "company_directory.find_email_address",
+              "workflow_status"
+            ],
+            "context": {
+              "visible_kinds": [],
+              "visible_from": [],
+              "share_scope": "group",
+              "evidence_access": "own",
+              "summary_only": false,
+              "max_packet_chars": 0
+            }
+          }
+        ],
+        "groups": [
+          {
+            "group_id": "root",
+            "pattern": "star",
+            "member_ids": [
+              "agent_0",
+              "agent_2",
+              "agent_3",
+              "agent_4"
+            ],
+            "parent_agent_id": null,
+            "leader_id": "agent_0"
+          }
+        ],
+        "extra_edges": []
+      }
+    }
+  },
+  "git_commit": "607c97206ecd8bd6dcb6dd093159b51a6e72879c",
+  "started_at_utc": "2026-10-06T09:58:39.384574+00:00",
+  "prefix": {
+    "evaluation": {
+      "task_success": true,
+      "strict_success": true,
+      "state_exact_match": true,
+      "mismatched_tables": [],
+      "changed_tables": [
+        "email"
+      ],
+      "mutation_attempts": 1,
+      "state_changing_tool_calls": 1,
+      "duplicate_mutation_attempts": 0,
+      "expected_state_changes": 1,
+      "post_tool_calls": 24,
+      "evaluation_basis": "All actual sandbox tables versus independent native-tool oracle; no final text scoring."
+    },
+    "usage": {
+      "api_attempts": 20,
+      "api_responses": 20,
+      "input_tokens": 79283,
+      "output_tokens": 3891,
+      "total_tokens": 83174,
+      "billed_cost_usd": null
+    },
+    "checkpoint_sha256": "d777f1ff9dc0fe5bc21eb86ff263827f9d62e0834efe77addec8dd47854d93d9"
+  },
+  "api_totals": {
+    "api_attempts": 33,
+    "api_responses": 33,
+    "input_tokens": 125832,
+    "output_tokens": 7665,
+    "total_tokens": 133497,
+    "billed_cost_usd": null
+  }
+}

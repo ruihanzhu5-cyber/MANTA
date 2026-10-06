@@ -50,6 +50,7 @@ from .executor import TurnExecutor, TurnResult, apply_updates, state_changing_to
 from .harness import AgentHarness
 from .planner import TopologyPlannerAgent
 from .playbook import PlaybookMaintainer, ShortTermTopologyPlaybook, TopologyPlaybook, task_key
+from .retirement import assess_retirement_contract, retire_leaf_agents
 from .retrieval import augment_with_constraint_search
 from .spec import AgentNode, ContextPolicy, GroupSpec, TopologySpec
 from .transaction import (
@@ -86,6 +87,7 @@ class SelfEvolvedEngine:
         descriptor: DescriptorHook | None = None,
     ) -> LangGraphRunResult:
         spec = spec.normalized()
+        self.se_config.validate()
         if not agent_types:
             raise ValueError("agent_types must contain at least one entry")
 
@@ -118,6 +120,14 @@ class SelfEvolvedEngine:
                 # Non-retrieval tool tasks get a repair turn; cap breadth so the second
                 # turn cannot OOM and to limit duplicate side-effecting tool calls.
                 num_agents = min(num_agents, 3)
+
+        retirement_turn = int(self.se_config.retirement_after_turn)
+        if (
+            retirement_turn
+            and is_retrieval
+            and retirement_turn >= min(int(self.se_config.max_turns), 2)
+        ):
+            raise ValueError("retirement boundary exceeds the retrieval turn cap")
 
         # 1. PLAN — phase 2 replaces this with the LLM Topology Planner.
         plan_started = time.perf_counter()
@@ -233,10 +243,13 @@ class SelfEvolvedEngine:
         # while keeping peak fan-out bounded.
         if is_retrieval:
             max_turns = min(max_turns, 2)
+        if retirement_turn:
+            max_turns = retirement_turn + 1
         turn_results: list[TurnResult] = []
         decision: TerminationDecision = {}
 
         for turn_index in range(max_turns):
+            trace_start = len(state.get("trace_payloads", []))
             result = executor.run_turn(state, topo_spec, turn_index=turn_index)
             turn_results.append(result)
             apply_updates(state, self._stage._descriptor_monitor_node(state))
@@ -244,6 +257,23 @@ class SelfEvolvedEngine:
             audit_report = self._audit_turn(state, topo_spec, turn_index=turn_index)
             if audit_report is not None:
                 audit_reports.append(audit_report)
+
+            if retirement_turn:
+                events = state.get("trace_payloads", [])[trace_start:]
+                state.setdefault("self_evolved_retirement_turn_metrics", []).append(
+                    {
+                        "turn_index": turn_index,
+                        "spec_version": topo_spec.version,
+                        "active_agents": topo_spec.ordered_agent_ids(),
+                        "token_in": sum(int(e.get("token_in", 0)) for e in events),
+                        "token_out": sum(int(e.get("token_out", 0)) for e in events),
+                        "output_artifact_id": (result.output_artifact or {}).get("artifact_id"),
+                        "unresolved_issues": list(
+                            (result.output_artifact or {}).get("unresolved_issues", [])
+                        ),
+                        "expected_member_count": result.expected_member_count,
+                    }
+                )
 
             mutations_used = len(spec_versions) - 1
             repeated_decision = self._repair_repeated_decision(turn_results)
@@ -291,6 +321,18 @@ class SelfEvolvedEngine:
                     ),
                     "repair_suppressed": "repeated_decision_signature",
                 }
+            if retirement_turn and not transaction_committed:
+                # Both research arms have the same horizon and no planner repair.
+                # Preserve the normal decision for interpreting this intervention.
+                decision = {
+                    **decision,
+                    "natural_decision": dict(decision),
+                    "should_stop": turn_index >= retirement_turn,
+                    "next_step": "finalize" if turn_index >= retirement_turn else "retirement_turn",
+                    "reason": "retirement_experiment_complete"
+                    if turn_index >= retirement_turn
+                    else "retirement_experiment_continue",
+                }
             state["termination_decision"] = decision
             apply_updates(
                 state,
@@ -311,7 +353,32 @@ class SelfEvolvedEngine:
                 turn_index=turn_index,
             )
             if bool(decision.get("should_stop", True)):
+                if retirement_turn and transaction_committed:
+                    self._record_retirement_event(
+                        state,
+                        {
+                            "status": "skipped",
+                            "reason": "transaction_committed",
+                            "turn_index": turn_index,
+                        },
+                    )
                 break
+
+            if retirement_turn:
+                if turn_index + 1 == retirement_turn:
+                    previous_spec = topo_spec
+                    topo_spec = self._retire_at_boundary(state, topo_spec, turn_index)
+                    if topo_spec is not previous_spec:
+                        layout = topo_spec.to_layout()
+                        state["layout"] = layout
+                        context.set_spec(
+                            topo_spec, retired_agent_ids=tuple(self.se_config.retirement_agent_ids)
+                        )
+                        spec_versions.append(topo_spec.to_payload())
+                        self._record_context_state(
+                            state, topo_spec, layout, reason="retirement", turn_index=turn_index
+                        )
+                continue
 
             # Trace-backed repair (one mutation per turn, capped by repair_budget).
             if is_retrieval:
@@ -798,6 +865,68 @@ class SelfEvolvedEngine:
             },
         )
         return rescue_spec, payload
+
+    def _record_retirement_event(self, state: dict[str, Any], payload: dict[str, Any]) -> None:
+        state.setdefault("self_evolved_retirement_events", []).append(payload)
+        self._emit_meta_event(
+            state,
+            actor="orchestrator",
+            event_type="revise",
+            node_name="retirement_boundary",
+            payload=payload,
+            latency_ms=float(payload.get("latency_ms", 1.0)),
+        )
+
+    def _retire_at_boundary(
+        self, state: dict[str, Any], topo_spec: TopologySpec, turn_index: int
+    ) -> TopologySpec:
+        started = time.perf_counter()
+        agent_ids = tuple(self.se_config.retirement_agent_ids)
+        payload: dict[str, Any] = {
+            "turn_index": turn_index,
+            "requested_agents": list(agent_ids),
+            "protect_validation": self.se_config.retirement_protect_validation,
+            "before_spec": topo_spec.to_payload(),
+            "before_layout": topo_spec.to_layout().to_payload(),
+            "status": "control" if not agent_ids else "applied",
+        }
+        contract_action = "retire"
+        if agent_ids and self.se_config.retirement_decision_mode == "contract":
+            contract_action, contract_reason = assess_retirement_contract(
+                agent_ids,
+                state.get("task_metadata", {}).get("retirement_contract"),
+            )
+            payload["contract_action"] = contract_action
+            payload["contract_reason"] = contract_reason
+        if contract_action == "keep":
+            candidate = topo_spec
+            payload.update(status="retained", reason=contract_reason)
+        else:
+            try:
+                candidate = retire_leaf_agents(
+                    topo_spec,
+                    agent_ids,
+                    max_agents=int(self.se_config.max_total_agents),
+                    protect_validation=self.se_config.retirement_protect_validation,
+                )
+            except ValueError as exc:
+                candidate = topo_spec
+                payload.update(status="rejected", reason=str(exc))
+        payload.update(
+            after_spec=candidate.to_payload(),
+            after_layout=candidate.to_layout().to_payload(),
+            retired_agents=list(agent_ids) if payload["status"] == "applied" else [],
+            retained_artifact_count=len(state.get("artifacts", [])),
+            retained_message_count=len(state.get("messages", [])),
+            retained_evidence_count=len(state.get("evidence_ledger", [])),
+            latency_ms=(time.perf_counter() - started) * 1000,
+        )
+        # Keep historical counters and evidence; only disable live dispatch budget.
+        if candidate is not topo_spec:
+            for agent_id in agent_ids:
+                state.get("message_budget", {})[agent_id] = 0
+        self._record_retirement_event(state, payload)
+        return candidate
 
     def _register_new_agents(
         self,
@@ -3219,6 +3348,7 @@ class SelfEvolvedEngine:
                 "meta_termination": "Ordered code-level stop/repair decision",
                 "short_term_playbook_turn": "Playbook Maintainer records turn-level process memory",
                 "apply_mutation": "Orchestrator applies the planner mutation",
+                "retirement_boundary": "Opt-in explicit leaf deletion or matched control",
                 "finalize": "Vote over one preserved candidate from every turn",
             },
             edges=[
@@ -3234,6 +3364,8 @@ class SelfEvolvedEngine:
             conditional_edges=[
                 "meta_termination -> apply_mutation (repair available)",
                 "meta_termination -> finalize (stop)",
+                "short_term_playbook_turn -> retirement_boundary (experiment boundary)",
+                "retirement_boundary -> execute_turn (one post-boundary turn)",
             ],
             dispatch_logic=(
                 "Group-tree interpretation: leader plan -> member contributions "
@@ -3254,6 +3386,7 @@ class SelfEvolvedEngine:
                 "short_term_playbook_entries",
                 "audit_reports",
                 "mutation",
+                "retirement_experiment",
             ],
             logging_outputs=["trace_events", "relay_messages", "interaction_logs"],
         )
@@ -3330,6 +3463,15 @@ class SelfEvolvedEngine:
                 "mutation": mutation_payload,
                 "mutations": list(mutation_payloads),
                 "mutation_proposals": list(state.get("self_evolved_mutation_proposals", [])),
+                "retirement_experiment": {
+                    "enabled": bool(self.se_config.retirement_after_turn),
+                    "after_turn": int(self.se_config.retirement_after_turn),
+                    "requested_agents": list(self.se_config.retirement_agent_ids),
+                    "protect_validation": bool(self.se_config.retirement_protect_validation),
+                    "decision_mode": str(self.se_config.retirement_decision_mode),
+                    "events": list(state.get("self_evolved_retirement_events", [])),
+                    "turn_metrics": list(state.get("self_evolved_retirement_turn_metrics", [])),
+                },
                 "audit_reports": list(audit_reports),
                 "planner": dict(plan_payload),
                 "audit_mode": str(self.se_config.audit_mode),

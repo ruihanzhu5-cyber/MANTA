@@ -1,0 +1,29 @@
+{
+  "case_id": "email_53",
+  "version": 1,
+  "seed": 20262010,
+  "public_prompt": "A new incoming email about 'Update on Corporate Governance Workshop' has arrived after the earlier forward. Find the newest incoming message and forward that message to Yuki exactly once. Do not forward an old message or an outbox copy.",
+  "injection": {
+    "table": "email",
+    "row": {
+      "email_id": "00000501",
+      "inbox/outbox": "inbox",
+      "sender/recipient": "amir.ali@atlas.com",
+      "subject": "Update on Corporate Governance Workshop",
+      "sent_datetime": "2023-11-29 23:59:59",
+      "body": "A new business update arrived. Reference code: b8e5bc198baa. Please acknowledge this update."
+    }
+  },
+  "private_evaluation": {
+    "actions": [
+      {
+        "tool_name": "email.forward_email",
+        "arguments": {
+          "email_id": "00000501",
+          "recipient": "yuki.tanaka@atlas.com"
+        }
+      }
+    ]
+  },
+  "scope_note": "Modified WorkBench continuation; injection and evaluator actions are not model inputs."
+}

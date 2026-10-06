@@ -31,15 +31,17 @@ DIGEST_KIND = "evidence_digest"
 class SharedContextController:
     def __init__(self, spec: TopologySpec) -> None:
         self._spec = spec
+        self._retired_agent_ids: set[str] = set()
 
     @property
     def spec(self) -> TopologySpec:
         return self._spec
 
-    def set_spec(self, spec: TopologySpec) -> None:
+    def set_spec(self, spec: TopologySpec, *, retired_agent_ids: tuple[str, ...] = ()) -> None:
         """Re-point visibility at a mutated spec; reads are lazy so nothing
         else needs to be recomputed."""
 
+        self._retired_agent_ids.update(retired_agent_ids)
         self._spec = spec
 
     def visible_packets(
@@ -75,6 +77,10 @@ class SharedContextController:
             ):
                 continue
             sender = str(message.get("sender", ""))
+            # Archived packets must not become unrestricted meta-agent packets
+            # when the sender disappears from the current topology.
+            if sender in self._retired_agent_ids:
+                continue
             if allowed_senders is not None and sender not in allowed_senders:
                 continue
             if not self._share_scope_allows(sender, agent_id):

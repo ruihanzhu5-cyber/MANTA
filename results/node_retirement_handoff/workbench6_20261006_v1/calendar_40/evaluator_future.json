@@ -1,0 +1,29 @@
+{
+  "case_id": "calendar_40",
+  "version": 1,
+  "seed": 20262008,
+  "public_prompt": "A new meeting named 'process review follow-up 0cbbce66dfd0' with Amir has been added on December 5. Find that new meeting and delay its current start time by 30 minutes. Keep its other fields unchanged and leave the earlier Customer Insight Forum meeting alone.",
+  "injection": {
+    "table": "calendar",
+    "row": {
+      "event_id": "00000300",
+      "event_name": "process review follow-up 0cbbce66dfd0",
+      "participant_email": "amir.ali@atlas.com",
+      "event_start": "2023-12-05 10:00:00",
+      "duration": "30"
+    }
+  },
+  "private_evaluation": {
+    "actions": [
+      {
+        "tool_name": "calendar.update_event",
+        "arguments": {
+          "event_id": "00000300",
+          "field": "event_start",
+          "new_value": "2023-12-05 10:30:00"
+        }
+      }
+    ]
+  },
+  "scope_note": "Modified WorkBench continuation; injection and evaluator actions are not model inputs."
+}

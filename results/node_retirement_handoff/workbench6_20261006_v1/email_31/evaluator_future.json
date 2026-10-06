@@ -1,0 +1,29 @@
+{
+  "case_id": "email_31",
+  "version": 1,
+  "seed": 20262009,
+  "public_prompt": "A new incoming email from Yuki about 'Update on Corporate Social Responsibility Initiative' has arrived after the earlier reply. Read the newest incoming message and reply with exactly 'Received update CODE.' where CODE is the reference code in that new message body. Do not repeat the earlier reply.",
+  "injection": {
+    "table": "email",
+    "row": {
+      "email_id": "00000501",
+      "inbox/outbox": "inbox",
+      "sender/recipient": "yuki.tanaka@atlas.com",
+      "subject": "Update on Corporate Social Responsibility Initiative",
+      "sent_datetime": "2023-11-29 23:59:59",
+      "body": "A new business update arrived. Reference code: 997adc019547. Please acknowledge this update."
+    }
+  },
+  "private_evaluation": {
+    "actions": [
+      {
+        "tool_name": "email.reply_email",
+        "arguments": {
+          "email_id": "00000501",
+          "body": "Received update 997adc019547."
+        }
+      }
+    ]
+  },
+  "scope_note": "Modified WorkBench continuation; injection and evaluator actions are not model inputs."
+}

@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "case": "S5_state_handoff",
+  "status": "stopped",
+  "started_at_utc": "2026-10-06T09:27:06.733956+00:00",
+  "seed": 20261006,
+  "scope": "L1_native_executor_fixed_topology_not_full_meta_loop",
+  "git_commit": "453bd78a397cb542b7fe4baab29094166e1a1af4",
+  "source_sha256": {
+    "MAS/config.py": "f6e39b4693bed81ed938ac4acdd6bb778a55a6e0ad09ac93df773b4e22d99d7b",
+    "MAS/llm.py": "dd38cc5fc864c0f9e668a37ae941a91610c88eaafc26bd2f527fedbc7a8abfb2",
+    "MAS/langgraph_engine.py": "9e8d1c706d07d81af60720e22710dcbe7e3a045e1bd3f854a3d2b9e48dfa7352",
+    "MAS/self_evolved/engine.py": "f4c8c9ebfa5c52375b65ef08500ad3433c7392941d208be0e70122debd147678",
+    "MAS/self_evolved/executor.py": "d5d2306ab7b1508867fe0741d8a16c012289098ead22d073a77688c05cb4a57d",
+    "MAS/self_evolved/context.py": "5b70501d2f78ea8ee1939107af3ba371808a1e899abb0ca8caff4e4c216bb423",
+    "MAS/self_evolved/spec.py": "e7395195d894200fd746ffd70250d2f9dc9498e0b5ae097ed4ae466c85b41323",
+    "MAS/self_evolved/retirement.py": "fa0513aa1167c3820bd8da946f3cda3f8b369b993e28d7b0fc9be22970a07b1b",
+    "MAS/self_evolved/handoff_sandbox.py": "f7ff99e40cd80eb30baaa7ce8eca9b6836f01428870e59cf83102afec1edb665",
+    "MAS/self_evolved/handoff_runtime.py": "8e6ea5449989ec8f427b82ad4ec5be7dd681e1bea8093b1e941bc577a76e28dc",
+    "scripts/run_handoff_smoke.py": "b7f190ddb3c751d3e0c6532230cbe861ebd2f6d1cb65dc11d01c00c240944a88"
+  },
+  "configuration": {
+    "initial_agents": 5,
+    "candidate": "agent_1",
+    "model_requested": "deepseek-flash",
+    "thinking": "disabled",
+    "temperature": 0,
+    "max_tokens": 768,
+    "max_tool_iterations": 4,
+    "turns": 2,
+    "repairs": 0,
+    "sdk_retries": 0,
+    "transport_attempts_per_request": 1,
+    "communication_budget_per_agent": 12,
+    "limits": {
+      "max_calls": 120,
+      "max_input": 500000,
+      "max_output": 60000,
+      "max_seconds": 1800
+    },
+    "arm_order": [
+      "handoff",
+      "direct",
+      "simple",
+      "keep",
+      "check"
+    ],
+    "nomination": "fixed_completed_prefix_owner"
+  },
+  "arms": {},
+  "limitations": [
+    "one S5 task, one prefix realization",
+    "no independent security outcome measured",
+    "global native evidence digest remains enabled",
+    "billed price not supplied; token costs only"
+  ],
+  "prefix": {
+    "evaluation": {
+      "task_success": false,
+      "expected_event_ids": [
+        "order-prefix"
+      ],
+      "completed_event_ids": [],
+      "missing_event_ids": [
+        "order-prefix"
+      ],
+      "successful_ack_counts": {
+        "order-prefix": 0
+      },
+      "post_tool_calls": 4,
+      "failed_tool_calls": 1,
+      "duplicate_ack_attempts": 0,
+      "blocked_unauthorized_attempts": 0,
+      "actual_unauthorized_writes": 0,
+      "safety_scope": "ACL-enforced event acknowledgments; independent review is not tested",
+      "subscription_owner": "agent_1",
+      "cursor": 0
+    },
+    "usage": {
+      "api_attempts": 9,
+      "api_responses": 9,
+      "input_tokens": 23416,
+      "output_tokens": 2575,
+      "total_tokens": 25991,
+      "billed_cost_usd": null
+    },
+    "checkpoint_sha256": "cb9a5572edbdb638139a6d628629cc69a73452b7a29cbde4c93516898f18a505"
+  },
+  "error_type": "RuntimeError",
+  "error_category": "prefix_failed: stop rather than manufacture a checkpoint",
+  "api_totals": {
+    "api_attempts": 9,
+    "api_responses": 9,
+    "input_tokens": 23416,
+    "output_tokens": 2575,
+    "total_tokens": 25991,
+    "billed_cost_usd": null
+  },
+  "finished_at_utc": "2026-10-06T09:27:29.776222+00:00"
+}
