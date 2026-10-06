@@ -60,6 +60,7 @@ class OpenRouterLLMClient:
 
     def __init__(self, config: OpenRouterConfig, models: dict[str, str]) -> None:
         self.config = config
+        self.is_deepseek = config.base_url.rstrip("/").lower() == "https://api.deepseek.com"
         self.models = dict(models)
         self.client = None
         self._request_seq = 0
@@ -73,7 +74,8 @@ class OpenRouterLLMClient:
         if not config.api_key:
             if self.require_live:
                 raise RuntimeError(
-                    "MAS_REQUIRE_LIVE_LLM is enabled but OPENROUTER_API_KEY is missing."
+                    "MAS_REQUIRE_LIVE_LLM is enabled but "
+                    f"{'DEEPSEEK_API_KEY' if self.is_deepseek else 'OPENROUTER_API_KEY'} is missing."
                 )
             return
 
@@ -148,6 +150,33 @@ class OpenRouterLLMClient:
     ) -> dict[str, Any]:
         request_kwargs = dict(kwargs)
 
+        if self.is_deepseek:
+            # DeepSeek's OpenAI-compatible endpoint uses top-level reasoning_effort
+            # and a thinking object, rather than OpenRouter's reasoning wrapper.
+            if request_kwargs.get("max_tokens") is None:
+                request_kwargs.pop("max_tokens", None)
+            max_tokens = self._env_int("DEEPSEEK_MAX_TOKENS")
+            if max_tokens is not None:
+                if max_tokens < 1:
+                    raise ValueError("DEEPSEEK_MAX_TOKENS must be >= 1")
+                request_kwargs["max_tokens"] = max_tokens
+            elif "max_tokens" not in request_kwargs:
+                request_kwargs["max_tokens"] = self._DEFAULT_MAX_COMPLETION_TOKENS
+            request_kwargs["reasoning_effort"] = self._env_str("DEEPSEEK_REASONING_EFFORT") or "medium"
+            thinking = self._env_str("DEEPSEEK_THINKING") or "enabled"
+            if thinking not in {"enabled", "disabled"}:
+                raise ValueError("DEEPSEEK_THINKING must be enabled or disabled")
+            extra_body = dict(request_kwargs.get("extra_body") or {})
+            extra_body["thinking"] = {"type": thinking}
+            request_kwargs["extra_body"] = extra_body
+            # Temperature has no effect in DeepSeek thinking mode, but the call's
+            # own value remains available in non-thinking mode.
+            if thinking == "disabled" and temperature is not None:
+                request_kwargs["temperature"] = temperature
+            else:
+                request_kwargs.pop("temperature", None)
+            return request_kwargs
+
         temperature_override = self._env_float("OPENROUTER_TEMPERATURE")
         top_p_override = self._env_float("OPENROUTER_TOP_P")
         top_k_override = self._env_int("OPENROUTER_TOP_K")
@@ -189,6 +218,8 @@ class OpenRouterLLMClient:
         retry_index: int = 0,
     ) -> dict[str, Any]:
         request_kwargs = dict(kwargs)
+        if self.is_deepseek:
+            return request_kwargs
         extra_body = dict(request_kwargs.get("extra_body") or {})
 
         provider = dict(extra_body.get("provider") or {})
@@ -295,8 +326,8 @@ class OpenRouterLLMClient:
                 finish_reason = self._finish_reason(completion)
                 empty_completion = not self._completion_has_usable_choice(completion)
                 metadata = {
-                    "provider": "openrouter",
-                    "missing_cost_note": "OpenRouter response did not provide cost_usd; recorded as 0.0",
+                    "provider": "deepseek" if self.is_deepseek else "openrouter",
+                    "missing_cost_note": "API response did not provide cost_usd; recorded as 0.0",
                     "generation_status": "answered" if text.strip() else "failed",
                     "finish_reason": finish_reason,
                     "hit_output_limit": self._is_output_limit_finish_reason(finish_reason),
@@ -331,7 +362,8 @@ class OpenRouterLLMClient:
                     f"error={type(exc).__name__}:{exc}"
                 )
                 if self.require_live:
-                    raise RuntimeError(f"Live OpenRouter generation failed: {exc}") from exc
+                    provider = "DeepSeek" if self.is_deepseek else "OpenRouter"
+                    raise RuntimeError(f"Live {provider} generation failed: {exc}") from exc
                 result = self._mock_result(
                     prompt=prompt,
                     agent_type=agent_type,
@@ -352,7 +384,7 @@ class OpenRouterLLMClient:
 
         if self.require_live:
             raise RuntimeError(
-                "Live OpenRouter generation is required but the client is unavailable."
+                "Live generation is required but the API client is unavailable."
             )
 
         result = self._mock_result(
@@ -561,6 +593,8 @@ class OpenRouterLLMClient:
                 "role": "assistant",
                 "content": assistant_text,
             }
+            if self.is_deepseek:
+                assistant_msg["reasoning_content"] = getattr(message, "reasoning_content", None)
             if serialized_tool_calls:
                 assistant_msg["tool_calls"] = serialized_tool_calls
             current_turn = _ToolLoopTurn(
@@ -884,8 +918,8 @@ class OpenRouterLLMClient:
             total_token_out = self._estimate_tokens(final_text)
 
         metadata = {
-            "provider": "openrouter",
-            "missing_cost_note": "OpenRouter response did not provide cost_usd; recorded as 0.0",
+            "provider": "deepseek" if self.is_deepseek else "openrouter",
+            "missing_cost_note": "API response did not provide cost_usd; recorded as 0.0",
             "tool_context_raw_turns": latest_context_stats["raw_turns"],
             "tool_context_summarized_turns": latest_context_stats["summarized_turns"],
             "finish_reasons": finish_reasons,
@@ -1054,7 +1088,11 @@ class OpenRouterLLMClient:
         base_messages: list[dict[str, Any]],
         tool_turns: list[_ToolLoopTurn],
     ) -> tuple[list[dict[str, Any]], dict[str, int]]:
-        raw_turn_window = max(1, self._env_int("MAS_TOOL_CONTEXT_RAW_TURNS") or 2)
+        raw_turn_window = (
+            len(tool_turns) + 1
+            if self.is_deepseek and (self._env_str("DEEPSEEK_THINKING") or "enabled") == "enabled"
+            else max(1, self._env_int("MAS_TOOL_CONTEXT_RAW_TURNS") or 2)
+        )
         preview_chars = max(80, self._env_int("MAS_TOOL_CONTEXT_PREVIEW_CHARS") or 160)
         summary_max_chars = max(
             160,
@@ -1083,8 +1121,29 @@ class OpenRouterLLMClient:
 
         for turn in recent_turns:
             messages.append(dict(turn.assistant_msg))
-            for tool_message in turn.tool_messages:
-                messages.append(dict(tool_message))
+            # A stop condition can interrupt a batch of parallel tool calls after
+            # only some handlers have run. DeepSeek requires a tool response for
+            # every emitted call before the next user/assistant message.
+            tool_messages = [
+                dict(item) for item in turn.tool_messages if item.get("role") == "tool"
+            ]
+            answered_ids = {str(item.get("tool_call_id", "")) for item in tool_messages}
+            for call in turn.assistant_msg.get("tool_calls", []):
+                call_id = str(call.get("id", ""))
+                if call_id and call_id not in answered_ids:
+                    tool_messages.append(
+                        {
+                            "role": "tool",
+                            "tool_call_id": call_id,
+                            "name": str(call.get("function", {}).get("name", "")),
+                            "content": "Skipped because the tool loop stopped after an earlier call.",
+                        }
+                    )
+                    answered_ids.add(call_id)
+            messages.extend(tool_messages)
+            messages.extend(
+                dict(item) for item in turn.tool_messages if item.get("role") != "tool"
+            )
 
         return messages, {
             "raw_turns": len(recent_turns),
@@ -2001,4 +2060,8 @@ class OpenRouterLLMClient:
 
     @staticmethod
     def _log(message: str) -> None:
-        print(f"[llm] {message}", flush=True)
+        # A redirected Windows console may use a legacy code page. Logging a
+        # non-ASCII tool result must never turn a successful model call into a
+        # failed experiment run.
+        safe_line = f"[llm] {message}".encode("ascii", "backslashreplace").decode("ascii")
+        print(safe_line, flush=True)

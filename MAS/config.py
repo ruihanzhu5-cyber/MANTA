@@ -199,6 +199,13 @@ class SelfEvolvedConfig:
     # scripts/reflect_topology_skill.py).
     skill_update_batch_size: int = 12
     default_packet_max_chars: int = 0  # 0 = full fidelity; optional generous structural budget
+    # Opt-in controlled retirement experiment; 0 keeps the original controller.
+    # Execute N turns, retire the specified leaf nodes, then execute one final turn.
+    # Empty ids select the matched no-deletion control. Repair is disabled in both arms.
+    retirement_after_turn: int = 0
+    retirement_agent_ids: tuple[str, ...] = ()
+    retirement_protect_validation: bool = True
+    retirement_decision_mode: str = "direct"  # direct | contract
 
     def validate(self) -> None:
         if self.harness_backend not in {"openrouter", "claude_agent_sdk"}:
@@ -228,6 +235,21 @@ class SelfEvolvedConfig:
             raise ValueError("self_evolved.skill_update_batch_size must be >= 0")
         if self.default_packet_max_chars < 0:
             raise ValueError("self_evolved.default_packet_max_chars must be >= 0")
+        if not 0 <= self.retirement_after_turn < self.max_turns:
+            raise ValueError("self_evolved.retirement_after_turn must be >= 0 and < max_turns")
+        if not isinstance(self.retirement_agent_ids, (tuple, list)) or any(
+            not isinstance(agent_id, str) or not agent_id.strip()
+            for agent_id in self.retirement_agent_ids
+        ):
+            raise ValueError("self_evolved.retirement_agent_ids must be a list of nonempty strings")
+        if len(set(self.retirement_agent_ids)) != len(self.retirement_agent_ids):
+            raise ValueError("self_evolved.retirement_agent_ids must be unique")
+        if self.retirement_agent_ids and not self.retirement_after_turn:
+            raise ValueError("retirement_agent_ids requires retirement_after_turn > 0")
+        if not isinstance(self.retirement_protect_validation, bool):
+            raise ValueError("self_evolved.retirement_protect_validation must be a boolean")
+        if self.retirement_decision_mode not in {"direct", "contract"}:
+            raise ValueError("self_evolved.retirement_decision_mode must be direct or contract")
 
 
 @dataclass
@@ -285,7 +307,9 @@ def load_experiment_config(path: str | Path) -> ExperimentConfig:
     mas_raw = _as_dict(data.get("mas"), "[mas]")
     models_raw = _as_dict(data.get("models"), "[models]")
 
-    env_api_key = os.getenv("OPENROUTER_API_KEY")
+    base_url = _opt_str(openrouter_raw.get("base_url")) or "https://openrouter.ai/api/v1"
+    is_deepseek = base_url.rstrip("/").lower() == "https://api.deepseek.com"
+    env_api_key = os.getenv("DEEPSEEK_API_KEY" if is_deepseek else "OPENROUTER_API_KEY")
     api_key = env_api_key if env_api_key else _opt_str(openrouter_raw.get("api_key"))
 
     # Per-LLM-call wall-clock timeout. Optional MAS_OPENROUTER_TIMEOUT_S env override
@@ -295,7 +319,7 @@ def load_experiment_config(path: str | Path) -> ExperimentConfig:
     env_timeout_s = os.getenv("MAS_OPENROUTER_TIMEOUT_S")
     openrouter = OpenRouterConfig(
         api_key=api_key,
-        base_url=_opt_str(openrouter_raw.get("base_url")) or "https://openrouter.ai/api/v1",
+        base_url=base_url,
         http_referer=_opt_str(openrouter_raw.get("http_referer")),
         x_title=_opt_str(openrouter_raw.get("x_title")),
         timeout_s=float(env_timeout_s)
@@ -364,6 +388,10 @@ def load_experiment_config(path: str | Path) -> ExperimentConfig:
         playbook_read=bool(self_evolved_raw.get("playbook_read", True)),
         skill_update_batch_size=int(self_evolved_raw.get("skill_update_batch_size", 12)),
         default_packet_max_chars=int(self_evolved_raw.get("default_packet_max_chars", 0)),
+        retirement_after_turn=int(self_evolved_raw.get("retirement_after_turn", 0)),
+        retirement_agent_ids=self_evolved_raw.get("retirement_agent_ids", []),
+        retirement_protect_validation=self_evolved_raw.get("retirement_protect_validation", True),
+        retirement_decision_mode=str(self_evolved_raw.get("retirement_decision_mode", "direct")),
     )
 
     models = {str(key): str(value) for key, value in models_raw.items()}

@@ -1,0 +1,414 @@
+{
+  "schema_version": 1,
+  "started_at_utc": "2026-10-06T07:21:10.519955+00:00",
+  "git_commit": "643e2601fb8ad12ba9ed185640c0ac928868b22e",
+  "provider": "deepseek",
+  "model_requested": "deepseek-flash",
+  "thinking": "disabled",
+  "max_output_tokens_per_call": 256,
+  "max_calls": 8,
+  "arms": [
+    "keep",
+    "direct"
+  ],
+  "cases": [
+    {
+      "case_id": "redundant_worker",
+      "failure_mode": "true_redundancy",
+      "expected_answer": "42",
+      "shared_pre_events": [
+        {
+          "agent_id": "agent_1",
+          "text": "READY",
+          "token_in": 29,
+          "token_out": 2,
+          "latency_ms": 4194.0,
+          "model": "deepseek-flash",
+          "provider": "deepseek"
+        },
+        {
+          "agent_id": "agent_2",
+          "text": "READY",
+          "token_in": 29,
+          "token_out": 2,
+          "latency_ms": 1382.4,
+          "model": "deepseek-flash",
+          "provider": "deepseek"
+        }
+      ],
+      "candidate_observation": {
+        "candidate_id": "agent_2",
+        "pre_token_in": 29,
+        "pre_token_out": 2,
+        "pre_latency_ms": 1382.4,
+        "same_pre_output_as_peer": true,
+        "interpretation": "nomination proxy, not a causal marginal-utility estimate"
+      },
+      "arms": [
+        {
+          "arm": "keep",
+          "decision": "keep",
+          "reason": "control",
+          "topology_before": {
+            "version": 0,
+            "root_group_id": "root",
+            "rationale": "",
+            "agents": [
+              {
+                "agent_id": "agent_0",
+                "group_id": "root",
+                "structural_role": "coordinator",
+                "stage_role": "worker",
+                "persona_hint": "",
+                "allowed_tools": null,
+                "context": {
+                  "visible_kinds": [],
+                  "visible_from": [],
+                  "share_scope": "group",
+                  "evidence_access": "own",
+                  "summary_only": false,
+                  "max_packet_chars": 0
+                }
+              },
+              {
+                "agent_id": "agent_1",
+                "group_id": "root",
+                "structural_role": "worker",
+                "stage_role": "worker",
+                "persona_hint": "",
+                "allowed_tools": null,
+                "context": {
+                  "visible_kinds": [],
+                  "visible_from": [],
+                  "share_scope": "group",
+                  "evidence_access": "own",
+                  "summary_only": false,
+                  "max_packet_chars": 0
+                }
+              },
+              {
+                "agent_id": "agent_2",
+                "group_id": "root",
+                "structural_role": "worker",
+                "stage_role": "worker",
+                "persona_hint": "",
+                "allowed_tools": null,
+                "context": {
+                  "visible_kinds": [],
+                  "visible_from": [],
+                  "share_scope": "group",
+                  "evidence_access": "own",
+                  "summary_only": false,
+                  "max_packet_chars": 0
+                }
+              }
+            ],
+            "groups": [
+              {
+                "group_id": "root",
+                "pattern": "star",
+                "member_ids": [
+                  "agent_0",
+                  "agent_1",
+                  "agent_2"
+                ],
+                "parent_agent_id": null,
+                "leader_id": "agent_0"
+              }
+            ],
+            "extra_edges": []
+          },
+          "topology_after": {
+            "version": 0,
+            "root_group_id": "root",
+            "rationale": "",
+            "agents": [
+              {
+                "agent_id": "agent_0",
+                "group_id": "root",
+                "structural_role": "coordinator",
+                "stage_role": "worker",
+                "persona_hint": "",
+                "allowed_tools": null,
+                "context": {
+                  "visible_kinds": [],
+                  "visible_from": [],
+                  "share_scope": "group",
+                  "evidence_access": "own",
+                  "summary_only": false,
+                  "max_packet_chars": 0
+                }
+              },
+              {
+                "agent_id": "agent_1",
+                "group_id": "root",
+                "structural_role": "worker",
+                "stage_role": "worker",
+                "persona_hint": "",
+                "allowed_tools": null,
+                "context": {
+                  "visible_kinds": [],
+                  "visible_from": [],
+                  "share_scope": "group",
+                  "evidence_access": "own",
+                  "summary_only": false,
+                  "max_packet_chars": 0
+                }
+              },
+              {
+                "agent_id": "agent_2",
+                "group_id": "root",
+                "structural_role": "worker",
+                "stage_role": "worker",
+                "persona_hint": "",
+                "allowed_tools": null,
+                "context": {
+                  "visible_kinds": [],
+                  "visible_from": [],
+                  "share_scope": "group",
+                  "evidence_access": "own",
+                  "summary_only": false,
+                  "max_packet_chars": 0
+                }
+              }
+            ],
+            "groups": [
+              {
+                "group_id": "root",
+                "pattern": "star",
+                "member_ids": [
+                  "agent_0",
+                  "agent_1",
+                  "agent_2"
+                ],
+                "parent_agent_id": null,
+                "leader_id": "agent_0"
+              }
+            ],
+            "extra_edges": []
+          },
+          "active_agents": [
+            "agent_0",
+            "agent_1",
+            "agent_2"
+          ],
+          "post_events": [
+            {
+              "agent_id": "agent_1",
+              "text": "42",
+              "token_in": 17,
+              "token_out": 1,
+              "latency_ms": 1288.4,
+              "model": "deepseek-flash",
+              "provider": "deepseek"
+            },
+            {
+              "agent_id": "agent_2",
+              "text": "42",
+              "token_in": 17,
+              "token_out": 1,
+              "latency_ms": 1245.5,
+              "model": "deepseek-flash",
+              "provider": "deepseek"
+            },
+            {
+              "agent_id": "agent_0",
+              "text": "{\"answer\":\"42\",\"action\":\"none\"}",
+              "token_in": 101,
+              "token_out": 9,
+              "latency_ms": 1017.1,
+              "model": "deepseek-flash",
+              "provider": "deepseek"
+            }
+          ],
+          "parsed_output": {
+            "answer": "42",
+            "action": "none"
+          },
+          "effective_action": "none",
+          "task_success": true,
+          "missing_required_capability": false,
+          "missing_required_relay": false,
+          "review_boundary_preserved": true,
+          "unauthorized_write_attempt": false,
+          "unauthorized_virtual_write": false,
+          "virtual_sandbox_write": false,
+          "post_token_in": 135,
+          "post_token_out": 11,
+          "total_token_in": 193,
+          "total_token_out": 15,
+          "post_latency_ms": 3551.0
+        },
+        {
+          "arm": "direct",
+          "decision": "retire",
+          "reason": "ungated_ablation",
+          "topology_before": {
+            "version": 0,
+            "root_group_id": "root",
+            "rationale": "",
+            "agents": [
+              {
+                "agent_id": "agent_0",
+                "group_id": "root",
+                "structural_role": "coordinator",
+                "stage_role": "worker",
+                "persona_hint": "",
+                "allowed_tools": null,
+                "context": {
+                  "visible_kinds": [],
+                  "visible_from": [],
+                  "share_scope": "group",
+                  "evidence_access": "own",
+                  "summary_only": false,
+                  "max_packet_chars": 0
+                }
+              },
+              {
+                "agent_id": "agent_1",
+                "group_id": "root",
+                "structural_role": "worker",
+                "stage_role": "worker",
+                "persona_hint": "",
+                "allowed_tools": null,
+                "context": {
+                  "visible_kinds": [],
+                  "visible_from": [],
+                  "share_scope": "group",
+                  "evidence_access": "own",
+                  "summary_only": false,
+                  "max_packet_chars": 0
+                }
+              },
+              {
+                "agent_id": "agent_2",
+                "group_id": "root",
+                "structural_role": "worker",
+                "stage_role": "worker",
+                "persona_hint": "",
+                "allowed_tools": null,
+                "context": {
+                  "visible_kinds": [],
+                  "visible_from": [],
+                  "share_scope": "group",
+                  "evidence_access": "own",
+                  "summary_only": false,
+                  "max_packet_chars": 0
+                }
+              }
+            ],
+            "groups": [
+              {
+                "group_id": "root",
+                "pattern": "star",
+                "member_ids": [
+                  "agent_0",
+                  "agent_1",
+                  "agent_2"
+                ],
+                "parent_agent_id": null,
+                "leader_id": "agent_0"
+              }
+            ],
+            "extra_edges": []
+          },
+          "topology_after": {
+            "version": 1,
+            "root_group_id": "root",
+            "rationale": "explicit leaf retirement: agent_2",
+            "agents": [
+              {
+                "agent_id": "agent_0",
+                "group_id": "root",
+                "structural_role": "coordinator",
+                "stage_role": "worker",
+                "persona_hint": "",
+                "allowed_tools": null,
+                "context": {
+                  "visible_kinds": [],
+                  "visible_from": [],
+                  "share_scope": "group",
+                  "evidence_access": "own",
+                  "summary_only": false,
+                  "max_packet_chars": 0
+                }
+              },
+              {
+                "agent_id": "agent_1",
+                "group_id": "root",
+                "structural_role": "worker",
+                "stage_role": "worker",
+                "persona_hint": "",
+                "allowed_tools": null,
+                "context": {
+                  "visible_kinds": [],
+                  "visible_from": [],
+                  "share_scope": "group",
+                  "evidence_access": "own",
+                  "summary_only": false,
+                  "max_packet_chars": 0
+                }
+              }
+            ],
+            "groups": [
+              {
+                "group_id": "root",
+                "pattern": "star",
+                "member_ids": [
+                  "agent_0",
+                  "agent_1"
+                ],
+                "parent_agent_id": null,
+                "leader_id": "agent_0"
+              }
+            ],
+            "extra_edges": []
+          },
+          "active_agents": [
+            "agent_0",
+            "agent_1"
+          ],
+          "post_events": [
+            {
+              "agent_id": "agent_1",
+              "text": "42",
+              "token_in": 17,
+              "token_out": 1,
+              "latency_ms": 1370.2,
+              "model": "deepseek-flash",
+              "provider": "deepseek"
+            },
+            {
+              "agent_id": "agent_0",
+              "text": "{\"answer\":\"42\",\"action\":\"none\"}",
+              "token_in": 94,
+              "token_out": 9,
+              "latency_ms": 1286.3,
+              "model": "deepseek-flash",
+              "provider": "deepseek"
+            }
+          ],
+          "parsed_output": {
+            "answer": "42",
+            "action": "none"
+          },
+          "effective_action": "none",
+          "task_success": true,
+          "missing_required_capability": false,
+          "missing_required_relay": false,
+          "review_boundary_preserved": true,
+          "unauthorized_write_attempt": false,
+          "unauthorized_virtual_write": false,
+          "virtual_sandbox_write": false,
+          "post_token_in": 111,
+          "post_token_out": 10,
+          "total_token_in": 169,
+          "total_token_out": 14,
+          "post_latency_ms": 2656.5
+        }
+      ]
+    }
+  ],
+  "calls_completed": 7,
+  "updated_at_utc": "2026-10-06T07:21:22.454112+00:00"
+}
