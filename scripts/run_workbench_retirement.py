@@ -20,7 +20,7 @@ from dotenv import load_dotenv
 
 from MAS.config import OpenRouterConfig
 from MAS.self_evolved.handoff_runtime import ARMS, NativeHandoffSession, digest
-from MAS.self_evolved.workbench_cases import WorkbenchCase
+from MAS.self_evolved.workbench_cases import CASE_IDS, WorkbenchCase
 from MAS.self_evolved.workbench_handoff import WorkbenchHandoffSandbox
 from MAS.self_evolved.workbench_runtime import run_workbench_phase, start_workbench
 from scripts.run_handoff_smoke import SOURCES, MeteredClient, save, usage
@@ -35,6 +35,43 @@ def save_gzip(path, value):
         json.dump(value, handle, ensure_ascii=False)
 
 
+def select_source_cases(frozen, requested_ids=None):
+    """Select a subset without renumbering or reordering the frozen six cases."""
+    candidates = frozen['candidates']
+    ids = [item['task_id'] for item in candidates]
+    if len(ids) != 6 or len(set(ids)) != 6 or set(ids) != set(CASE_IDS):
+        raise ValueError('Manifest must contain exactly the six distinct supported source cases')
+    if requested_ids is None:
+        selected = set(ids)
+    else:
+        if not requested_ids:
+            raise ValueError('Case selection must not be empty')
+        if len(requested_ids) != len(set(requested_ids)):
+            raise ValueError('Case selection contains duplicate IDs')
+        selected = set(requested_ids)
+        if selected - set(ids):
+            raise ValueError(f'Unknown case IDs: {sorted(selected - set(ids))}')
+    return [(source_index, item) for source_index, item in enumerate(candidates)
+            if item['task_id'] in selected]
+
+
+def case_schedule(seed, source_case_index):
+    """Match the full-batch seed schedule even when earlier cases are omitted."""
+    order = list(ARMS)
+    random.Random(seed + source_case_index).shuffle(order)
+    return {'case_seed': seed + source_case_index,
+            'future_seed': seed + 1000 + source_case_index, 'arm_order': order}
+
+
+def manifest_call_limits(frozen):
+    protocol = frozen.get('frozen_protocol', {})
+    limits = {'max_calls': protocol.get('api_requests_per_case', 120),
+              'max_input': protocol.get('max_input_tokens_per_case', 650000)}
+    if any(type(value) is not int or value <= 0 for value in limits.values()):
+        raise ValueError('Per-case API and input-token limits must be positive integers')
+    return limits
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--env-file', type=Path, required=True)
@@ -42,16 +79,17 @@ def main():
     parser.add_argument('--manifest', type=Path, required=True)
     parser.add_argument('--output-dir', type=Path, required=True)
     parser.add_argument('--seed', type=int, default=20261007)
+    parser.add_argument('--case-ids', nargs='+', help='Optional subset of the six frozen IDs; manifest order and original seed indices are preserved')
     args = parser.parse_args()
     frozen = json.loads(args.manifest.read_text(encoding='utf-8'))
     if frozen['status'] != 'frozen_for_development_batch':
         raise ValueError('Freeze eligibility and adaptations before this live run')
     if args.output_dir.exists():
         raise FileExistsError('Use a new output directory; old runs must be preserved')
-    cases = [WorkbenchCase(item['task_id'], args.data_root, manifest_path=args.manifest)
-             for item in frozen['candidates']]
-    if len(cases) != 6 or len({c.case_id for c in cases}) != 6:
-        raise ValueError('This batch requires exactly six distinct frozen source cases')
+    selected = select_source_cases(frozen, args.case_ids)
+    cases = [(index, WorkbenchCase(item['task_id'], args.data_root, manifest_path=args.manifest))
+             for index, item in selected]
+    limits = manifest_call_limits(frozen)
     load_dotenv(args.env_file, override=False)
     key = os.getenv('DEEPSEEK_API_KEY')
     if not key:
@@ -69,12 +107,17 @@ def main():
         'git_commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
         'source_sha256': {p: hashlib.sha256(Path(p).read_bytes()).hexdigest() for p in SOURCE_FILES},
         'manifest_sha256': hashlib.sha256(args.manifest.read_bytes()).hexdigest(),
-        'planned_cases': [c.case_id for c in cases], 'planned_post_executions': 30,
+        'planned_cases': [c.case_id for _, c in cases], 'planned_post_executions': len(cases) * 5,
+        'selection': {
+            'requested_case_ids': args.case_ids,
+            'manifest_order_preserved': True,
+            'source_cases': [{'case_id': c.case_id, 'source_case_index': index} for index, c in cases],
+        },
         'configuration': {'model': 'deepseek-flash', 'temperature': 0, 'thinking': 'disabled',
                           'max_output_tokens': 768, 'max_tool_iterations': 10,
                           'initial_agents': 5, 'turns': 2, 'repairs': 0, 'repeat': 1,
                           'ownership_is_permission_gate': False,
-                          'max_api_attempts_per_case': 120, 'max_input_tokens_per_case': 650000,
+                          'max_api_attempts_per_case': limits['max_calls'], 'max_input_tokens_per_case': limits['max_input'],
                           'max_output_tokens_per_case': 90000, 'max_seconds_per_case': 1800},
         'cases': {}, 'api_totals': usage([]),
     }
@@ -82,24 +125,26 @@ def main():
     save(args.output_dir / 'result.json', batch)
     all_records = []
     try:
-        for index, case in enumerate(cases):
+        for index, case in cases:
             directory = args.output_dir / case.case_id
             directory.mkdir()
             client = MeteredClient(
                 OpenRouterConfig(api_key=key, base_url='https://api.deepseek.com', timeout_s=90),
-                directory, max_calls=120, max_input=650000, max_output=90000, max_seconds=1800,
+                directory, **limits, max_output=90000, max_seconds=1800,
             )
-            order = list(ARMS)
-            random.Random(args.seed + index).shuffle(order)
+            schedule = case_schedule(args.seed, index)
+            order = schedule['arm_order']
             result = {
                 'schema_version': 1, 'case': case.case_id, 'status': 'running',
                 'source_info': case.source_info, 'arm_order': order, 'arms': {},
+                'source_case_index': index, 'case_seed': schedule['case_seed'],
+                'future_seed': schedule['future_seed'],
                 'git_commit': batch['git_commit'],
                 'started_at_utc': datetime.now(UTC).isoformat(),
             }
             batch['cases'][case.case_id] = result
             try:
-                session = start_workbench(client, case, args.data_root, seed=args.seed + index)
+                session = start_workbench(client, case, args.data_root, seed=schedule['case_seed'])
                 initial_tables = session.sandbox.native.snapshot()
                 run_workbench_phase(session, case.prefix_prompt, turn=0)
                 cp = session.checkpoint()
@@ -128,7 +173,7 @@ def main():
                     branches[arm] = fork
                 # The full future object includes evaluator-only expectations.
                 # It is never attached to native state or passed into intervene.
-                future = case.make_future(session.sandbox.native, args.seed + 1000 + index)
+                future = case.make_future(session.sandbox.native, schedule['future_seed'])
                 save(directory / 'evaluator_future.json', future)
                 for arm in order:
                     fork = branches[arm]

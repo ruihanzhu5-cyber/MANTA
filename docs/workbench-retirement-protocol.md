@@ -90,6 +90,27 @@ budgets, arm ordering and scoring criteria remain the same. Results from the two
 code versions are reported separately; the successful old calendar observations
 are not pooled into the corrected comparison.
 
+## Aggregate budget amendment for the remaining three blocks
+
+The corrected v2 run completed calendar_20, calendar_40 and email_31 in full.
+Email_53 then exhausted the aggregate 120-request case budget after four arms;
+its final arm was interrupted and the two project cases had not started.
+All 19 completed arms passed, but an unscored partial arm is not a success.
+
+Before starting v3, freeze a supplemental run of email_53 and both project cases.
+Rerun all five email_53 arms from a fresh live prefix; discard none of its v3
+outcomes based on score. Preserve v2 for diagnostics. The case-wide cap becomes
+180 requests and 1,000,000 input tokens; per-request output, model, temperature,
+per-agent tool iterations, turns, ACL, prompts and evaluators are unchanged.
+Keep each selected case's original index in the six-case manifest for all seeds.
+
+The final comparison references the first three complete v2 blocks and the three
+v3 blocks with explicit source paths and commits. It is not labeled a single
+uninterrupted six-case run. Check that core execution and evaluation source
+hashes agree across both versions; the runner's selection/budget change is
+recorded separately. Report all failed/interrupted development costs in addition
+to the selected complete-block comparison costs.
+
 ```powershell
 python -m scripts.run_workbench_retirement --env-file EXISTING_ENV --data-root LOCAL_WORKBENCH_CACHE --manifest configs/node_retirement/workbench_subset_v1.json --output-dir results/node_retirement_handoff/UNIQUE_WORKBENCH_BATCH
 ```
