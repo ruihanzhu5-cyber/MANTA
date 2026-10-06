@@ -189,8 +189,11 @@ class HandoffSandbox:
         if event_id in self._data["acknowledgments"]:
             return {"ok": False, "error": "already_acknowledged", "duplicate": True}
         cursor = subscription["cursor"]
-        if cursor >= len(self._data["events"]) or self._data["events"][cursor]["event_id"] != event_id:
+        if cursor >= len(self._data["events"]):
             return {"ok": False, "error": "not_next_event"}
+        if self._data["events"][cursor]["event_id"] != event_id:
+            return {"ok": False, "error": "not_next_event",
+                    "expected_event_id": self._data["events"][cursor]["event_id"]}
         event = self._data["events"][cursor]
         if event_id not in self._data["read_receipts"].get(actor, []):
             return {"ok": False, "error": "read_required"}

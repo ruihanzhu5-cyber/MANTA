@@ -147,7 +147,7 @@ def main():
         'configuration': {
             'initial_agents': 5, 'candidate': 'agent_1', 'model_requested': 'deepseek-flash',
             'thinking': 'disabled', 'temperature': 0, 'max_tokens': 768,
-            'max_tool_iterations': 4, 'turns': 2, 'repairs': 0,
+            'max_tool_iterations': 6, 'turns': 2, 'repairs': 0,
             'sdk_retries': 0, 'transport_attempts_per_request': 1,
             'communication_budget_per_agent': 12, 'limits': client.limits,
             'arm_order': order, 'nomination': 'fixed_completed_prefix_owner',

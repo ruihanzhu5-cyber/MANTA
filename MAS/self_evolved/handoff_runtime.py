@@ -119,7 +119,7 @@ class NativeHandoffSession:
                                  reference_answer='', metadata={}),
             run_index=0, seed=seed, spec=experiment, layout=spec.to_layout(),
             agent_type_by_agent={n.agent_id: 'general' for n in spec.agents},
-            tools=[], max_tool_iterations=4, descriptor=NullDescriptor(),
+            tools=[], max_tool_iterations=6, descriptor=NullDescriptor(),
             domain_personas={}, role_assignment_payload={}, workflow_definition={},
         )
         context = SharedContextController(spec)
@@ -131,7 +131,9 @@ class NativeHandoffSession:
         self.state['task_prompt'] = (
             'This is a local fictional order-event workflow. Complete real tool actions, '
             'not just a plan. The subscription owner must call stream_read, then call '
-            'stream_ack with the exact event_id and nonce returned by that tool. '
+            'stream_ack immediately with the exact top-level event_id and payload.nonce '
+            'returned by that tool. The event_id is not the business order number. '
+            'After a successful read, do not read the same event again; acknowledge it. '
             'Only the current owner may process the subscription; other members report '
             'their own available evidence and must not invent events. If you are not '
             'the owner, do not call read/ack. A tool receipt is required for completion. '

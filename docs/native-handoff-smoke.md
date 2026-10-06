@@ -1,10 +1,11 @@
 # S5 native executor handoff smoke — frozen protocol
 
-This is the first of three currently planned batches: 5 continuations here,
-75 five-family pilot continuations next, and a fixed WorkBench subset of
-10–20 tasks × 3 repeats × 5 arms (150–300 continuations). The main plan is
-230–380 continuations, **not** API requests. Expansion is conditional on
-the preceding experiment being interpretable. WorkBench tasks will be selected
+The user narrowed the current iteration to two batches: 5 continuations here,
+then a fixed WorkBench subset of 6 tasks × 1 repeat × 5 arms (30 continuations).
+The current target is 35 continuations, **not** API requests. The earlier
+75-continuation pilot and larger benchmark runs are deferred until the system
+stabilizes. Expansion is conditional on the preceding experiment being
+interpretable. WorkBench tasks will be selected
 for resettable tools and meaningful follow-up work before inspecting outcomes.
 
 ## Current experiment
@@ -44,7 +45,7 @@ is not trusted as an execution barrier. No tool touches external accounts.
 ## Model and limits
 
 Use the existing `.env` DEEPSEEK_API_KEY, requested model `deepseek-flash`,
-temperature 0, thinking disabled, max output 768 per API request, max four tool
+temperature 0, thinking disabled, max output 768 per API request, max six tool
 iterations per stage. SDK retries are disabled and transport attempt count is
 one; native behavioral retries remain enabled identically across arms and are
 metered at the actual SDK request boundary.
@@ -83,3 +84,11 @@ members are held constant across arms; this case measures the mechanism, not an
 optimized staffing policy. Deterministic controller checks/transfer use no model
 tokens; their wall-clock time is reported. Prefix usage is counted in each arm's
 deployment estimate, but paid only once in the physical experiment.
+
+## Development revision log
+
+v1 (source 453bd78) stopped at the prefix: the owner used the business order
+number P001 as event_id, so ack failed and no five-arm comparison was run.
+All raw data are retained. v2 explicitly distinguishes event_id from order,
+returns expected_event_id on the owner's incorrect ack, and raises the shared
+tool-iteration cap from 4 to 6 to allow correction. No score is manually repaired.
