@@ -9,7 +9,7 @@ from MAS.langgraph_engine import ExperimentSpec
 from MAS.llm import OpenRouterLLMClient
 from MAS.self_evolved.context import SharedContextController
 from MAS.self_evolved.engine import SelfEvolvedEngine
-from MAS.self_evolved.retirement import retire_leaf_agents
+from MAS.self_evolved.retirement import assess_retirement_contract, retire_leaf_agents
 from MAS.self_evolved.spec import AgentNode, ContextPolicy, GroupSpec, TopologySpec
 
 
@@ -27,11 +27,12 @@ def topology():
     )
 
 
-def run_experiment(ids=(), *, after=1, topo=None, tools=None):
+def run_experiment(ids=(), *, after=1, topo=None, tools=None, contract=None, decision_mode="direct"):
     config = SelfEvolvedConfig(
         max_turns=after + 1,
         retirement_after_turn=after,
         retirement_agent_ids=ids,
+        retirement_decision_mode=decision_mode,
         audit_mode="heuristic",
         playbook_read=False,
         skill_update_batch_size=0,
@@ -45,7 +46,11 @@ def run_experiment(ids=(), *, after=1, topo=None, tools=None):
         {"used_fallback": True, "rationale": "retirement test"},
     )
     return engine.run(
-        task=SimpleNamespace(task_id="retirement-test", prompt="What is 2 + 2?", metadata={}),
+        task=SimpleNamespace(
+            task_id="retirement-test",
+            prompt="What is 2 + 2?",
+            metadata={"retirement_contract": contract} if contract is not None else {},
+        ),
         run_index=0,
         seed=42,
         spec=ExperimentSpec(
@@ -254,3 +259,26 @@ def test_retirement_never_continues_after_committed_side_effect(monkeypatch):
     event = result.run_metadata["self_evolved"]["retirement_experiment"]["events"][0]
     assert event["status"] == "skipped"
     assert event["reason"] == "transaction_committed"
+
+
+def test_native_contract_mode_retains_required_relay():
+    result = run_experiment(
+        ("agent_2",),
+        contract={"required_relay_agents": ["agent_2"]},
+        decision_mode="contract",
+    )
+    experiment = result.run_metadata["self_evolved"]["retirement_experiment"]
+    assert experiment["events"][0]["status"] == "retained"
+    assert experiment["events"][0]["reason"] == "required_relay_path"
+    assert len(result.run_metadata["self_evolved"]["topology_spec_versions"]) == 1
+
+
+def test_contract_mode_fails_closed_on_missing_or_malformed_contract():
+    assert assess_retirement_contract(("agent_2",), None)[0] == "keep"
+    assert assess_retirement_contract(
+        ("agent_2",), {"required_review_agents": "agent_2"}
+    )[0] == "keep"
+    result = run_experiment(("agent_2",), decision_mode="contract")
+    event = result.run_metadata["self_evolved"]["retirement_experiment"]["events"][0]
+    assert event["status"] == "retained"
+    assert event["reason"] == "missing_retirement_contract"

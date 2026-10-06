@@ -8,8 +8,54 @@ Validation-role protection can be disabled explicitly for a research ablation.
 from __future__ import annotations
 
 from dataclasses import replace
+from typing import Any
 
 from .spec import TopologySpec
+
+
+def assess_retirement_contract(
+    agent_ids: tuple[str, ...],
+    contract: dict[str, Any] | None,
+    *,
+    allow_guard: bool = False,
+) -> tuple[str, str]:
+    """Check declared post-boundary responsibilities before removing nodes.
+
+    Missing contracts fail closed. A guard replacement is only allowed when an
+    external caller actually installs an enforcing guard; the native engine
+    always uses ``allow_guard=False``.
+    """
+    if not isinstance(contract, dict):
+        return "keep", "missing_retirement_contract"
+    removed = set(agent_ids)
+    capabilities = contract.get("unique_capabilities", {})
+    if not isinstance(capabilities, dict):
+        return "keep", "invalid_capability_contract"
+    if any(
+        not isinstance(agent_id, str)
+        or not isinstance(names, (list, tuple))
+        or any(not isinstance(name, str) for name in names)
+        for agent_id, names in capabilities.items()
+    ):
+        return "keep", "invalid_capability_contract"
+    relay_agents = contract.get("required_relay_agents", [])
+    review_agents = contract.get("required_review_agents", [])
+    if any(
+        not isinstance(value, (list, tuple))
+        or any(not isinstance(agent_id, str) for agent_id in value)
+        for value in (relay_agents, review_agents)
+    ):
+        return "keep", "invalid_responsibility_contract"
+    for agent_id in removed:
+        if capabilities.get(agent_id):
+            return "keep", "unique_required_capability"
+    if removed.intersection(relay_agents):
+        return "keep", "required_relay_path"
+    if removed.intersection(review_agents):
+        if allow_guard and contract.get("deterministic_guard_available") is True:
+            return "retire_with_guard", "deterministic_review_replacement"
+        return "keep", "independent_review_required"
+    return "retire", "no_required_responsibility"
 
 
 def retire_leaf_agents(

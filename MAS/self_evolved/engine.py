@@ -50,7 +50,7 @@ from .executor import TurnExecutor, TurnResult, apply_updates, state_changing_to
 from .harness import AgentHarness
 from .planner import TopologyPlannerAgent
 from .playbook import PlaybookMaintainer, ShortTermTopologyPlaybook, TopologyPlaybook, task_key
-from .retirement import retire_leaf_agents
+from .retirement import assess_retirement_contract, retire_leaf_agents
 from .retrieval import augment_with_constraint_search
 from .spec import AgentNode, ContextPolicy, GroupSpec, TopologySpec
 from .transaction import (
@@ -890,16 +890,28 @@ class SelfEvolvedEngine:
             "before_layout": topo_spec.to_layout().to_payload(),
             "status": "control" if not agent_ids else "applied",
         }
-        try:
-            candidate = retire_leaf_agents(
-                topo_spec,
+        contract_action = "retire"
+        if agent_ids and self.se_config.retirement_decision_mode == "contract":
+            contract_action, contract_reason = assess_retirement_contract(
                 agent_ids,
-                max_agents=int(self.se_config.max_total_agents),
-                protect_validation=self.se_config.retirement_protect_validation,
+                state.get("task_metadata", {}).get("retirement_contract"),
             )
-        except ValueError as exc:
+            payload["contract_action"] = contract_action
+            payload["contract_reason"] = contract_reason
+        if contract_action == "keep":
             candidate = topo_spec
-            payload.update(status="rejected", reason=str(exc))
+            payload.update(status="retained", reason=contract_reason)
+        else:
+            try:
+                candidate = retire_leaf_agents(
+                    topo_spec,
+                    agent_ids,
+                    max_agents=int(self.se_config.max_total_agents),
+                    protect_validation=self.se_config.retirement_protect_validation,
+                )
+            except ValueError as exc:
+                candidate = topo_spec
+                payload.update(status="rejected", reason=str(exc))
         payload.update(
             after_spec=candidate.to_payload(),
             after_layout=candidate.to_layout().to_payload(),
@@ -3456,6 +3468,7 @@ class SelfEvolvedEngine:
                     "after_turn": int(self.se_config.retirement_after_turn),
                     "requested_agents": list(self.se_config.retirement_agent_ids),
                     "protect_validation": bool(self.se_config.retirement_protect_validation),
+                    "decision_mode": str(self.se_config.retirement_decision_mode),
                     "events": list(state.get("self_evolved_retirement_events", [])),
                     "turn_metrics": list(state.get("self_evolved_retirement_turn_metrics", [])),
                 },
