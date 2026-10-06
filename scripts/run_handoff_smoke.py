@@ -78,10 +78,10 @@ class MeteredClient(OpenRouterLLMClient):
         if remaining_output < 768 or current['input_tokens'] >= self.limits['max_input']:
             raise RuntimeError('observed_token_budget_exhausted')
         # Reject long prompts before submitting; a conservative UTF-8-size allowance.
-        public_request = {k: kwargs[k] for k in (
+        public_request = json.loads(canonical({k: kwargs[k] for k in (
             'model', 'messages', 'tools', 'tool_choice', 'temperature', 'max_tokens',
             'reasoning_effort', 'extra_body',
-        ) if k in kwargs}
+        ) if k in kwargs}))
         prompt_allowance = len(canonical(public_request).encode('utf-8')) + 4096
         if current['input_tokens'] + prompt_allowance > self.limits['max_input']:
             raise RuntimeError('input_allowance_budget_exhausted')

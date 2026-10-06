@@ -104,22 +104,24 @@ class NativeHandoffSession:
     executor: BoundToolExecutor
 
     @classmethod
-    def start(cls, harness, *, seed=20261006):
-        sandbox = HandoffSandbox()
-        spec = initial_topology()
+    def start(cls, harness, *, seed=20261006, sandbox=None, spec=None,
+              task_id='s5_handoff_smoke', benchmark_name='retirement_s5_synthetic',
+              max_tool_iterations=6):
+        sandbox = sandbox if sandbox is not None else HandoffSandbox()
+        spec = spec if spec is not None else initial_topology()
         engine = SelfEvolvedEngine(harness, SelfEvolvedConfig(max_turns=2))
         experiment = ExperimentSpec(
             topology='self_evolved', num_agents=5, rounds=2,
             communication_budget_per_agent=12, final_vote_mode='deterministic',
             termination_consensus_mode='lexical', peer_artifact_max_chars=2500,
-            benchmark_name='retirement_s5_synthetic', enable_dynamic_roles=False,
+            benchmark_name=benchmark_name, enable_dynamic_roles=False,
         )
         state = engine._initial_state(
-            task=SimpleNamespace(task_id='s5_handoff_smoke', prompt='',
+            task=SimpleNamespace(task_id=task_id, prompt='',
                                  reference_answer='', metadata={}),
             run_index=0, seed=seed, spec=experiment, layout=spec.to_layout(),
             agent_type_by_agent={n.agent_id: 'general' for n in spec.agents},
-            tools=[], max_tool_iterations=6, descriptor=NullDescriptor(),
+            tools=[], max_tool_iterations=max_tool_iterations, descriptor=NullDescriptor(),
             domain_personas={}, role_assignment_payload={}, workflow_definition={},
         )
         context = SharedContextController(spec)
@@ -158,10 +160,10 @@ class NativeHandoffSession:
         return json.loads(canonical(payload))
 
     @classmethod
-    def restore(cls, checkpoint: dict, harness):
+    def restore(cls, checkpoint: dict, harness, *, sandbox_cls=HandoffSandbox):
         cp = copy.deepcopy(checkpoint)
         spec = topology_from_payload(cp['spec'])
-        sandbox = HandoffSandbox.from_snapshot(cp['sandbox'])
+        sandbox = sandbox_cls.from_snapshot(cp['sandbox'])
         engine = SelfEvolvedEngine(harness, SelfEvolvedConfig(max_turns=2))
         context = SharedContextController(spec)
         context.set_spec(spec, retired_agent_ids=tuple(cp['retired_ids']))
