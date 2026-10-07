@@ -51,6 +51,7 @@ from .harness import AgentHarness
 from .planner import TopologyPlannerAgent
 from .playbook import PlaybookMaintainer, ShortTermTopologyPlaybook, TopologyPlaybook, task_key
 from .retrieval import augment_with_constraint_search
+from .retirement_observer import observe_retirement_candidates
 from .spec import AgentNode, ContextPolicy, GroupSpec, TopologySpec
 from .transaction import (
     augment_with_transaction_tools,
@@ -406,6 +407,32 @@ class SelfEvolvedEngine:
             payload={"scope": "long_term", "update_candidate": playbook_candidate},
         )
 
+        # Retirement detection is deliberately a post-turn observation.  It
+        # proposes suspiciously redundant nodes from the trace, while the
+        # existing explicit retirement transaction remains the only path that
+        # can mutate a TopologySpec.  Missing obligations or receipts are
+        # therefore recorded as blocked evidence instead of suppressing the
+        # candidate altogether.
+        retirement_observations = observe_retirement_candidates(
+            topo_spec,
+            artifacts=state.get("artifacts", []),
+            messages=state.get("messages", []),
+            tool_records=state.get("tool_records_log", []),
+        )
+        self._emit_meta_event(
+            state,
+            actor="retirement_observer",
+            event_type="observe",
+            node_name="retirement_observer",
+            payload={
+                "candidate_count": len(retirement_observations),
+                "blocked_count": sum(
+                    item.status == "retirement_blocked" for item in retirement_observations
+                ),
+                "observations": [item.to_payload() for item in retirement_observations],
+            },
+        )
+
         trace_events = self._stage._materialize_trace_events(state.get("trace_payloads", []))
         run_metadata = self._build_run_metadata(
             state=state,
@@ -421,6 +448,7 @@ class SelfEvolvedEngine:
             mutation_payloads=mutation_payloads,
             plan_payload=plan_payload,
             playbook_candidate=playbook_candidate,
+            retirement_observations=retirement_observations,
         )
         return LangGraphRunResult(
             final_answer=final_answer,
@@ -3274,6 +3302,7 @@ class SelfEvolvedEngine:
         mutation_payloads: list[dict[str, Any]],
         plan_payload: dict[str, Any],
         playbook_candidate: dict[str, Any] | None = None,
+        retirement_observations: tuple[Any, ...] = (),
     ) -> dict[str, Any]:
         artifacts = list(state.get("artifacts", []))
         latest_outputs = {
@@ -3341,6 +3370,10 @@ class SelfEvolvedEngine:
                 "final_synthesis": list(state.get("self_evolved_final_synthesis", [])),
                 "contract_repairs": list(state.get("self_evolved_contract_repairs", [])),
                 "temporal_candidates": list(state.get("self_evolved_temporal_candidates", [])),
+                "retirement_observations": [
+                    item.to_payload() if hasattr(item, "to_payload") else dict(item)
+                    for item in retirement_observations
+                ],
                 "playbook_update_candidate": playbook_candidate,
             },
         }
