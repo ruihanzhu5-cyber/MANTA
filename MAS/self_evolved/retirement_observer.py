@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from collections import Counter, defaultdict
 from dataclasses import dataclass
+import json
 import re
 from typing import Any, Iterable
 
@@ -29,6 +30,7 @@ class AgentRuntimeSummary:
     messages_sent: int
     messages_received: int
     output_signature: str
+    tool_signature: str
     structural_role: str
     is_leader: bool
 
@@ -41,11 +43,13 @@ class RetirementObservation:
     reasons: tuple[str, ...]
     blocking_reasons: tuple[str, ...]
     summary: AgentRuntimeSummary
+    candidate_detected: bool = True
 
     def to_payload(self) -> dict[str, Any]:
         return {
             "agent_id": self.agent_id,
             "status": self.status,
+            "candidate_detected": self.candidate_detected,
             "score": self.score,
             "reasons": list(self.reasons),
             "blocking_reasons": list(self.blocking_reasons),
@@ -57,6 +61,7 @@ class RetirementObservation:
                 "messages_sent": self.summary.messages_sent,
                 "messages_received": self.summary.messages_received,
                 "output_signature": self.summary.output_signature,
+                "tool_signature": self.summary.tool_signature,
                 "structural_role": self.summary.structural_role,
                 "is_leader": self.summary.is_leader,
             },
@@ -87,9 +92,12 @@ def observe_retirement_candidates(
     summaries = _summaries(spec, artifact_rows, message_rows, tool_rows)
     duplicate_pairs = _duplicate_pairs(summaries, min_duplicate_similarity)
     duplicate_by_agent: dict[str, set[str]] = defaultdict(set)
-    for left, right in duplicate_pairs:
+    duplicate_kinds: dict[tuple[str, str], set[str]] = defaultdict(set)
+    for left, right, kind in duplicate_pairs:
         duplicate_by_agent[left].add(right)
         duplicate_by_agent[right].add(left)
+        duplicate_kinds[(left, right)].add(kind)
+        duplicate_kinds[(right, left)].add(kind)
 
     obligation_rows = list(obligations) if obligations is not None else None
     receipt_set = {str(item) for item in completion_receipts or ()}
@@ -100,6 +108,12 @@ def observe_retirement_candidates(
             reasons.append("no_substantive_output")
         if duplicate_by_agent.get(summary.agent_id):
             reasons.append("peer_output_duplicate")
+            if any(
+                "tool_work" in kind
+                for peer in duplicate_by_agent[summary.agent_id]
+                for kind in duplicate_kinds.get((summary.agent_id, peer), ())
+            ):
+                reasons.append("peer_tool_work_duplicate")
         if summary.messages_sent == 0 and summary.messages_received == 0:
             reasons.append("no_runtime_communication")
         if summary.tool_calls == 0 and summary.output_chars < 160:
@@ -133,7 +147,8 @@ def observe_retirement_candidates(
         score = min(
             1.0,
             0.35 * ("no_substantive_output" in reasons)
-            + 0.35 * ("peer_output_duplicate" in reasons)
+            + 0.25 * ("peer_output_duplicate" in reasons)
+            + 0.10 * ("peer_tool_work_duplicate" in reasons)
             + 0.20 * ("no_runtime_communication" in reasons)
             + 0.10 * ("low_observed_work" in reasons),
         )
@@ -168,6 +183,40 @@ def _summaries(
         if isinstance(recipients, (list, tuple, set)):
             received.update(str(item) for item in recipients)
     calls = Counter(_agent_id(row) for row in tool_records)
+    tool_signatures_by_agent: dict[str, set[str]] = defaultdict(set)
+    nested_tool_counts: Counter[str] = Counter()
+    for row in artifacts:
+        owner = _agent_id(row)
+        nested = row.get("tool_records", [])
+        if not owner or not isinstance(nested, list):
+            continue
+        for record in nested:
+            if not isinstance(record, dict):
+                continue
+            tool_name = str(record.get("tool_name", "")).strip()
+            if not tool_name:
+                continue
+            nested_tool_counts[owner] += 1
+            arguments = record.get("arguments", {})
+            try:
+                args = json.dumps(arguments, ensure_ascii=False, sort_keys=True, default=str)
+            except (TypeError, ValueError):
+                args = str(arguments)
+            tool_signatures_by_agent[owner].add(f"{tool_name}:{args}")
+    # The runtime keeps an append-only raw log before artifact-level dedupe.
+    # Prefer it for duplicate-work detection because it includes calls that a
+    # later artifact intentionally omits as exact repeats.
+    for record in tool_records:
+        owner = _agent_id(record)
+        tool_name = str(record.get("tool_name", "")).strip()
+        if not owner or not tool_name:
+            continue
+        arguments = record.get("arguments", {})
+        try:
+            args = json.dumps(arguments, ensure_ascii=False, sort_keys=True, default=str)
+        except (TypeError, ValueError):
+            args = str(arguments)
+        tool_signatures_by_agent[owner].add(f"{tool_name}:{args}")
     leaders = {
         group.leader_id
         for group in spec.groups
@@ -186,10 +235,11 @@ def _summaries(
                 agent_id=node.agent_id,
                 artifact_count=len(rows),
                 output_chars=len(output),
-                tool_calls=int(calls.get(node.agent_id, 0)),
+                tool_calls=int(calls.get(node.agent_id, 0) or nested_tool_counts.get(node.agent_id, 0)),
                 messages_sent=int(sent.get(node.agent_id, 0)),
                 messages_received=int(received.get(node.agent_id, 0)),
                 output_signature=_signature(output),
+                tool_signature=" || ".join(sorted(tool_signatures_by_agent.get(node.agent_id, set()))),
                 structural_role=str(node.structural_role),
                 is_leader=node.agent_id in leaders,
             )
@@ -215,17 +265,26 @@ def _signature(text: str) -> str:
 
 def _duplicate_pairs(
     summaries: tuple[AgentRuntimeSummary, ...], threshold: float
-) -> tuple[tuple[str, str], ...]:
-    pairs: list[tuple[str, str]] = []
+) -> tuple[tuple[str, str, str], ...]:
+    pairs: list[tuple[str, str, str]] = []
     for index, left in enumerate(summaries):
-        if not left.output_signature:
-            continue
         left_tokens = set(left.output_signature.split())
+        left_tools = set(filter(None, left.tool_signature.split(" || ")))
         for right in summaries[index + 1 :]:
             right_tokens = set(right.output_signature.split())
-            if not right_tokens:
-                continue
-            similarity = len(left_tokens & right_tokens) / len(left_tokens | right_tokens)
+            if left_tokens and right_tokens:
+                similarity = len(left_tokens & right_tokens) / len(left_tokens | right_tokens)
+            else:
+                similarity = 0.0
             if similarity >= threshold:
-                pairs.append((left.agent_id, right.agent_id))
+                pairs.append((left.agent_id, right.agent_id, "output"))
+            right_tools = set(filter(None, right.tool_signature.split(" || ")))
+            if left_tools and right_tools:
+                tool_similarity = len(left_tools & right_tools) / len(left_tools | right_tools)
+                # A worker may add one private lookup while repeating the
+                # shared retrieval path.  A 0.6 Jaccard floor catches that
+                # team-level duplicate work without treating a single shared
+                # utility call as proof of redundancy.
+                if tool_similarity >= min(threshold, 0.6):
+                    pairs.append((left.agent_id, right.agent_id, "tool_work"))
     return tuple(pairs)

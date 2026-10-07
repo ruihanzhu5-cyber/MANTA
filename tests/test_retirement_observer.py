@@ -26,6 +26,7 @@ def test_detection_is_recorded_even_when_safety_proof_is_missing() -> None:
 
     by_agent = {item.agent_id: item for item in observations}
     assert by_agent["worker_a"].status == "retirement_blocked"
+    assert by_agent["worker_a"].candidate_detected
     assert "no_substantive_output" in by_agent["worker_a"].reasons
     assert "obligation_inventory_missing" in by_agent["worker_a"].blocking_reasons
     assert "completion_receipt_missing" in by_agent["worker_a"].blocking_reasons
@@ -60,4 +61,3 @@ def test_structural_guard_is_blocked_even_with_completion_receipt() -> None:
     guard = next(item for item in observations if item.agent_id == "guard")
     assert guard.status == "retirement_blocked"
     assert "structural_role:verifier" in guard.blocking_reasons
-

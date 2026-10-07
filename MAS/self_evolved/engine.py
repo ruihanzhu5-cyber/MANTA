@@ -425,7 +425,9 @@ class SelfEvolvedEngine:
             event_type="observe",
             node_name="retirement_observer",
             payload={
-                "candidate_count": len(retirement_observations),
+                "candidate_count": sum(
+                    item.candidate_detected for item in retirement_observations
+                ),
                 "blocked_count": sum(
                     item.status == "retirement_blocked" for item in retirement_observations
                 ),
@@ -3327,6 +3329,7 @@ class SelfEvolvedEngine:
             "budget_messages_sent_by_agent": dict(state.get("budget_sent_counts", {})),
             "tool_call_counts": tool_call_counts,
             "tool_calls_total": int(sum(tool_call_counts.values())),
+            "tool_records_log": list(state.get("tool_records_log", [])),
             "remaining_message_budget": dict(state.get("message_budget", {})),
             "tool_definitions": self._stage._serialize_tools(list(state.get("tools", []))),
             "retrieved_docids": self._stage._collect_retrieved_docids(state),

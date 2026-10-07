@@ -661,6 +661,20 @@ class TurnExecutor:
         artifacts = updates.get("artifacts") or []
         apply_updates(state, updates)
         artifact = artifacts[0] if artifacts else None
+        if isinstance(artifact, dict):
+            # Keep an append-only audit copy before the artifact-level dedupe.
+            # The deduped artifact is used for prompt/evidence compaction, while
+            # the raw log is required to measure repeated team work across agents.
+            raw_records = artifact.get("tool_records", [])
+            if isinstance(raw_records, list):
+                state.setdefault("tool_records_log", []).extend(
+                    {
+                        **record,
+                        "agent_id": agent_id,
+                    }
+                    for record in raw_records
+                    if isinstance(record, dict)
+                )
         self._dedupe_tool_records(artifact)
         self._context.record_evidence(state, artifact, agent_id=agent_id)
         return artifact

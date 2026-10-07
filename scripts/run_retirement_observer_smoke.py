@@ -79,7 +79,7 @@ def main() -> None:
         "cases": cases,
         "summary": {
             "duplicate_candidate_detected": any(
-                item["status"] == "candidate_detected"
+                item["candidate_detected"]
                 for item in cases["redundant_duplicate"]["observations"]
             ),
             "missing_proof_blocked": any(
