@@ -62,6 +62,10 @@ def retire_agent(
     group = spec.group(nodes[agent_id].group_id)
     if group.leader_id == agent_id or spec.subgroup_of(agent_id) is not None:
         return reject("leader or subgroup parent requires a separate migration")
+    if nodes[agent_id].structural_role in {"coordinator", "verifier", "voter"}:
+        return reject(
+            f"structural role {nodes[agent_id].structural_role!r} requires explicit responsibility migration"
+        )
     if len(group.member_ids) <= 1:
         return reject("cannot retire the sole group member")
     if any(item.owner not in nodes for item in obligations):

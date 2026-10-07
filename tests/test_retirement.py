@@ -51,3 +51,19 @@ def test_non_quiescent_or_unknown_inventory_blocks():
     result = retire_agent(_spec(), "idle", (), max_agents=3,
                           quiescent=False, obligations_complete=True)
     assert not result.accepted
+
+
+def test_structural_verifier_requires_explicit_responsibility_migration():
+    spec = TopologySpec(
+        version=0,
+        agents=(
+            AgentNode("lead", "root", structural_role="coordinator"),
+            AgentNode("guard", "root", structural_role="verifier"),
+            AgentNode("worker", "root"),
+        ),
+        groups=(GroupSpec("root", "star", ("lead", "guard", "worker"), leader_id="lead"),),
+        root_group_id="root",
+    )
+    result = retire_agent(spec, "guard", (), max_agents=3, quiescent=True, obligations_complete=True)
+    assert not result.accepted
+    assert "structural role" in result.reason
