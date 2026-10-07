@@ -73,15 +73,18 @@ class PlancraftBenchmark:
         self._system_prompt_text: str = ""
 
         try:
-            from plancraft.environment.actions import (
-                ImpossibleActionHandler,
-                MoveActionHandler,
-                SmeltActionHandler,
-            )
-            from plancraft.environment.prompts import (
-                get_prompt_example,
-                get_system_prompt,
-            )
+            from ._windows_compat import normalized_glob_paths_for_plancraft
+
+            with normalized_glob_paths_for_plancraft():
+                from plancraft.environment.actions import (
+                    ImpossibleActionHandler,
+                    MoveActionHandler,
+                    SmeltActionHandler,
+                )
+                from plancraft.environment.prompts import (
+                    get_prompt_example,
+                    get_system_prompt,
+                )
 
             from .search import ExhaustiveRecipeSearchActionHandler
 

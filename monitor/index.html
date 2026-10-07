@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MANTA · DeepSeek Flash 实验监控</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, "Microsoft YaHei", system-ui, sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #0a111c; color: #edf5ff; }
+    body::before { content: ""; position: fixed; inset: 0; pointer-events: none; background: radial-gradient(circle at 10% 5%, #2b597744, transparent 35%), radial-gradient(circle at 90% 0%, #6840a744, transparent 30%); }
+    main { position: relative; max-width: 1180px; margin: auto; padding: 34px 24px 70px; }
+    header { display: flex; justify-content: space-between; align-items: start; gap: 20px; flex-wrap: wrap; }
+    h1 { font-size: clamp(28px, 4vw, 46px); letter-spacing: -.035em; margin: 7px 0 6px; }
+    .eyebrow { text-transform: uppercase; color: #77cbef; font-size: 12px; letter-spacing: .24em; font-weight: 800; }
+    .sub { color: #a4b4c6; margin: 0; line-height: 1.6; }
+    .badge { border: 1px solid #3b6477; border-radius: 100px; padding: 10px 16px; color: #9bdaf5; background: #173049cc; font-weight: 700; white-space: nowrap; }
+    .badge.running { color: #baf7c7; border-color: #4a8b60; background: #17402b; }
+    .badge.recovering { color: #ffe6ad; border-color: #a67d38; background: #473416; }
+    .badge.completed { color: #b9f8df; border-color: #359b82; background: #124339; }
+    .badge.failed { color: #ffbcbc; border-color: #a14545; background: #4b1d2a; }
+    .hero { border: 1px solid #28425c; border-radius: 24px; padding: 26px; margin: 30px 0 18px; background: linear-gradient(135deg, #172d43ed, #101b2fed); box-shadow: 0 15px 70px #0005; }
+    .hero-top { display:flex; justify-content:space-between; gap:20px; align-items:end; flex-wrap:wrap; }
+    .big { font-size: clamp(38px, 7vw, 70px); font-weight: 800; letter-spacing: -.06em; line-height: 1; }
+    .muted { color:#9fb1c4; }
+    .meter { height: 15px; background: #0b1724; border-radius: 50px; overflow:hidden; margin: 22px 0 14px; border:1px solid #35506a; }
+    .fill { height:100%; width:0; background:linear-gradient(90deg,#30b9ca,#8bf0bc); border-radius:50px; transition:width .5s; }
+    .grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; }
+    .card { background:#121f30df; border:1px solid #2b4057; border-radius:18px; padding:20px; }
+    .card .label { font-size:13px; color:#a9bbcc; }
+    .card .value { font-size:27px; font-weight:750; margin:8px 0 2px; }
+    .card small { color:#7f96a9; }
+    h2 { font-size:20px; margin:32px 0 15px; }
+    .benchmarks { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+    .bench-head { display:flex; justify-content:space-between; align-items:baseline; }
+    .bench-head strong { font-size:18px; }
+    .bench-head span { color:#9fb1c4; }
+    .bench-score { font-size:27px; margin-top:14px; font-weight:750; }
+    .mini { height:8px; background:#0a1621; border-radius:10px; margin-top:13px; overflow:hidden; }
+    .mini div { height:100%; background:#4dc3d5; transition:width .5s; }
+    pre { background:#07111b; border:1px solid #2b4057; color:#a6e1d5; border-radius:18px; padding:18px; line-height:1.5; overflow:auto; max-height:330px; white-space:pre-wrap; overflow-wrap:anywhere; font-size:12px; }
+    footer { margin-top:24px; color:#8297a8; font-size:12px; }
+    @media(max-width:760px) { .grid,.benchmarks { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media(max-width:490px) { .grid,.benchmarks { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div><div class="eyebrow">LIVE EXPERIMENT</div><h1>MANTA × DeepSeek Flash</h1><p class="sub"><span id="scope">三项基准</span> · 每项 30 题 × 3 次 · 分片并发变体（跨题 skill 更新关闭）<br><span id="experiment"></span></p></div>
+    <div id="state" class="badge">读取状态…</div>
+  </header>
+  <section class="hero">
+    <div class="hero-top"><div><div class="muted">总进度</div><div><span id="done" class="big">0</span><span id="planned" class="muted"> / 270 次</span></div></div><div id="timing" class="muted">正在连接监控服务…</div></div>
+    <div class="meter"><div id="progress" class="fill"></div></div>
+    <div class="muted" id="current">等待启动</div>
+  </section>
+  <section class="grid">
+    <div class="card"><div class="label">已成功</div><div id="success" class="value">0</div><small>已完成运行中的成功次数</small></div>
+    <div class="card"><div class="label">输入 token</div><div id="token-in" class="value">0</div><small>已完成运行的轨迹统计</small></div>
+    <div class="card"><div class="label">输出 token</div><div id="token-out" class="value">0</div><small>含模型思考 token</small></div>
+    <div class="card"><div class="label">估算 API 费用</div><div id="cost" class="value">$0</div><small>非高峰–高峰；输入按缓存未命中计</small></div>
+  </section>
+  <h2 id="benchmarks-title">三项基准</h2>
+  <section id="benchmarks" class="benchmarks"></section>
+  <h2>最新运行日志</h2>
+  <pre id="logs">等待日志…</pre>
+  <footer>页面每 5 秒更新一次。本页仅监听本机 127.0.0.1。分数是已完成样本的暂时值；费用是根据已记录 token 的估算值。</footer>
+</main>
+<script>
+  const fmt = n => new Intl.NumberFormat('zh-CN').format(n || 0);
+  const duration = n => { if(n == null) return '—'; const h=Math.floor(n/3600), m=Math.floor(n%3600/60); return h ? `${h} 小时 ${m} 分` : `${m} 分`; };
+  async function refresh() {
+    try {
+      const response = await fetch('/api/status', {cache:'no-store'});
+      if(!response.ok) throw new Error(`HTTP ${response.status}`);
+      const d = await response.json();
+      document.getElementById('experiment').textContent = `实验 ID：${d.experiment_id}`;
+      const badge=document.getElementById('state'); badge.className=`badge ${d.state}`;
+      badge.textContent={scheduled:'已预约',running:'运行中',recovering:'修复中',completed:'已完成',failed:'运行失败'}[d.state] || d.state;
+      document.getElementById('done').textContent=fmt(d.done);
+      document.getElementById('planned').textContent=` / ${fmt(d.planned)} 次`;
+      document.getElementById('scope').textContent=`${d.benchmarks.length} 项基准`;
+      document.getElementById('benchmarks-title').textContent=`${d.benchmarks.length} 项基准`;
+      document.getElementById('progress').style.width=`${Math.min(100,100*d.done/d.planned)}%`;
+      document.getElementById('current').textContent=d.current ? `${d.message} · ${d.current}` : d.message;
+      document.getElementById('success').textContent=fmt(d.success);
+      document.getElementById('token-in').textContent=fmt(d.token_in);
+      document.getElementById('token-out').textContent=fmt(d.token_out);
+      document.getElementById('cost').textContent=`$${d.usd_off_peak.toFixed(2)}–$${d.usd_peak.toFixed(2)}`;
+      if(d.state==='scheduled') {
+        const seconds=Math.max(0,Math.floor((Date.parse(d.start_at)-Date.now())/1000));
+        document.getElementById('timing').textContent=`距离启动：${duration(seconds)}（北京时间）`;
+      } else document.getElementById('timing').textContent=`已运行 ${duration(d.elapsed_seconds)} · 预计剩余 ${d.eta_seconds==null?'等各项形成稳定吞吐后估算':duration(d.eta_seconds)}`;
+      document.getElementById('benchmarks').innerHTML=d.benchmarks.map(b=>`<article class="card"><div class="bench-head"><strong>${b.label}</strong><span>${b.done}/${b.planned}</span></div><div class="mini"><div style="width:${100*b.done/b.planned}%"></div></div><div class="bench-score">${b.score==null?'—':`${b.score}%`}</div><small>已完成成功率 · 论文 Gemma 参考 ${b.paper_score}%</small></article>`).join('');
+      document.getElementById('logs').textContent=d.logs.length ? d.logs.join('\n') : '启动后显示日志。';
+    } catch(e) { document.getElementById('state').textContent=`监控服务不可用：${e.message}`; }
+  }
+  refresh(); setInterval(refresh,5000);
+</script>
+</body>
+</html>

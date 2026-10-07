@@ -5,7 +5,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 from MAS.config import OpenRouterConfig
-from MAS.llm import OpenRouterLLMClient
+from MAS.llm import OpenRouterLLMClient, _ToolLoopTurn
 
 
 def _make_completion(
@@ -348,6 +348,39 @@ class _MidToolTimeoutClient:
 
 
 class TestLLMToolLoop(unittest.TestCase):
+    def test_stopped_parallel_tool_batch_keeps_deepseek_messages_paired(self) -> None:
+        client = OpenRouterLLMClient(
+            OpenRouterConfig(api_key="test", base_url="https://api.deepseek.com"),
+            {"default": "deepseek-flash"},
+        )
+        turn = _ToolLoopTurn(
+            iteration=1,
+            assistant_msg={
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {"id": "call_1", "function": {"name": "search"}},
+                    {"id": "call_2", "function": {"name": "search"}},
+                ],
+            },
+            assistant_text="",
+            tool_messages=[
+                {"role": "tool", "tool_call_id": "call_1", "content": "error"},
+                {"role": "user", "content": "Stop calling this tool."},
+            ],
+        )
+
+        messages, _ = client._build_tool_loop_messages(
+            base_messages=[{"role": "user", "content": "solve"}], tool_turns=[turn]
+        )
+
+        self.assertEqual([item["role"] for item in messages],
+                         ["user", "assistant", "tool", "tool", "user"])
+        self.assertEqual(
+            [item["tool_call_id"] for item in messages if item["role"] == "tool"],
+            ["call_1", "call_2"],
+        )
+
     def test_repairs_provider_quoted_argument_keys(self) -> None:
         self.assertEqual(
             OpenRouterLLMClient._normalize_tool_arguments(

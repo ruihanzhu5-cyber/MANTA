@@ -10,14 +10,17 @@ from __future__ import annotations
 
 import re
 
-from plancraft.environment.actions import ActionHandlerBase, convert_from_slot_index
-from plancraft.environment.recipes import (
-    RECIPES,
-    ShapedRecipe,
-    ShapelessRecipe,
-    SmeltingRecipe,
-    id_to_item,
-)
+from ._windows_compat import normalized_glob_paths_for_plancraft
+
+with normalized_glob_paths_for_plancraft():
+    from plancraft.environment.actions import ActionHandlerBase, convert_from_slot_index
+    from plancraft.environment.recipes import (
+        RECIPES,
+        ShapedRecipe,
+        ShapelessRecipe,
+        SmeltingRecipe,
+        id_to_item,
+    )
 
 
 def exhaustive_recipe_search(recipe_name: str) -> str:

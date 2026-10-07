@@ -285,7 +285,9 @@ def load_experiment_config(path: str | Path) -> ExperimentConfig:
     mas_raw = _as_dict(data.get("mas"), "[mas]")
     models_raw = _as_dict(data.get("models"), "[models]")
 
-    env_api_key = os.getenv("OPENROUTER_API_KEY")
+    base_url = _opt_str(openrouter_raw.get("base_url")) or "https://openrouter.ai/api/v1"
+    is_deepseek = base_url.rstrip("/").lower() == "https://api.deepseek.com"
+    env_api_key = os.getenv("DEEPSEEK_API_KEY" if is_deepseek else "OPENROUTER_API_KEY")
     api_key = env_api_key if env_api_key else _opt_str(openrouter_raw.get("api_key"))
 
     # Per-LLM-call wall-clock timeout. Optional MAS_OPENROUTER_TIMEOUT_S env override
@@ -295,7 +297,7 @@ def load_experiment_config(path: str | Path) -> ExperimentConfig:
     env_timeout_s = os.getenv("MAS_OPENROUTER_TIMEOUT_S")
     openrouter = OpenRouterConfig(
         api_key=api_key,
-        base_url=_opt_str(openrouter_raw.get("base_url")) or "https://openrouter.ai/api/v1",
+        base_url=base_url,
         http_referer=_opt_str(openrouter_raw.get("http_referer")),
         x_title=_opt_str(openrouter_raw.get("x_title")),
         timeout_s=float(env_timeout_s)

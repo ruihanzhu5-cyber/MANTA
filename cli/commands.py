@@ -91,12 +91,50 @@ def _build_skill_updater(config: Any, runner: MASRunner) -> Any | None:
     )
 
 
+def _await_external_benchmark_results(gate_path: Path) -> None:
+    """Do not issue duplicate API calls when a benchmark is being run externally."""
+    if not gate_path.exists():
+        return
+    deadline = time.monotonic() + 7 * 24 * 60 * 60
+    while True:
+        gate = json.loads(gate_path.read_text(encoding="utf-8"))
+        if gate.get("error"):
+            raise RuntimeError(f"External benchmark failed: {gate['error']}")
+        if gate.get("ready"):
+            expected = int(gate["expected_runs"])
+            run_root = gate_path.parent / "self_evolved"
+            found = sum(1 for _ in run_root.glob("*/run_*.eval.json"))
+            if found != expected:
+                raise RuntimeError(
+                    f"External benchmark gate expected {expected} runs, found {found}."
+                )
+            _log_progress(f"EXTERNAL_BENCHMARK_READY runs={found} path={gate_path}")
+            return
+        if time.monotonic() >= deadline:
+            raise TimeoutError(f"Timed out waiting for external benchmark: {gate_path}")
+        _log_progress(f"EXTERNAL_BENCHMARK_WAIT path={gate_path}")
+        time.sleep(60)
+
+
 def run_command(args: argparse.Namespace) -> int:
     # 1) Load runtime knobs (OpenRouter, MAS topology, model routing, benchmark settings).
     config = load_experiment_config(args.config)
     _apply_mas_overrides(config, args)
 
     benchmark_name = args.benchmark
+    if args.experiment_id:
+        gate_path = (
+            Path(args.output_dir or config.experiment.output_dir)
+            / str(args.experiment_id)
+            / benchmark_name
+            / "external_parallel_gate.json"
+        )
+        if gate_path.exists():
+            _await_external_benchmark_results(gate_path)
+            # The copied shard runs used independent seed skills, with no
+            # cross-task updater. Keep the consolidated settings truthful.
+            config.self_evolved.skill_update_batch_size = 0
+            _log_progress("EXTERNAL_BENCHMARK_METHOD skill_update_batch_size=0")
     benchmark_cfg = _benchmark_section_config(config, benchmark_name)
     benchmark_cfg = _apply_benchmark_overrides(benchmark_cfg, args)
     # 2) Instantiate the benchmark adapter and MAS runtime.
