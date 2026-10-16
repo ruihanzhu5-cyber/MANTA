@@ -234,3 +234,6 @@ reproduction's README for upstream attribution.
 | 2026-10-16 | `research/pilot08-topology-counterfactual` | [`40900f0`](https://github.com/ruihanzhu5-cyber/MANTA/commit/40900f0b4119ad3c144aec8b18e8691f04c9ad12) | 推送 7 条真实运行、2 对同检查点 KEEP/MUTATE、Checkpoint 与因果审计报告。 |
 | 2026-10-16 | `research/pilot09-handoff-mechanisms` | [`92be939`](https://github.com/ruihanzhu5-cyber/MANTA/commit/92be939e31ee9188e5ae86be6687f9e7dc029ade) | 推送 5 条真实交接策略续跑、消融分析与综合研究报告。 |
 | 2026-10-16 | `main` | 本 README 所在提交 | 补记上面三次已完成的研究分支推送；本次只修改推送记录。 |
+| 2026-10-16 | `research/pilot07-mixed-handoff` | [`01e2eab`](https://github.com/ruihanzhu5-cyber/MANTA/commit/01e2eab4f2aee398bfe044646215914ab6b6080e) | 补推 false-completion 单任务对照：2 条有效真实运行、1 条付费无效运行、启动失败日志、原始轨迹和费用快照。 |
+| 2026-10-16 | `research/pilot09-handoff-mechanisms` | [`68ab3a0`](https://github.com/ruihanzhu5-cyber/MANTA/commit/68ab3a0ba1a4004ca91e9a583ac438e208af0842) | 更新综合研究报告，将补充对照和总运行数、Token、费用纳入单独审计。 |
+| 2026-10-16 | `main` | 本 README 所在提交 | 补记上面两次研究分支推送；本次只修改推送记录。 |
