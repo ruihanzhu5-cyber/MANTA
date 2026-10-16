@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import concurrent.futures
+import contextvars
 import hashlib
 import inspect
 import json
@@ -17,6 +18,12 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from .config import OpenRouterConfig
+
+# Provenance for tool-response adapters. Context-local so concurrent agent calls
+# cannot assign a tool result to another agent.
+TOOL_CALL_CONTEXT: contextvars.ContextVar[dict[str, Any] | None] = contextvars.ContextVar(
+    "mas_tool_call_context", default=None
+)
 
 
 @dataclass
@@ -684,9 +691,16 @@ class OpenRouterLLMClient:
                             f"agent_id={agent_id} iteration={iteration_index + 1} "
                             f"tool_name={tool_name} args={self._truncate_for_log(args)}"
                         )
-                        output = handler(args)
-                        if inspect.isawaitable(output):
-                            output = asyncio.run(output)
+                        context_token = TOOL_CALL_CONTEXT.set(
+                            {"agent_id": agent_id, "request_id": request_id,
+                             "tool_call_id": tool_id, "iteration": iteration_index + 1}
+                        )
+                        try:
+                            output = handler(args)
+                            if inspect.isawaitable(output):
+                                output = asyncio.run(output)
+                        finally:
+                            TOOL_CALL_CONTEXT.reset(context_token)
                     except Exception as exc:
                         status = "error"
                         error = str(exc)

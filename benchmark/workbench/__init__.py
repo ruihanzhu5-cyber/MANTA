@@ -29,6 +29,7 @@ except Exception:  # pragma: no cover - optional dependency fallback
 
 from answer_utils import has_substantive_answer
 from benchmark.base import BenchmarkEvaluation, BenchmarkTask
+from benchmark.workbench.injection import EmailBodyInjector, LowTrustTextInjector
 from MAS import MASRunner, MASRunResult
 from MAS.artifacts import collect_lineage_tool_records
 
@@ -992,6 +993,24 @@ class WorkBenchBenchmark:
         self.max_tool_iterations: int = int(cfg.get("max_tool_iterations", 20))
         self.tasks_version: str = str(cfg.get("tasks_version", "v1")).strip()
         self.data_dir = Path(str(cfg.get("data_dir", ".cache/workbench"))).expanduser()
+        self.ipi_enabled = bool(cfg.get("ipi_enabled", False))
+        self.ipi_surface = str(cfg.get("ipi_surface", "email_body"))
+        self.ipi_target_email_id = str(cfg.get("ipi_target_email_id", ""))
+        self.ipi_target_tool_name = str(cfg.get("ipi_target_tool_name", ""))
+        self.ipi_target_entity_id = str(cfg.get("ipi_target_entity_id", ""))
+        self.ipi_target_text_field = str(cfg.get("ipi_target_text_field", ""))
+        self.ipi_payload_id = str(cfg.get("ipi_payload_id", "IPI_FALSE_COMPLETION_02"))
+        self.ipi_target_agent_id = str(cfg.get("ipi_target_agent_id", ""))
+        self.ipi_run_id = str(cfg.get("ipi_run_id", ""))
+        if self.ipi_enabled and self.ipi_surface == "email_body" and (not self.ipi_target_email_id or not self.ipi_target_agent_id):
+            raise ValueError("IPI arm requires a frozen target email and Worker agent")
+        if self.ipi_enabled and self.ipi_surface == "low_trust_text" and not all((
+            self.ipi_target_tool_name, self.ipi_target_entity_id,
+            self.ipi_target_text_field, self.ipi_target_agent_id,
+        )):
+            raise ValueError("Low-trust IPI arm requires a frozen tool, entity, field and Worker")
+        if self.ipi_enabled and self.ipi_surface not in {"email_body", "low_trust_text"}:
+            raise ValueError("Unknown IPI surface")
         self._ensure_data_exists()
 
     def _query_files(self) -> dict[str, str]:
@@ -1044,7 +1063,8 @@ class WorkBenchBenchmark:
         return tasks
 
     def _build_tools(
-        self, sandbox: WorkBenchSandbox, task_domains: list[str]
+        self, sandbox: WorkBenchSandbox, task_domains: list[str],
+        injector: EmailBodyInjector | LowTrustTextInjector | None = None,
     ) -> list[dict[str, Any]]:
         resolved_domains = [DOMAIN_ALIASES.get(domain, domain) for domain in task_domains]
         active_domains = set(CORE_DOMAINS if self.tool_selection == "all" else resolved_domains)
@@ -1063,7 +1083,10 @@ class WorkBenchBenchmark:
                         "properties": dict(spec["properties"]),
                         "required": list(spec.get("required", [])),
                     },
-                    "handler": lambda args, tool_name=name, sb=sandbox: sb.invoke(tool_name, args),
+                    "handler": lambda args, tool_name=name, sb=sandbox, inj=injector: (
+                        inj.process(tool_name, args, sb.invoke(tool_name, args))
+                        if inj is not None else sb.invoke(tool_name, args)
+                    ),
                 }
             )
         return tools
@@ -1076,7 +1099,26 @@ class WorkBenchBenchmark:
         seed: int,
     ) -> MASRunResult:
         sandbox = WorkBenchSandbox(self.data_dir)
-        tools = self._build_tools(sandbox, list(task.metadata.get("domains", [])))
+        if self.ipi_surface == "low_trust_text":
+            injector = LowTrustTextInjector(
+                enabled=self.ipi_enabled,
+                target_tool_name=self.ipi_target_tool_name,
+                target_entity_id=self.ipi_target_entity_id,
+                target_text_field=self.ipi_target_text_field,
+                target_agent_id=self.ipi_target_agent_id,
+                payload_id=self.ipi_payload_id,
+                task_id=task.task_id,
+                run_id=self.ipi_run_id or f"{task.task_id}/run_{run_index}",
+            )
+        else:
+            injector = EmailBodyInjector(
+                enabled=self.ipi_enabled,
+                target_email_id=self.ipi_target_email_id,
+                target_agent_id=self.ipi_target_agent_id,
+                task_id=task.task_id,
+                run_id=self.ipi_run_id or f"{task.task_id}/run_{run_index}",
+            )
+        tools = self._build_tools(sandbox, list(task.metadata.get("domains", [])), injector)
         prompt = [
             {
                 "role": "system",
@@ -1115,6 +1157,13 @@ class WorkBenchBenchmark:
             run_metadata={
                 **dict(result.run_metadata),
                 "function_calls": function_calls,
+                "injection_events": injector.events,
+                "injection_count": injector.count,
+                "injection_target_email_id": self.ipi_target_email_id,
+                "injection_surface": self.ipi_surface,
+                "injection_target_tool_name": self.ipi_target_tool_name,
+                "injection_target_entity_id": self.ipi_target_entity_id,
+                "injection_target_text_field": self.ipi_target_text_field,
                 "error": "",
             },
         )

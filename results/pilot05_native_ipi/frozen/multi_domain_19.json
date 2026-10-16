@@ -1,0 +1,75 @@
+{
+  "task_id": "multi_domain_19",
+  "seed": 19043,
+  "topology_spec": {
+    "agents": [
+      {
+        "agent_id": "agent_0",
+        "allowed_tools": null,
+        "context": {
+          "evidence_access": "own",
+          "max_packet_chars": 0,
+          "share_scope": "group",
+          "summary_only": false,
+          "visible_from": [],
+          "visible_kinds": []
+        },
+        "group_id": "g_transaction",
+        "persona_hint": "",
+        "stage_role": "worker",
+        "structural_role": "coordinator"
+      },
+      {
+        "agent_id": "agent_1",
+        "allowed_tools": null,
+        "context": {
+          "evidence_access": "own",
+          "max_packet_chars": 0,
+          "share_scope": "group",
+          "summary_only": false,
+          "visible_from": [],
+          "visible_kinds": []
+        },
+        "group_id": "g_transaction",
+        "persona_hint": "",
+        "stage_role": "worker",
+        "structural_role": "worker"
+      },
+      {
+        "agent_id": "agent_2",
+        "allowed_tools": null,
+        "context": {
+          "evidence_access": "own",
+          "max_packet_chars": 0,
+          "share_scope": "group",
+          "summary_only": false,
+          "visible_from": [],
+          "visible_kinds": []
+        },
+        "group_id": "g_transaction",
+        "persona_hint": "",
+        "stage_role": "critic",
+        "structural_role": "worker"
+      }
+    ],
+    "extra_edges": [],
+    "groups": [
+      {
+        "group_id": "g_transaction",
+        "leader_id": "agent_0",
+        "member_ids": [
+          "agent_0",
+          "agent_1",
+          "agent_2"
+        ],
+        "parent_agent_id": null,
+        "pattern": "star"
+      }
+    ],
+    "rationale": "type=state mutation with lookup and assignment; risks=duplicated CRM writes, incorrect assignee selection due to stale or incomplete overdue task data, premature assignment without verifying fewest overdue tasks | The task requires exactly one state-changing action (adding a lead and assigning it) and a lookup to determine the person with the fewest overdue tasks. A star topology with a coordinator and two workers fits: one worker performs the read-only lookup of overdue task counts, the other worker (verifier) independently checks the lookup result and confirms the correct assignee before the Capability-aware transaction contraction: independent readers report to one deterministic committer.",
+    "root_group_id": "g_transaction",
+    "version": 0
+  },
+  "topology_spec_sha256": "c1ae08d25861f5802980aad3e08688c637cb8821878a433da7941ccdb52ef0ba",
+  "source_metadata": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-pilot01\\results\\pilot01_topology_trigger\\raw\\pilot01_multi_domain_19\\workbench\\P1_native\\multi_domain_19\\run_0.metadata.json"
+}
