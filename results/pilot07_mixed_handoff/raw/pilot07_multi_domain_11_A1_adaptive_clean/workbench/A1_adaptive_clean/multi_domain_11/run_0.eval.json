@@ -1,0 +1,97 @@
+{
+  "completion": true,
+  "details": {
+    "correct": false,
+    "domains": [
+      "crm",
+      "project_management"
+    ],
+    "error": "",
+    "exact_match": false,
+    "ground_truth": [
+      "customer_relationship_manager.add_customer.func(customer_name=\"Alex Davis\", assigned_to_email=\"anaya.patel@atlas.com\", status=\"Lead\")"
+    ],
+    "prediction": [
+      "project_management.search_tasks.func()",
+      "customer_relationship_manager.search_customers.func(customer_name=\"Alex Davis\")",
+      "project_management.search_tasks.func(board=\"Tasks\")",
+      "project_management.search_tasks.func(list_name=\"Tasks\")",
+      "project_management.search_tasks.func(assigned_to_email=\"lena.schmidt@atlas.com\")",
+      "project_management.search_tasks.func(task_name=\"Task\")",
+      "customer_relationship_manager.search_customers.func(customer_name=\"Alex Davis\")",
+      "customer_relationship_manager.search_customers.func(customer_email=\"alex.davis@accesscloud\")",
+      "project_management.search_tasks.func()",
+      "customer_relationship_manager.search_customers.func(customer_name=\"Alex Davis\")",
+      "project_management.search_tasks.func(board=\"Tasks\")",
+      "project_management.search_tasks.func(list_name=\"Tasks\")",
+      "customer_relationship_manager.search_customers.func(customer_email=\"alex.davis@accesscloud\")",
+      "customer_relationship_manager.search_customers.func(customer_name=\"Alex Davis\")",
+      "project_management.search_tasks.func()",
+      "project_management.search_tasks.func(board=\"Tasks\")",
+      "project_management.search_tasks.func(list_name=\"Tasks\")"
+    ],
+    "prediction_substantive": true,
+    "query": " Add Alex Davis as a new lead in the crm and assign them to the person with the fewest overdue tasks",
+    "run_metadata_path": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-pilot07\\results\\pilot07_mixed_handoff\\raw\\pilot07_multi_domain_11_A1_adaptive_clean\\workbench\\A1_adaptive_clean\\multi_domain_11\\run_0.metadata.json",
+    "run_metadata_summary": {
+      "error": "",
+      "fallback": false,
+      "final_reason": "self_evolved:consensus_reached",
+      "function_calls": [
+        "project_management.search_tasks.func()",
+        "customer_relationship_manager.search_customers.func(customer_name=\"Alex Davis\")",
+        "project_management.search_tasks.func(board=\"Tasks\")",
+        "project_management.search_tasks.func(list_name=\"Tasks\")",
+        "project_management.search_tasks.func(assigned_to_email=\"lena.schmidt@atlas.com\")",
+        "project_management.search_tasks.func(task_name=\"Task\")",
+        "customer_relationship_manager.search_customers.func(customer_name=\"Alex Davis\")",
+        "customer_relationship_manager.search_customers.func(customer_email=\"alex.davis@accesscloud\")",
+        "project_management.search_tasks.func()",
+        "customer_relationship_manager.search_customers.func(customer_name=\"Alex Davis\")",
+        "project_management.search_tasks.func(board=\"Tasks\")",
+        "project_management.search_tasks.func(list_name=\"Tasks\")",
+        "customer_relationship_manager.search_customers.func(customer_email=\"alex.davis@accesscloud\")",
+        "customer_relationship_manager.search_customers.func(customer_name=\"Alex Davis\")",
+        "project_management.search_tasks.func()",
+        "project_management.search_tasks.func(board=\"Tasks\")",
+        "project_management.search_tasks.func(list_name=\"Tasks\")"
+      ],
+      "messages_sent_by_agent": {
+        "agent_0": 2,
+        "agent_1": 1,
+        "agent_2": 1
+      },
+      "messages_sent_total": 4,
+      "needs_rerun": false,
+      "retrieved_docids": [],
+      "run_index": 0,
+      "run_status": "completed",
+      "seed": 70011,
+      "task_id": "multi_domain_11",
+      "tool_call_counts": {
+        "customer_relationship_manager.search_customers": 12,
+        "inter_agent_send": 4,
+        "project_management.search_tasks": 22
+      },
+      "tool_calls_total": 38,
+      "topology": "self_evolved",
+      "turns_executed": 1,
+      "vote_tally": {
+        "{\"coverage_gaps\": [{\"component\": \"add alex davis as a new lead\", \"next_action\": \"confirm with requester whether to update the existing customer record or create a distinct lead with different identifying information.\", \"reason\": \"existing customer record found; adding would duplicate.\", \"status\": \"not performed\"}, {\"component\": \"assign to person with fewest overdue tasks\", \"next_action\": \"verify task board/list names and permissions, then re-run task enumeration to compute overdue counts per assignee.\", \"reason\": \"no tasks returned by any search; cannot compute overdue counts.\", \"status\": \"not performed\"}], \"existing_customer_record\": {\"assigned_to_email\": \"lena.schmidt@atlas.com\", \"customer_email\": \"alex.davis@accesscloud\", \"customer_id\": \"00000119\", \"customer_name\": \"alex davis\", \"customer_phone\": \"220-368-5264\", \"follow_up_by\": \"2023-12-06\", \"last_contact_date\": \"2023-11-15\", \"notes\": \"2023-11-09: saw the demo.\", \"product_interest\": \"consulting\", \"status\": \"won\"}, \"outcome\": \"no mutation performed\", \"overdue_task_ranking\": {\"detail\": \"task enumeration returned no tasks; no overdue-task counts exist to rank assignees.\", \"observed_task_records\": [], \"status\": \"unavailable\"}, \"reason\": \"alex davis already exists in the crm as customer_id 00000119 with status 'won'. the trigger condition 'add alex davis as a new lead' does not hold; creating a new lead would duplicate an existing customer, so no add_customer mutation was committed. the secondary requirement (assign to the person with the fewest overdue tasks) is moot because task enumeration returned no tasks, so no overdue-task counts exist to rank assignees.\", \"task\": \"add alex davis as a new lead in the crm and assign them to the person with the fewest overdue tasks\"}": 1
+      }
+    },
+    "tool_selection": "domains",
+    "unwanted_side_effects": false
+  },
+  "outcome": {
+    "completion": true,
+    "completion_source": "final_answer",
+    "score": 0.0,
+    "success": false,
+    "success_source": "benchmark_evaluation"
+  },
+  "prediction": "{\"coverage_gaps\": [{\"component\": \"Add Alex Davis as a new lead\", \"next_action\": \"Confirm with requester whether to update the existing customer record or create a distinct lead with different identifying information.\", \"reason\": \"Existing customer record found; adding would duplicate.\", \"status\": \"not performed\"}, {\"component\": \"Assign to person with fewest overdue tasks\", \"next_action\": \"Verify task board/list names and permissions, then re-run task enumeration to compute overdue counts per assignee.\", \"reason\": \"No tasks returned by any search; cannot compute overdue counts.\", \"status\": \"not performed\"}], \"existing_customer_record\": {\"assigned_to_email\": \"lena.schmidt@atlas.com\", \"customer_email\": \"alex.davis@accesscloud\", \"customer_id\": \"00000119\", \"customer_name\": \"Alex Davis\", \"customer_phone\": \"220-368-5264\", \"follow_up_by\": \"2023-12-06\", \"last_contact_date\": \"2023-11-15\", \"notes\": \"2023-11-09: Saw the demo.\", \"product_interest\": \"Consulting\", \"status\": \"Won\"}, \"outcome\": \"No mutation performed\", \"overdue_task_ranking\": {\"detail\": \"Task enumeration returned no tasks; no overdue-task counts exist to rank assignees.\", \"observed_task_records\": [], \"status\": \"unavailable\"}, \"reason\": \"Alex Davis already exists in the CRM as customer_id 00000119 with status 'Won'. The trigger condition 'add Alex Davis as a new lead' does not hold; creating a new lead would duplicate an existing customer, so no add_customer mutation was committed. The secondary requirement (assign to the person with the fewest overdue tasks) is moot because task enumeration returned no tasks, so no overdue-task counts exist to rank assignees.\", \"task\": \"Add Alex Davis as a new lead in the CRM and assign them to the person with the fewest overdue tasks\"}",
+  "score": 0.0,
+  "success": false,
+  "task_id": "multi_domain_11"
+}

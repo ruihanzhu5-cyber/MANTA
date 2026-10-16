@@ -1,0 +1,96 @@
+[20261016T134330Z] Loaded run configuration benchmark=workbench system=A1_adaptive_clean tasks=1 runs_per_task=1 seed=70011 prompting_baseline=direct topology=self_evolved agents=5 rounds=3 discussion_rounds=1 communication_budget=2
+[20261016T134330Z] TASK_START index=1/1 task_id=multi_domain_11
+[20261016T134330Z] RUN_START task_id=multi_domain_11 run_index=0 seed=70011
+[llm] START request_id=llm-1 task_id=role_assignment run_index=0 agent_id=role_assigner agent_type=default model=deepseek-flash messages=2 tools=0 max_tool_iterations=8
+[llm] DONE request_id=llm-1 task_id=role_assignment run_index=0 agent_id=role_assigner model=deepseek-flash mode=chat elapsed_s=3.91 token_in=811 token_out=31
+[llm] START request_id=llm-2 task_id=multi_domain_11 run_index=0 agent_id=agent_0 agent_type=general model=deepseek-flash messages=4 tools=4 max_tool_iterations=20
+[llm] TOOL_LOOP request_id=llm-2 task_id=multi_domain_11 run_index=0 agent_id=agent_0 iteration=1/20 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-2 task_id=multi_domain_11 run_index=0 agent_id=agent_0 iteration=1 tool_calls=0 assistant_text_chars=3324
+[llm] DONE request_id=llm-2 task_id=multi_domain_11 run_index=0 agent_id=agent_0 model=deepseek-flash mode=tools elapsed_s=6.57 token_in=1939 token_out=756 tool_calls=0
+[llm] START request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 agent_type=general model=deepseek-flash messages=4 tools=4 max_tool_iterations=20
+[llm] TOOL_LOOP request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=1/20 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=1 tool_calls=2 assistant_text_chars=144
+[llm] TOOL_CALL request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=1 tool_name=project_management.search_tasks args={}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=1 tool_name=project_management.search_tasks status=completed output="No search parameters provided."
+[llm] TOOL_CALL request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=1 tool_name=customer_relationship_manager.search_customers args={"customer_name": "Alex Davis"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=1 tool_name=customer_relationship_manager.search_customers status=completed output=[{"customer_id": "00000119", "assigned_to_email": "lena.schmidt@atlas.com", "customer_name": "Alex Davis", "customer_email": "alex.davis@accesscloud", "customer_phone": "220-368-5264", "last_contact_date": "2023-11-15", "product_interest...
+[llm] TOOL_LOOP request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=2/20 messages=7
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=2 tool_calls=2 assistant_text_chars=148
+[llm] TOOL_CALL request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=2 tool_name=project_management.search_tasks args={"board": "Tasks"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=2 tool_name=project_management.search_tasks status=completed output=[]
+[llm] TOOL_CALL request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=2 tool_name=project_management.search_tasks args={"list_name": "Tasks"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=2 tool_name=project_management.search_tasks status=completed output=[]
+[llm] TOOL_LOOP request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=3/20 messages=10
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=3 tool_calls=2 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=3 tool_name=project_management.search_tasks args={"assigned_to_email": "lena.schmidt@atlas.com"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=3 tool_name=project_management.search_tasks status=completed output=[]
+[llm] TOOL_CALL request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=3 tool_name=project_management.search_tasks args={"task_name": "Task"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=3 tool_name=project_management.search_tasks status=completed output=[]
+[llm] TOOL_CONTEXT request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 raw_turns=2 summarized_turns=1 summary_chars=819
+[llm] TOOL_LOOP request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=4/20 messages=11
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=4 tool_calls=2 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=4 tool_name=customer_relationship_manager.search_customers args={"customer_name": "Alex Davis"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=4 tool_name=customer_relationship_manager.search_customers status=completed output=[{"customer_id": "00000119", "assigned_to_email": "lena.schmidt@atlas.com", "customer_name": "Alex Davis", "customer_email": "alex.davis@accesscloud", "customer_phone": "220-368-5264", "last_contact_date": "2023-11-15", "product_interest...
+[llm] TOOL_CALL request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=4 tool_name=customer_relationship_manager.search_customers args={"customer_email": "alex.davis@accesscloud"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=4 tool_name=customer_relationship_manager.search_customers status=completed output=[{"customer_id": "00000119", "assigned_to_email": "lena.schmidt@atlas.com", "customer_name": "Alex Davis", "customer_email": "alex.davis@accesscloud", "customer_phone": "220-368-5264", "last_contact_date": "2023-11-15", "product_interest...
+[llm] TOOL_CONTEXT request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 raw_turns=2 summarized_turns=2 summary_chars=1195
+[llm] TOOL_LOOP request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=5/20 messages=11
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 iteration=5 tool_calls=0 assistant_text_chars=2470
+[llm] DONE request_id=llm-3 task_id=multi_domain_11 run_index=0 agent_id=agent_1 model=deepseek-flash mode=tools elapsed_s=11.03 token_in=17323 token_out=929 tool_calls=8
+[llm] START request_id=llm-4 task_id=multi_domain_11 run_index=0 agent_id=agent_2 agent_type=general model=deepseek-flash messages=4 tools=4 max_tool_iterations=20
+[llm] TOOL_LOOP request_id=llm-4 task_id=multi_domain_11 run_index=0 agent_id=agent_2 iteration=1/20 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-4 task_id=multi_domain_11 run_index=0 agent_id=agent_2 iteration=1 tool_calls=2 assistant_text_chars=78
+[llm] TOOL_CALL request_id=llm-4 task_id=multi_domain_11 run_index=0 agent_id=agent_2 iteration=1 tool_name=project_management.search_tasks args={}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=multi_domain_11 run_index=0 agent_id=agent_2 iteration=1 tool_name=project_management.search_tasks status=completed output="No search parameters provided."
+[llm] TOOL_CALL request_id=llm-4 task_id=multi_domain_11 run_index=0 agent_id=agent_2 iteration=1 tool_name=customer_relationship_manager.search_customers args={"customer_name": "Alex Davis"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=multi_domain_11 run_index=0 agent_id=agent_2 iteration=1 tool_name=customer_relationship_manager.search_customers status=completed output=[{"customer_id": "00000119", "assigned_to_email": "lena.schmidt@atlas.com", "customer_name": "Alex Davis", "customer_email": "alex.davis@accesscloud", "customer_phone": "220-368-5264", "last_contact_date": "2023-11-15", "product_interest...
+[llm] TOOL_LOOP request_id=llm-4 task_id=multi_domain_11 run_index=0 agent_id=agent_2 iteration=2/20 messages=7
+[llm] TOOL_LOOP_RESULT request_id=llm-4 task_id=multi_domain_11 run_index=0 agent_id=agent_2 iteration=2 tool_calls=2 assistant_text_chars=81
+[llm] TOOL_CALL request_id=llm-4 task_id=multi_domain_11 run_index=0 agent_id=agent_2 iteration=2 tool_name=project_management.search_tasks args={"board": "Tasks"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=multi_domain_11 run_index=0 agent_id=agent_2 iteration=2 tool_name=project_management.search_tasks status=completed output=[]
+[llm] TOOL_CALL request_id=llm-4 task_id=multi_domain_11 run_index=0 agent_id=agent_2 iteration=2 tool_name=project_management.search_tasks args={"list_name": "Tasks"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=multi_domain_11 run_index=0 agent_id=agent_2 iteration=2 tool_name=project_management.search_tasks status=completed output=[]
+[llm] TOOL_LOOP request_id=llm-4 task_id=multi_domain_11 run_index=0 agent_id=agent_2 iteration=3/20 messages=10
+[llm] TOOL_LOOP_RESULT request_id=llm-4 task_id=multi_domain_11 run_index=0 agent_id=agent_2 iteration=3 tool_calls=1 assistant_text_chars=130
+[llm] TOOL_CALL request_id=llm-4 task_id=multi_domain_11 run_index=0 agent_id=agent_2 iteration=3 tool_name=customer_relationship_manager.search_customers args={"customer_email": "alex.davis@accesscloud"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=multi_domain_11 run_index=0 agent_id=agent_2 iteration=3 tool_name=customer_relationship_manager.search_customers status=completed output=[{"customer_id": "00000119", "assigned_to_email": "lena.schmidt@atlas.com", "customer_name": "Alex Davis", "customer_email": "alex.davis@accesscloud", "customer_phone": "220-368-5264", "last_contact_date": "2023-11-15", "product_interest...
+[llm] TOOL_CONTEXT request_id=llm-4 task_id=multi_domain_11 run_index=0 agent_id=agent_2 raw_turns=2 summarized_turns=1 summary_chars=753
+[llm] TOOL_LOOP request_id=llm-4 task_id=multi_domain_11 run_index=0 agent_id=agent_2 iteration=4/20 messages=10
+[llm] TOOL_LOOP_RESULT request_id=llm-4 task_id=multi_domain_11 run_index=0 agent_id=agent_2 iteration=4 tool_calls=0 assistant_text_chars=2196
+[llm] DONE request_id=llm-4 task_id=multi_domain_11 run_index=0 agent_id=agent_2 model=deepseek-flash mode=tools elapsed_s=10.00 token_in=13631 token_out=738 tool_calls=5
+[llm] START request_id=llm-5 task_id=multi_domain_11 run_index=0 agent_id=agent_0 agent_type=general model=deepseek-flash messages=4 tools=10 max_tool_iterations=20
+[llm] TOOL_LOOP request_id=llm-5 task_id=multi_domain_11 run_index=0 agent_id=agent_0 iteration=1/20 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-5 task_id=multi_domain_11 run_index=0 agent_id=agent_0 iteration=1 tool_calls=2 assistant_text_chars=90
+[llm] TOOL_CALL request_id=llm-5 task_id=multi_domain_11 run_index=0 agent_id=agent_0 iteration=1 tool_name=customer_relationship_manager.search_customers args={"customer_name": "Alex Davis"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=multi_domain_11 run_index=0 agent_id=agent_0 iteration=1 tool_name=customer_relationship_manager.search_customers status=completed output=[{"customer_id": "00000119", "assigned_to_email": "lena.schmidt@atlas.com", "customer_name": "Alex Davis", "customer_email": "alex.davis@accesscloud", "customer_phone": "220-368-5264", "last_contact_date": "2023-11-15", "product_interest...
+[llm] TOOL_CALL request_id=llm-5 task_id=multi_domain_11 run_index=0 agent_id=agent_0 iteration=1 tool_name=project_management.search_tasks args={}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=multi_domain_11 run_index=0 agent_id=agent_0 iteration=1 tool_name=project_management.search_tasks status=completed output="No search parameters provided."
+[llm] TOOL_LOOP request_id=llm-5 task_id=multi_domain_11 run_index=0 agent_id=agent_0 iteration=2/20 messages=7
+[llm] TOOL_LOOP_RESULT request_id=llm-5 task_id=multi_domain_11 run_index=0 agent_id=agent_0 iteration=2 tool_calls=2 assistant_text_chars=92
+[llm] TOOL_CALL request_id=llm-5 task_id=multi_domain_11 run_index=0 agent_id=agent_0 iteration=2 tool_name=project_management.search_tasks args={"board": "Tasks"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=multi_domain_11 run_index=0 agent_id=agent_0 iteration=2 tool_name=project_management.search_tasks status=completed output=[]
+[llm] TOOL_CALL request_id=llm-5 task_id=multi_domain_11 run_index=0 agent_id=agent_0 iteration=2 tool_name=project_management.search_tasks args={"list_name": "Tasks"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=multi_domain_11 run_index=0 agent_id=agent_0 iteration=2 tool_name=project_management.search_tasks status=completed output=[]
+[llm] TOOL_LOOP request_id=llm-5 task_id=multi_domain_11 run_index=0 agent_id=agent_0 iteration=3/20 messages=10
+[llm] TOOL_LOOP_RESULT request_id=llm-5 task_id=multi_domain_11 run_index=0 agent_id=agent_0 iteration=3 tool_calls=0 assistant_text_chars=2723
+[llm] DONE request_id=llm-5 task_id=multi_domain_11 run_index=0 agent_id=agent_0 model=deepseek-flash mode=tools elapsed_s=8.33 token_in=21618 token_out=804 tool_calls=4
+[llm] START request_id=llm-6 task_id=multi_domain_11 run_index=0 agent_id=trace_auditor agent_type=auditor model=deepseek-flash messages=2 tools=0 max_tool_iterations=8
+[llm] DONE request_id=llm-6 task_id=multi_domain_11 run_index=0 agent_id=trace_auditor model=deepseek-flash mode=chat elapsed_s=4.56 token_in=4323 token_out=676
+[llm] START request_id=llm-7 task_id=multi_domain_11 run_index=0 agent_id=meta_termination_termination_judge agent_type=judge model=deepseek-flash messages=2 tools=0 max_tool_iterations=1
+[llm] DONE request_id=llm-7 task_id=multi_domain_11 run_index=0 agent_id=meta_termination_termination_judge model=deepseek-flash mode=chat elapsed_s=1.88 token_in=1811 token_out=111
+[llm] START request_id=llm-8 task_id=multi_domain_11 run_index=0 agent_id=final_synthesizer agent_type=general model=deepseek-flash messages=2 tools=0 max_tool_iterations=1
+[llm] DONE request_id=llm-8 task_id=multi_domain_11 run_index=0 agent_id=final_synthesizer model=deepseek-flash mode=chat elapsed_s=5.05 token_in=1712 token_out=705
+[llm] START request_id=llm-9 task_id=multi_domain_11 run_index=0 agent_id=constraint_reconciler agent_type=general model=deepseek-flash messages=2 tools=0 max_tool_iterations=1
+[llm] DONE request_id=llm-9 task_id=multi_domain_11 run_index=0 agent_id=constraint_reconciler model=deepseek-flash mode=chat elapsed_s=7.07 token_in=1273 token_out=1287
+[20261016T134429Z] RUN_FINISH task_id=multi_domain_11 run_index=0 elapsed_s=58.56 trace_events=65 final_answer_chars=1749 status=completed
+[20261016T134429Z] TRACE_WRITTEN task_id=multi_domain_11 run_index=0 path=C:\Users\larei\Documents\Codex\2026-10-16\new-chat\work\manta-pilot07\results\pilot07_mixed_handoff\raw\pilot07_multi_domain_11_A1_adaptive_clean\workbench\A1_adaptive_clean\multi_domain_11\run_0.trace.jsonl
+[20261016T134429Z] RAW_OUTPUT_WRITTEN task_id=multi_domain_11 run_index=0 path=C:\Users\larei\Documents\Codex\2026-10-16\new-chat\work\manta-pilot07\results\pilot07_mixed_handoff\raw\pilot07_multi_domain_11_A1_adaptive_clean\workbench\A1_adaptive_clean\multi_domain_11\run_0.raw.json
+[20261016T134429Z] EVAL_FINISH task_id=multi_domain_11 run_index=0 score=0.0000 success=False
+[20261016T134429Z] RUN_ARTIFACTS_WRITTEN task_id=multi_domain_11 run_index=0 metadata_path=C:\Users\larei\Documents\Codex\2026-10-16\new-chat\work\manta-pilot07\results\pilot07_mixed_handoff\raw\pilot07_multi_domain_11_A1_adaptive_clean\workbench\A1_adaptive_clean\multi_domain_11\run_0.metadata.json eval_path=C:\Users\larei\Documents\Codex\2026-10-16\new-chat\work\manta-pilot07\results\pilot07_mixed_handoff\raw\pilot07_multi_domain_11_A1_adaptive_clean\workbench\A1_adaptive_clean\multi_domain_11\run_0.eval.json
+[20261016T134429Z] TASK_CHECKPOINT_WRITTEN task_id=multi_domain_11 completed_runs=1/1 path=C:\Users\larei\Documents\Codex\2026-10-16\new-chat\work\manta-pilot07\results\pilot07_mixed_handoff\raw\pilot07_multi_domain_11_A1_adaptive_clean\workbench\A1_adaptive_clean\multi_domain_11\task_summary.json
+[20261016T134429Z] TASK_ANALYZE_START task_id=multi_domain_11
+[20261016T134429Z] TASK_ANALYZE_FINISH task_id=multi_domain_11 avg_score=0.0000 success_rate=0.0000 completion_rate=1.0000
+[20261016T134429Z] TASK_FINISH index=1/1 task_id=multi_domain_11 task_dir=C:\Users\larei\Documents\Codex\2026-10-16\new-chat\work\manta-pilot07\results\pilot07_mixed_handoff\raw\pilot07_multi_domain_11_A1_adaptive_clean\workbench\A1_adaptive_clean\multi_domain_11 failures=0 fallbacks=0 needs_rerun=False
+[20261016T134429Z] SUMMARY_WRITTEN summary_json=C:\Users\larei\Documents\Codex\2026-10-16\new-chat\work\manta-pilot07\results\pilot07_mixed_handoff\raw\pilot07_multi_domain_11_A1_adaptive_clean\workbench\A1_adaptive_clean\summary.json summary_csv=C:\Users\larei\Documents\Codex\2026-10-16\new-chat\work\manta-pilot07\results\pilot07_mixed_handoff\raw\pilot07_multi_domain_11_A1_adaptive_clean\workbench\A1_adaptive_clean\summary.csv
+[20261016T134429Z] RUN_STATUS_SUMMARY benchmark=workbench system=A1_adaptive_clean run_failures=0 fallbacks=0 needs_rerun_tasks=0 needs_rerun_task_ids=none
+Run complete: C:\Users\larei\Documents\Codex\2026-10-16\new-chat\work\manta-pilot07\results\pilot07_mixed_handoff\raw\pilot07_multi_domain_11_A1_adaptive_clean\workbench\A1_adaptive_clean
