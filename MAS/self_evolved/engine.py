@@ -383,6 +383,7 @@ class SelfEvolvedEngine:
             "context": context, "executor": executor,
             "mutation_payload": mutation_payload,
             "start_turn_index": turn_index + 1,
+            "mutations_used_floor": len(extra["spec_versions"]),
         }
         return self._continue_native(runtime)
 
@@ -469,7 +470,12 @@ class SelfEvolvedEngine:
             if audit_report is not None:
                 audit_reports.append(audit_report)
 
-            mutations_used = len(spec_versions) - 1
+            # KEEP consumes the same frozen repair opportunity as MUTATE even
+            # though it does not create a new TopologySpec version.
+            mutations_used = max(
+                len(spec_versions) - 1,
+                int(runtime.get("mutations_used_floor", 0)),
+            )
             repeated_decision = self._repair_repeated_decision(turn_results)
             transaction_committed = bool(mutation_tool_names) and any(
                 successful_mutation_record(record, mutation_tool_names)

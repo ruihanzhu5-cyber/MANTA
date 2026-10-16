@@ -69,6 +69,18 @@ def prepare(task_id: str) -> dict:
                       else P08 / "restore_validation.json")
     if validation.get("status") != "LIVE_BOUNDARY_TWO_RESTORE_PASSED":
         raise RuntimeError("Pilot 09 requires a real, two-restore Pilot 08 boundary")
+    prior = [x for x in load(LEDGER).get("episodes", [])
+             if x.get("pilot") == "pilot08" and x.get("task_id") == task_id]
+    if not {"KEEP", "MUTATE"}.issubset({x.get("arm") for x in prior}):
+        raise RuntimeError("Pilot 09 requires both completed Pilot 08 continuations")
+    pair_path = P08 / "paired_summary.csv"
+    if not pair_path.exists():
+        raise RuntimeError("Pilot 09 requires the audited Pilot 08 pair summary")
+    with pair_path.open(newline="", encoding="utf-8") as handle:
+        pair_rows = [row for row in csv.DictReader(handle)
+                     if row.get("case_id") == task_id]
+    if len(pair_rows) != 1 or pair_rows[0]["causal_comparison_valid"] != "True":
+        raise RuntimeError("Pilot 09 requires a valid same-checkpoint Pilot 08 pair")
     source_manifest_path = P08 / "manifests" / f"{task_id}.json"
     source_manifest = load(source_manifest_path if source_manifest_path.exists()
                            else P08 / "manifest.json")
@@ -183,12 +195,17 @@ def run_one(task_id: str, policy: str, manifest: dict) -> bool:
         record["error"] = f"runner_exit_{process.returncode}"
     elif all(path.exists() for path in (meta, trace, evaluation)):
         metadata, ev = load(meta), load(evaluation)
+        task_summary_path = folder / "task_summary.json"
+        task_summary = load(task_summary_path) if task_summary_path.exists() else {}
+        run_status = (task_summary.get("runs") or [{}])[0]
         record.update({
             "error": metadata.get("error") or "",
             "metadata_path": str(meta), "metadata_sha256": file_hash(meta),
             "trace_path": str(trace), "trace_sha256": file_hash(trace),
             "evaluation_path": str(evaluation), "evaluation_sha256": file_hash(evaluation),
             "official_task_success": bool(ev.get("success")),
+            "runner_fallback": bool(run_status.get("fallback")),
+            "runner_needs_rerun": bool(run_status.get("needs_rerun")),
             "unwanted_side_effects": (ev.get("details") or {}).get("unwanted_side_effects"),
             "handoff_policy_events": metadata.get("handoff_policy_events") or [],
         })
