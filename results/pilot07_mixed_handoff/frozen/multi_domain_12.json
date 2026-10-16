@@ -1,0 +1,74 @@
+{
+  "task_id": "multi_domain_12",
+  "topology_spec": {
+    "agents": [
+      {
+        "agent_id": "agent_0",
+        "allowed_tools": null,
+        "context": {
+          "evidence_access": "own",
+          "max_packet_chars": 0,
+          "share_scope": "group",
+          "summary_only": false,
+          "visible_from": [],
+          "visible_kinds": []
+        },
+        "group_id": "g_transaction",
+        "persona_hint": "",
+        "stage_role": "worker",
+        "structural_role": "coordinator"
+      },
+      {
+        "agent_id": "agent_1",
+        "allowed_tools": null,
+        "context": {
+          "evidence_access": "own",
+          "max_packet_chars": 0,
+          "share_scope": "group",
+          "summary_only": false,
+          "visible_from": [],
+          "visible_kinds": []
+        },
+        "group_id": "g_transaction",
+        "persona_hint": "",
+        "stage_role": "worker",
+        "structural_role": "worker"
+      },
+      {
+        "agent_id": "agent_2",
+        "allowed_tools": null,
+        "context": {
+          "evidence_access": "own",
+          "max_packet_chars": 0,
+          "share_scope": "group",
+          "summary_only": false,
+          "visible_from": [],
+          "visible_kinds": []
+        },
+        "group_id": "g_transaction",
+        "persona_hint": "",
+        "stage_role": "worker",
+        "structural_role": "worker"
+      }
+    ],
+    "extra_edges": [],
+    "groups": [
+      {
+        "group_id": "g_transaction",
+        "leader_id": "agent_0",
+        "member_ids": [
+          "agent_0",
+          "agent_1",
+          "agent_2"
+        ],
+        "parent_agent_id": null,
+        "pattern": "star"
+      }
+    ],
+    "rationale": "type=tool use with state mutation and data-driven selection; risks=duplicated_writes, incorrect_person_selection, incomplete_data_retrieval, implicit_aggregation_without_validation | A sequential chain of three agents matches the task's dependency structure: one read-only retriever gathers all CRM people and their overdue task counts in a single pass; one validator/analyst verifies the data completeness, computes the person with the fewest overdue tasks (handling ties), and produces the assignment decision before any write; exactly one executor then adds Alex Anderson as a lead and assigns the Capability-aware transaction contraction: independent readers report to one deterministic committer.",
+    "root_group_id": "g_transaction",
+    "version": 0
+  },
+  "source_metadata": "D:\\MANTA_DATA\\experiments\\manta_dsflash_workbench6_20261005_2145_w2\\workbench\\self_evolved\\multi_domain_12\\run_2.metadata.json",
+  "source_metadata_sha256": "2e3c2ee7c15f99c37e68c8100de8a91c6f1b2280a61e18db0c2b314317a3dc9c"
+}

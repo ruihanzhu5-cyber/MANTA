@@ -1,0 +1,74 @@
+{
+  "task_id": "multi_domain_15",
+  "topology_spec": {
+    "agents": [
+      {
+        "agent_id": "agent_0",
+        "allowed_tools": null,
+        "context": {
+          "evidence_access": "own",
+          "max_packet_chars": 0,
+          "share_scope": "group",
+          "summary_only": false,
+          "visible_from": [],
+          "visible_kinds": []
+        },
+        "group_id": "g_transaction",
+        "persona_hint": "",
+        "stage_role": "worker",
+        "structural_role": "coordinator"
+      },
+      {
+        "agent_id": "agent_1",
+        "allowed_tools": null,
+        "context": {
+          "evidence_access": "own",
+          "max_packet_chars": 0,
+          "share_scope": "group",
+          "summary_only": false,
+          "visible_from": [],
+          "visible_kinds": []
+        },
+        "group_id": "g_transaction",
+        "persona_hint": "",
+        "stage_role": "worker",
+        "structural_role": "worker"
+      },
+      {
+        "agent_id": "agent_2",
+        "allowed_tools": null,
+        "context": {
+          "evidence_access": "own",
+          "max_packet_chars": 0,
+          "share_scope": "group",
+          "summary_only": false,
+          "visible_from": [],
+          "visible_kinds": []
+        },
+        "group_id": "g_transaction",
+        "persona_hint": "",
+        "stage_role": "critic",
+        "structural_role": "worker"
+      }
+    ],
+    "extra_edges": [],
+    "groups": [
+      {
+        "group_id": "g_transaction",
+        "leader_id": "agent_0",
+        "member_ids": [
+          "agent_0",
+          "agent_1",
+          "agent_2"
+        ],
+        "parent_agent_id": null,
+        "pattern": "star"
+      }
+    ],
+    "rationale": "type=retrieval + state mutation (tool-mediated workplace task); risks=miscounting overdue tasks and choosing the wrong person, duplicate or mis-targeted CRM write, weak verification of the assignment, tie/ambiguity in 'fewest overdue tasks' handled silently | The task has a strictly dependent shape: (1) read the overdue-task data to count per person, (2) determine the minimum and perform the CRM lead assignment, (3) confirm the correct target was chosen and the write landed. One read-only dataset/task-listing supplies all counts, so a single retriever suffices (no parallel searchers duplicate  Capability-aware transaction contraction: independent readers report to one deterministic committer.",
+    "root_group_id": "g_transaction",
+    "version": 0
+  },
+  "source_metadata": "D:\\MANTA_DATA\\experiments\\manta_dsflash_workbench6_20261005_2145_w3\\workbench\\self_evolved\\multi_domain_15\\run_0.metadata.json",
+  "source_metadata_sha256": "97f26a5281578a25b9a4daf2aaf3e4e520ca4797b840a3928db3c11a3b6cc73e"
+}

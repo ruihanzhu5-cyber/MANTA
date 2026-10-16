@@ -1,0 +1,74 @@
+{
+  "task_id": "multi_domain_16",
+  "topology_spec": {
+    "agents": [
+      {
+        "agent_id": "agent_0",
+        "allowed_tools": null,
+        "context": {
+          "evidence_access": "own",
+          "max_packet_chars": 0,
+          "share_scope": "group",
+          "summary_only": false,
+          "visible_from": [],
+          "visible_kinds": []
+        },
+        "group_id": "g_transaction",
+        "persona_hint": "",
+        "stage_role": "worker",
+        "structural_role": "coordinator"
+      },
+      {
+        "agent_id": "agent_1",
+        "allowed_tools": null,
+        "context": {
+          "evidence_access": "own",
+          "max_packet_chars": 0,
+          "share_scope": "group",
+          "summary_only": false,
+          "visible_from": [],
+          "visible_kinds": []
+        },
+        "group_id": "g_transaction",
+        "persona_hint": "",
+        "stage_role": "worker",
+        "structural_role": "worker"
+      },
+      {
+        "agent_id": "agent_2",
+        "allowed_tools": null,
+        "context": {
+          "evidence_access": "own",
+          "max_packet_chars": 0,
+          "share_scope": "group",
+          "summary_only": false,
+          "visible_from": [],
+          "visible_kinds": []
+        },
+        "group_id": "g_transaction",
+        "persona_hint": "",
+        "stage_role": "worker",
+        "structural_role": "worker"
+      }
+    ],
+    "extra_edges": [],
+    "groups": [
+      {
+        "group_id": "g_transaction",
+        "leader_id": "agent_0",
+        "member_ids": [
+          "agent_0",
+          "agent_1",
+          "agent_2"
+        ],
+        "parent_agent_id": null,
+        "pattern": "star"
+      }
+    ],
+    "rationale": "type=external tool use with state mutation (CRM lead creation and assignment); risks=duplicated writes (creating lead twice or assigning twice), assigning to wrong person due to miscounted overdue tasks, missing verification of the write | The task is a short dependent chain: (1) read the CRM to find the person with the fewest overdue tasks, (2) create the new lead, (3) assign the lead to that person. Because it mutates external state, exactly one agent must perform the writes. A star topology with a coordinator that reads/plans and a single executor that performs the CRM writes keeps state ch Capability-aware transaction contraction: independent readers report to one deterministic committer.",
+    "root_group_id": "g_transaction",
+    "version": 0
+  },
+  "source_metadata": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-pilot01\\results\\pilot01_topology_trigger\\raw\\pilot01_multi_domain_16\\workbench\\P1_native\\multi_domain_16\\run_0.metadata.json",
+  "source_metadata_sha256": "9d43cc6f0578034984aaa95e80e0e6c2515d49176184148294770dca04910354"
+}

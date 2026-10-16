@@ -676,6 +676,12 @@ class TurnExecutor:
                     if isinstance(record, dict)
                 )
         self._dedupe_tool_records(artifact)
+        intervention = state.get("artifact_intervention")
+        if intervention is not None:
+            artifact = intervention.apply(
+                artifact, state=state, agent_id=agent_id, stage_role=stage_role,
+                turn_index=int(state.get("round_index", 0)),
+            )
         self._context.record_evidence(state, artifact, agent_id=agent_id)
         return artifact
 
