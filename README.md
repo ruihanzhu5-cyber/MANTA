@@ -225,3 +225,8 @@ reproduction's README for upstream attribution.
 | 2026-10-16 | `research/context-topology-ablation` | [`046d871`](https://github.com/ruihanzhu5-cyber/MANTA/commit/046d87167eb6832f721a727ba79eb4a233d18b4a) | HTTPS 上传故障后，经 GitHub API 创建的临时等价提交；文件树与本地实验提交相同，随后被精确提交替代。 |
 | 2026-10-16 | `research/context-topology-ablation` | [`39bd22c`](https://github.com/ruihanzhu5-cyber/MANTA/commit/39bd22c56b7937a46f1984c668c49b457b168b6e) | 将分支更新到本地原始提交：Context × Topology 消融实现、8 组 DeepSeek 实验汇总与研究报告。 |
 | 2026-10-16 | `main` | 本 README 所在提交 | 建立推送记录，并登记上面两次研究分支更新及本次 README 推送。 |
+| 2026-10-16 | `research/pilot07-mixed-handoff` | [`9299d63`](https://github.com/ruihanzhu5-cyber/MANTA/commit/9299d633711aac02b632dd5f36924364483bf8ad) | 建立 Pilot 07 独立分支，冻结 Case、证据契约、Payload 和四条件实验接线。 |
+| 2026-10-16 | `research/pilot07-mixed-handoff` | [`fb74438`](https://github.com/ruihanzhu5-cyber/MANTA/commit/fb744387d50f368cab58c3b6c44a5c8241e49bbf) | 修复真实 Worker Artifact 干预的数组比较和证据摘要为空时的匹配。 |
+| 2026-10-16 | `research/pilot08-topology-counterfactual` | [`2073bce`](https://github.com/ruihanzhu5-cyber/MANTA/commit/2073bce4503c3681e70be45960be3688c3046af8) | 建立 Pilot 08 独立分支，实现原生 Mutation 前检查点及 KEEP/MUTATE 恢复接线。 |
+| 2026-10-16 | `research/pilot09-handoff-mechanisms` | [`e2d204a`](https://github.com/ruihanzhu5-cyber/MANTA/commit/e2d204af1cf2c4ffe43eddc642a579f4ab925a8b) | 建立 Pilot 09 独立分支，实现受控的后续 Context 交接策略。 |
+| 2026-10-16 | `main` | 本 README 所在提交 | 补记本轮四次已完成的研究分支推送；本次只修改推送记录。 |
