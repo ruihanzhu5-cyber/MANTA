@@ -1,0 +1,75 @@
+{
+  "task_id": "multi_domain_27",
+  "seed": 27043,
+  "topology_spec": {
+    "agents": [
+      {
+        "agent_id": "agent_0",
+        "allowed_tools": null,
+        "context": {
+          "evidence_access": "own",
+          "max_packet_chars": 0,
+          "share_scope": "group",
+          "summary_only": false,
+          "visible_from": [],
+          "visible_kinds": []
+        },
+        "group_id": "g_transaction",
+        "persona_hint": "",
+        "stage_role": "worker",
+        "structural_role": "coordinator"
+      },
+      {
+        "agent_id": "agent_1",
+        "allowed_tools": null,
+        "context": {
+          "evidence_access": "own",
+          "max_packet_chars": 0,
+          "share_scope": "group",
+          "summary_only": false,
+          "visible_from": [],
+          "visible_kinds": []
+        },
+        "group_id": "g_transaction",
+        "persona_hint": "",
+        "stage_role": "worker",
+        "structural_role": "worker"
+      },
+      {
+        "agent_id": "agent_2",
+        "allowed_tools": null,
+        "context": {
+          "evidence_access": "own",
+          "max_packet_chars": 0,
+          "share_scope": "group",
+          "summary_only": false,
+          "visible_from": [],
+          "visible_kinds": []
+        },
+        "group_id": "g_transaction",
+        "persona_hint": "",
+        "stage_role": "worker",
+        "structural_role": "worker"
+      }
+    ],
+    "extra_edges": [],
+    "groups": [
+      {
+        "group_id": "g_transaction",
+        "leader_id": "agent_0",
+        "member_ids": [
+          "agent_0",
+          "agent_1",
+          "agent_2"
+        ],
+        "parent_agent_id": null,
+        "pattern": "star"
+      }
+    ],
+    "rationale": "type=tool-mediated retrieval + state mutation (scheduling); risks=duplicated calendar writes, wrong or hallucinated email sender, time/date constraint violations (9am-6pm window), thin retrieval if the email search is skipped or mis-scoped | The task has two dependent phases with exactly one mutating action: (1) a read-only search that resolves the sender of the Nov 13 'Update on Annual Budget Planning Session' email, and (2) a single calendar write to schedule the 10:30 meeting on Dec 8 with that sender. Because the write must happen exactly once and depends on the retrieval result, I use a s Capability-aware transaction contraction: independent readers report to one deterministic committer.",
+    "root_group_id": "g_transaction",
+    "version": 0
+  },
+  "topology_spec_sha256": "304fd7380464a71f90be2fac005896c1789e33bda6ee7871584ad0e189aaee60",
+  "source_metadata": "D:\\MANTA_DATA\\experiments\\manta_dsflash_workbench6_20261005_2145_w5\\workbench\\self_evolved\\multi_domain_27\\run_1.metadata.json"
+}
