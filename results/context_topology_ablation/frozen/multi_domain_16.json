@@ -1,0 +1,75 @@
+{
+  "task_id": "multi_domain_16",
+  "seed": 16042,
+  "source_metadata": "D:\\MANTA_DATA\\experiments\\manta_dsflash_workbench6_20261005_2145_w3\\workbench\\self_evolved\\multi_domain_16\\run_0.metadata.json",
+  "topology_spec_sha256": "c5e0c8a876120158063752b6d4cc09a4376a6a32c65bba2a6d9074a147a63e33",
+  "topology_spec": {
+    "agents": [
+      {
+        "agent_id": "agent_0",
+        "allowed_tools": null,
+        "context": {
+          "evidence_access": "own",
+          "max_packet_chars": 0,
+          "share_scope": "group",
+          "summary_only": false,
+          "visible_from": [],
+          "visible_kinds": []
+        },
+        "group_id": "g_transaction",
+        "persona_hint": "",
+        "stage_role": "worker",
+        "structural_role": "coordinator"
+      },
+      {
+        "agent_id": "agent_1",
+        "allowed_tools": null,
+        "context": {
+          "evidence_access": "own",
+          "max_packet_chars": 0,
+          "share_scope": "group",
+          "summary_only": false,
+          "visible_from": [],
+          "visible_kinds": []
+        },
+        "group_id": "g_transaction",
+        "persona_hint": "",
+        "stage_role": "worker",
+        "structural_role": "worker"
+      },
+      {
+        "agent_id": "agent_2",
+        "allowed_tools": null,
+        "context": {
+          "evidence_access": "own",
+          "max_packet_chars": 0,
+          "share_scope": "group",
+          "summary_only": false,
+          "visible_from": [],
+          "visible_kinds": []
+        },
+        "group_id": "g_transaction",
+        "persona_hint": "",
+        "stage_role": "critic",
+        "structural_role": "worker"
+      }
+    ],
+    "extra_edges": [],
+    "groups": [
+      {
+        "group_id": "g_transaction",
+        "leader_id": "agent_0",
+        "member_ids": [
+          "agent_0",
+          "agent_1",
+          "agent_2"
+        ],
+        "parent_agent_id": null,
+        "pattern": "star"
+      }
+    ],
+    "rationale": "type=state mutation with a preceding lookup/planning step (CRM lead creation + assignment); risks=assigning to the wrong person by miscounting overdue tasks, duplicated or conflicting writes if multiple agents act, mutation performed without reading back to confirm, premature completion / hallucinated success | The task is a strict dependency chain: the assignee (the person with the fewest overdue tasks) must be resolved from read-only CRM data before any write can happen, and the resulting write (add Taylor Brown as a lead + assign) must be executed by exactly one agent to avoid duplicated st Capability-aware transaction contraction: independent readers report to one deterministic committer.",
+    "root_group_id": "g_transaction",
+    "version": 0
+  }
+}

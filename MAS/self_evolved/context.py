@@ -12,6 +12,7 @@ Visibility is decided in code, never by prompts.
 
 from __future__ import annotations
 
+import json
 import re
 from typing import Any
 
@@ -91,6 +92,119 @@ class SharedContextController:
             if current is None or _message_sort_key(message) >= _message_sort_key(current):
                 latest[key] = message
         return self._apply_reader_bounds(sorted(latest.values(), key=_message_sort_key), policy)
+
+    def attach_evidence_handoff(
+        self,
+        state: dict[str, Any],
+        *,
+        agent_id: str,
+        visible: list[RelayPacket],
+    ) -> list[RelayPacket]:
+        """Add source-bound tool facts to packets already visible to this reader.
+
+        This produces prompt-only packet copies. It cannot create a new route:
+        recipient, sender share scope, kind, and reader bounds have already been
+        checked by ``visible_packets``. No benchmark answer is consulted.
+        """
+        artifacts = {
+            str(item.get("artifact_id", "")): item
+            for item in state.get("artifacts", [])
+            if isinstance(item, dict) and item.get("artifact_id")
+        }
+        sent: set[str] = set()
+        enhanced: list[RelayPacket] = []
+        reader_policy = self._spec.agent(agent_id).context
+        for packet in visible:
+            artifact_id = str(packet.get("artifact_id") or "")
+            artifact = artifacts.get(artifact_id)
+            sender = str(packet.get("sender", ""))
+            if (
+                not artifact
+                or artifact_id in sent
+                or sender != str(artifact.get("agent_id"))
+                or reader_policy.summary_only
+            ):
+                enhanced.append(packet)
+                continue
+            sent.add(artifact_id)
+            record = self._handoff_record(state, artifact, packet)
+            if not record["tool_observations"] and not record["executed_actions"]:
+                enhanced.append(packet)
+                continue
+            payload = dict(packet.get("payload") or {})
+            if reader_policy.max_packet_chars:
+                original_chars = len(json.dumps(payload, ensure_ascii=False, default=str))
+                record_chars = len(json.dumps(record, ensure_ascii=False, default=str))
+                if original_chars + record_chars > reader_policy.max_packet_chars:
+                    enhanced.append(packet)
+                    continue
+            payload["evidence_handoff"] = record
+            enhanced.append({**packet, "payload": payload})
+            state.setdefault("evidence_handoff_log", []).append(
+                {
+                    "receiver": agent_id,
+                    "source_message_id": packet.get("message_id"),
+                    "source_artifact_id": artifact_id,
+                    "source_agent_id": sender,
+                    "round": packet.get("round"),
+                    "new_fields": ["tool_observations", "executed_actions"],
+                    "observation_count": len(record["tool_observations"]),
+                    "action_count": len(record["executed_actions"]),
+                }
+            )
+        return enhanced
+
+    @staticmethod
+    def _handoff_record(
+        state: dict[str, Any], artifact: dict[str, Any], packet: RelayPacket
+    ) -> dict[str, Any]:
+        mutating = set(state.get("self_evolved_mutation_tool_names", []))
+        observations: list[dict[str, Any]] = []
+        actions: list[dict[str, Any]] = []
+        seen: set[str] = set()
+        for index, tool in enumerate(artifact.get("tool_records") or []):
+            if not isinstance(tool, dict):
+                continue
+            name = str(tool.get("tool_name", ""))
+            args = tool.get("arguments") if isinstance(tool.get("arguments"), dict) else {}
+            signature = json.dumps([name, args], ensure_ascii=False, sort_keys=True, default=str)
+            if signature in seen:
+                continue
+            seen.add(signature)
+            item = {
+                "tool": name,
+                "arguments": args,
+                "status": str(tool.get("status", "unknown")),
+                "receipt_or_observation": SharedContextController._bounded_observation(
+                    tool.get("output"), limit=700
+                ),
+                "source_tool_record_index": index,
+            }
+            if name in mutating:
+                if len(actions) < 3:
+                    actions.append(item)
+            elif len(observations) < 10 and item["receipt_or_observation"]:
+                observations.append(item)
+        return {
+            "task_constraints_ref": "original_visible_task_prompt",
+            "artifact_id": artifact.get("artifact_id"),
+            "agent_id": artifact.get("agent_id"),
+            "round": artifact.get("round_index", packet.get("round")),
+            "tool_observations": observations,
+            "executed_actions": actions,
+            "proposed_action_ref": "packet.payload.answer_artifact_or_unknown",
+            "unresolved_ref": "packet.payload.unresolved_issues_or_unknown",
+        }
+
+    @staticmethod
+    def _bounded_observation(value: Any, *, limit: int) -> str:
+        if value is None:
+            return "unknown"
+        try:
+            rendered = json.dumps(value, ensure_ascii=False, default=str, sort_keys=True)
+        except (TypeError, ValueError):
+            rendered = str(value)
+        return rendered if len(rendered) <= limit else rendered[:limit] + " [truncated]"
 
     # -- evidence ledger -------------------------------------------------------
 

@@ -541,6 +541,10 @@ class TurnExecutor:
         directive: str,
         visible_messages: list[Any],
     ) -> ArtifactRecord | None:
+        if state.get("self_evolved_evidence_handoff_enabled", False):
+            visible_messages = self._context.attach_evidence_handoff(
+                state, agent_id=agent_id, visible=visible_messages
+            )
         all_tools = list(state.get("tools", []))
         mutation_names = set(state.get("self_evolved_mutation_tool_names", []))
         committer_id = str(state.get("self_evolved_committer_id", ""))

@@ -199,6 +199,11 @@ class SelfEvolvedConfig:
     # scripts/reflect_topology_skill.py).
     skill_update_batch_size: int = 12
     default_packet_max_chars: int = 0  # 0 = full fidelity; optional generous structural budget
+    # Pilot-only switches. Defaults preserve the original MANTA execution path.
+    evidence_handoff_enabled: bool = False
+    allow_topology_mutation: bool = True
+    allow_context_policy_mutation: bool = True
+    frozen_initial_spec_path: str = ""
 
     def validate(self) -> None:
         if self.harness_backend not in {"openrouter", "claude_agent_sdk"}:
@@ -228,6 +233,8 @@ class SelfEvolvedConfig:
             raise ValueError("self_evolved.skill_update_batch_size must be >= 0")
         if self.default_packet_max_chars < 0:
             raise ValueError("self_evolved.default_packet_max_chars must be >= 0")
+        if self.frozen_initial_spec_path and not Path(self.frozen_initial_spec_path).is_file():
+            raise ValueError("self_evolved.frozen_initial_spec_path must name an existing JSON file")
 
 
 @dataclass
@@ -366,6 +373,12 @@ def load_experiment_config(path: str | Path) -> ExperimentConfig:
         playbook_read=bool(self_evolved_raw.get("playbook_read", True)),
         skill_update_batch_size=int(self_evolved_raw.get("skill_update_batch_size", 12)),
         default_packet_max_chars=int(self_evolved_raw.get("default_packet_max_chars", 0)),
+        evidence_handoff_enabled=bool(self_evolved_raw.get("evidence_handoff_enabled", False)),
+        allow_topology_mutation=bool(self_evolved_raw.get("allow_topology_mutation", True)),
+        allow_context_policy_mutation=bool(
+            self_evolved_raw.get("allow_context_policy_mutation", True)
+        ),
+        frozen_initial_spec_path=str(self_evolved_raw.get("frozen_initial_spec_path", "")),
     )
 
     models = {str(key): str(value) for key, value in models_raw.items()}
