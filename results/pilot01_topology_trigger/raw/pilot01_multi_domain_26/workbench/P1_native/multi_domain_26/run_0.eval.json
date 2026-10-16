@@ -1,0 +1,82 @@
+{
+  "completion": true,
+  "details": {
+    "correct": true,
+    "domains": [
+      "email",
+      "calendar"
+    ],
+    "error": "",
+    "exact_match": true,
+    "ground_truth": [
+      "calendar.create_event.func(event_name=\"Task Update on Optimize database query for report generation\", participant_email=\"raj.patel@atlas.com\", event_start=\"2023-12-15 11:30:00\", duration=\"120\")"
+    ],
+    "prediction": [
+      "email.search_emails.func(query=\"Task Update on Optimize database query for report generation\", date_min=\"2023-11-17\", date_max=\"2023-11-17\")",
+      "email.get_email_information_by_id.func(email_id=\"00000201\", field=\"sender/recipient\")",
+      "email.get_email_information_by_id.func(email_id=\"00000201\", field=\"sent_datetime\")",
+      "company_directory.find_email_address.func(name=\"Raj Patel\")",
+      "company_directory.find_email_address.func(name=\"raj.patel@atlas.com\")",
+      "email.get_email_information_by_id.func(email_id=\"00000201\", field=\"subject\")",
+      "calendar.search_events.func(query=\"Task Update on Optimize database query for report generation\", time_min=\"2023-12-15 00:00:00\", time_max=\"2023-12-15 23:59:59\")",
+      "calendar.create_event.func(event_name=\"Task Update on Optimize database query for report generation\", participant_email=\"raj.patel@atlas.com\", event_start=\"2023-12-15 11:30:00\", duration=\"120\")"
+    ],
+    "prediction_substantive": true,
+    "query": "Can you find the email from November 17 about 'Task Update on Optimize database query for report generation' and schedule a 2 hour meeting called 'Task Update on Optimize database query for report generation' at 11:30 with the sender for December 15?",
+    "run_metadata_path": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-pilot01\\results\\pilot01_topology_trigger\\raw\\pilot01_multi_domain_26\\workbench\\P1_native\\multi_domain_26\\run_0.metadata.json",
+    "run_metadata_summary": {
+      "error": "",
+      "fallback": false,
+      "final_reason": "self_evolved:transaction_committed",
+      "function_calls": [
+        "email.search_emails.func(query=\"Task Update on Optimize database query for report generation\", date_min=\"2023-11-17\", date_max=\"2023-11-17\")",
+        "email.get_email_information_by_id.func(email_id=\"00000201\", field=\"sender/recipient\")",
+        "email.get_email_information_by_id.func(email_id=\"00000201\", field=\"sent_datetime\")",
+        "company_directory.find_email_address.func(name=\"Raj Patel\")",
+        "company_directory.find_email_address.func(name=\"raj.patel@atlas.com\")",
+        "email.get_email_information_by_id.func(email_id=\"00000201\", field=\"subject\")",
+        "calendar.search_events.func(query=\"Task Update on Optimize database query for report generation\", time_min=\"2023-12-15 00:00:00\", time_max=\"2023-12-15 23:59:59\")",
+        "calendar.create_event.func(event_name=\"Task Update on Optimize database query for report generation\", participant_email=\"raj.patel@atlas.com\", event_start=\"2023-12-15 11:30:00\", duration=\"120\")"
+      ],
+      "messages_sent_by_agent": {
+        "agent_0": 2,
+        "agent_1": 1,
+        "agent_2": 1
+      },
+      "messages_sent_total": 4,
+      "needs_rerun": false,
+      "retrieved_docids": [],
+      "run_index": 0,
+      "run_status": "completed",
+      "seed": 26044,
+      "task_id": "multi_domain_26",
+      "tool_call_counts": {
+        "calendar.create_event": 2,
+        "calendar.search_events": 2,
+        "company_directory.find_email_address": 8,
+        "email.get_email_information_by_id": 8,
+        "email.search_emails": 6,
+        "inter_agent_send": 4
+      },
+      "tool_calls_total": 30,
+      "topology": "self_evolved",
+      "turns_executed": 1,
+      "vote_tally": {
+        "created calendar event 00000300 task update on optimize database query for report generation with participant raj patel atlas com on 2023 12 15 starting 11 30 00 for 120 minutes ending 13 30 00 the source email was verified as email id 00000201 from raj patel atlas com dated 2023 11 17 14 56 02 subject task update on optimize database query for report generation": 1
+      }
+    },
+    "tool_selection": "domains",
+    "unwanted_side_effects": false
+  },
+  "outcome": {
+    "completion": true,
+    "completion_source": "final_answer",
+    "score": 1.0,
+    "success": true,
+    "success_source": "benchmark_evaluation"
+  },
+  "prediction": "Created calendar event 00000300: 'Task Update on Optimize database query for report generation' with participant raj.patel@atlas.com on 2023-12-15 starting 11:30:00 for 120 minutes (ending 13:30:00). The source email was verified as email_id 00000201 from raj.patel@atlas.com, dated 2023-11-17 14:56:02, subject 'Task Update on Optimize database query for report generation'.",
+  "score": 1.0,
+  "success": true,
+  "task_id": "multi_domain_26"
+}

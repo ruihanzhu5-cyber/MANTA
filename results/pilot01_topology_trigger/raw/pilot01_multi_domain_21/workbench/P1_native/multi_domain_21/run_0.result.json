@@ -1,0 +1,178 @@
+{
+  "artifacts": {
+    "answer_path": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-pilot01\\results\\pilot01_topology_trigger\\raw\\pilot01_multi_domain_21\\workbench\\P1_native\\multi_domain_21\\run_0.answer.txt",
+    "metadata_path": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-pilot01\\results\\pilot01_topology_trigger\\raw\\pilot01_multi_domain_21\\workbench\\P1_native\\multi_domain_21\\run_0.metadata.json",
+    "task_manifest_path": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-pilot01\\results\\pilot01_topology_trigger\\raw\\pilot01_multi_domain_21\\workbench\\P1_native\\multi_domain_21\\task.json",
+    "trace_metrics_path": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-pilot01\\results\\pilot01_topology_trigger\\raw\\pilot01_multi_domain_21\\workbench\\P1_native\\multi_domain_21\\run_0.trace_metrics.json",
+    "trajectory_json_path": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-pilot01\\results\\pilot01_topology_trigger\\raw\\pilot01_multi_domain_21\\workbench\\P1_native\\multi_domain_21\\run_0.trajectory.json",
+    "trajectory_md_path": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-pilot01\\results\\pilot01_topology_trigger\\raw\\pilot01_multi_domain_21\\workbench\\P1_native\\multi_domain_21\\run_0.trajectory.md"
+  },
+  "benchmark": "workbench",
+  "evaluation": {
+    "details": {
+      "correct": true,
+      "domains": [
+        "email",
+        "calendar"
+      ],
+      "error": "",
+      "exact_match": true,
+      "ground_truth": [
+        "calendar.create_event.func(event_name=\"Update on project debrief\", participant_email=\"sofia.santos@atlas.com\", event_start=\"2023-12-18 11:30:00\", duration=\"90\")"
+      ],
+      "prediction": [
+        "email.search_emails.func(query=\"Update on project debrief\", date_min=\"2023-10-17\", date_max=\"2023-10-17\")",
+        "email.get_email_information_by_id.func(email_id=\"00000231\", field=\"sender/recipient\")",
+        "company_directory.find_email_address.func(name=\"Sofia Santos\")",
+        "calendar.search_events.func(query=\"Update on project debrief\", time_min=\"2023-12-18 00:00:00\", time_max=\"2023-12-18 23:59:59\")",
+        "email.get_email_information_by_id.func(email_id=\"00000231\", field=\"subject\")",
+        "email.get_email_information_by_id.func(email_id=\"00000231\", field=\"sent_datetime\")",
+        "company_directory.find_email_address.func(name=\"Sofia\")",
+        "calendar.create_event.func(event_name=\"Update on project debrief\", participant_email=\"sofia.santos@atlas.com\", event_start=\"2023-12-18 11:30:00\", duration=\"90\")"
+      ],
+      "prediction_substantive": true,
+      "query": "Find the email from October 17 about Update on project debrief and schedule a 1.5 hour meeting called 'Update on project debrief' at 11:30 with the sender for December 18.",
+      "tool_selection": "domains",
+      "unwanted_side_effects": false
+    },
+    "score": 1.0,
+    "success": true
+  },
+  "failure_category": "",
+  "fallback": false,
+  "final_answer": "Scheduled the meeting. Created calendar event ID 00000300 named 'Update on project debrief' with participant sofia.santos@atlas.com, starting 2023-12-18 11:30:00 for 90 minutes (ending 13:00:00). The sender of the October 17 email (email_id 00000231, subject 'Update on project debrief', sent 2023-10-17 12:09:17) is sofia.santos@atlas.com, confirmed directly from the email record.",
+  "needs_rerun": false,
+  "outcome": {
+    "completion": true,
+    "completion_source": "final_answer",
+    "score": 1.0,
+    "success": true,
+    "success_source": "benchmark_evaluation"
+  },
+  "run_index": 0,
+  "run_status": "completed",
+  "run_summary": {
+    "error": "",
+    "fallback": false,
+    "final_reason": "self_evolved:transaction_committed",
+    "function_calls": [
+      "email.search_emails.func(query=\"Update on project debrief\", date_min=\"2023-10-17\", date_max=\"2023-10-17\")",
+      "email.get_email_information_by_id.func(email_id=\"00000231\", field=\"sender/recipient\")",
+      "company_directory.find_email_address.func(name=\"Sofia Santos\")",
+      "calendar.search_events.func(query=\"Update on project debrief\", time_min=\"2023-12-18 00:00:00\", time_max=\"2023-12-18 23:59:59\")",
+      "email.get_email_information_by_id.func(email_id=\"00000231\", field=\"subject\")",
+      "email.get_email_information_by_id.func(email_id=\"00000231\", field=\"sent_datetime\")",
+      "company_directory.find_email_address.func(name=\"Sofia\")",
+      "calendar.create_event.func(event_name=\"Update on project debrief\", participant_email=\"sofia.santos@atlas.com\", event_start=\"2023-12-18 11:30:00\", duration=\"90\")"
+    ],
+    "messages_sent_by_agent": {
+      "agent_0": 2,
+      "agent_1": 1,
+      "agent_2": 1
+    },
+    "messages_sent_total": 4,
+    "needs_rerun": false,
+    "retrieved_docids": [],
+    "run_index": 0,
+    "run_status": "completed",
+    "seed": 21042,
+    "task_id": "multi_domain_21",
+    "tool_call_counts": {
+      "calendar.create_event": 2,
+      "calendar.search_events": 6,
+      "company_directory.find_email_address": 8,
+      "email.get_email_information_by_id": 8,
+      "email.search_emails": 6,
+      "inter_agent_send": 4
+    },
+    "tool_calls_total": 34,
+    "topology": "self_evolved",
+    "turns_executed": 1,
+    "vote_tally": {
+      "scheduled the meeting created calendar event id 00000300 named update on project debrief with participant sofia santos atlas com starting 2023 12 18 11 30 00 for 90 minutes ending 13 00 00 the sender of the october 17 email email id 00000231 subject update on project debrief sent 2023 10 17 12 09 17 is sofia santos atlas com confirmed directly from the email record": 1
+    }
+  },
+  "system": {
+    "agent_types": [
+      "general"
+    ],
+    "agents": 5,
+    "agents_per_level": [
+      5
+    ],
+    "communication_budget": 2,
+    "discussion_rounds": 1,
+    "final_vote_mode": "llm_judge",
+    "group_sizes": null,
+    "harness_backend": "openrouter",
+    "max_turns": 3,
+    "mode": "MAS",
+    "peer_artifact_max_chars": 0,
+    "prompting_baseline": "direct",
+    "self_consistency_samples": 3,
+    "self_refine_rounds": 3,
+    "system_label": "P1_native",
+    "termination_consensus_mode": "llm_judge",
+    "topology": "self_evolved"
+  },
+  "task_id": "multi_domain_21",
+  "termination": {
+    "average_confidence": 0.95,
+    "consensus_count": 2,
+    "consensus_explanation": "Both consensus answers agree on the same substantive solution: the October 17 email is from sofia.santos@atlas.com and a 90-minute 'Update on project debrief' meeting should be created on 2023-12-18 at 11:30. Candidate 0 additionally reports the event was already created (ID 00000300), while candidates 1 and 2 are ready-to-commit proposals with identical arguments; these are materially equivalent final actions. No further round is likely to improve correctness.",
+    "consensus_gate_blocked": false,
+    "consensus_gate_reason": "",
+    "consensus_groups": [
+      [
+        0,
+        1
+      ]
+    ],
+    "consensus_is_substantive": true,
+    "consensus_mode": "llm_judge",
+    "consensus_ratio": 1.0,
+    "consensus_signature": "0,1",
+    "consensus_source": "llm_judge",
+    "consensus_valid_count": 2,
+    "control_cost_usd": 0.0,
+    "control_latency_ms": 1773.424499999237,
+    "control_token_in": 2298,
+    "control_token_out": 155,
+    "discussion_index": 0,
+    "expected_improvement": "low",
+    "mean_delta": null,
+    "next_step": "finalize",
+    "progress_explanation": "Both consensus answers agree on the same substantive solution: the October 17 email is from sofia.santos@atlas.com and a 90-minute 'Update on project debrief' meeting should be created on 2023-12-18 at 11:30. Candidate 0 additionally reports the event was already created (ID 00000300), while candidates 1 and 2 are ready-to-commit proposals with identical arguments; these are materially equivalent final actions. No further round is likely to improve correctness.",
+    "progress_source": "llm_judge",
+    "progress_status": "stalled",
+    "reason": "transaction_committed",
+    "reason_detail": "The designated committer completed a state-changing tool call; further turns are suppressed to preserve exactly-once effects.",
+    "round_index": 0,
+    "should_stop": true,
+    "stage_name": "meta_termination",
+    "valid_artifact_count": 2
+  },
+  "trace_metrics": {
+    "accuracy": 1.0,
+    "backtrack_rate": 0.0847457627118644,
+    "communication_count": 4.0,
+    "communication_count_agent_to_agent": 0.0,
+    "communication_count_system_mediated": 4.0,
+    "completion": true,
+    "completion_source": "final_answer",
+    "cost_total": 0.0,
+    "handoff_count": 13.0,
+    "latency_e2e": 45528.026819229126,
+    "latency_total": 45527.975199999084,
+    "loop_score": 0.0,
+    "score": 1.0,
+    "steps_total": 59.0,
+    "success": true,
+    "success_source": "benchmark_evaluation",
+    "token_total": 81302.0,
+    "tokens_total": 81302.0,
+    "tool_calls_total": 19.0,
+    "tool_fail_total": 0.0,
+    "verification_density": 0.11864406779661017
+  }
+}

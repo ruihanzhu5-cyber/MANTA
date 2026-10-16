@@ -1,0 +1,196 @@
+{
+  "artifacts": {
+    "answer_path": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-pilot01\\results\\pilot01_topology_trigger\\raw\\pilot01_multi_domain_24\\workbench\\P1_native\\multi_domain_24\\run_0.answer.txt",
+    "metadata_path": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-pilot01\\results\\pilot01_topology_trigger\\raw\\pilot01_multi_domain_24\\workbench\\P1_native\\multi_domain_24\\run_0.metadata.json",
+    "task_manifest_path": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-pilot01\\results\\pilot01_topology_trigger\\raw\\pilot01_multi_domain_24\\workbench\\P1_native\\multi_domain_24\\task.json",
+    "trace_metrics_path": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-pilot01\\results\\pilot01_topology_trigger\\raw\\pilot01_multi_domain_24\\workbench\\P1_native\\multi_domain_24\\run_0.trace_metrics.json",
+    "trajectory_json_path": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-pilot01\\results\\pilot01_topology_trigger\\raw\\pilot01_multi_domain_24\\workbench\\P1_native\\multi_domain_24\\run_0.trajectory.json",
+    "trajectory_md_path": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-pilot01\\results\\pilot01_topology_trigger\\raw\\pilot01_multi_domain_24\\workbench\\P1_native\\multi_domain_24\\run_0.trajectory.md"
+  },
+  "benchmark": "workbench",
+  "evaluation": {
+    "details": {
+      "correct": true,
+      "domains": [
+        "email",
+        "calendar"
+      ],
+      "error": "",
+      "exact_match": true,
+      "ground_truth": [
+        "calendar.create_event.func(event_name=\"Update on Creative Thinking Workshop\", participant_email=\"akira.sato@atlas.com\", event_start=\"2023-12-12 11:30:00\", duration=\"90\")"
+      ],
+      "prediction": [
+        "email.search_emails.func(query=\"Update on Creative Thinking Workshop\", date_min=\"2023-11-27\", date_max=\"2023-11-27\")",
+        "calendar.search_events.func(query=\"Update on Creative Thinking Workshop\", time_min=\"2023-12-12 00:00:00\", time_max=\"2023-12-12 23:59:59\")",
+        "email.get_email_information_by_id.func(email_id=\"00000429\", field=\"sender\")",
+        "calendar.search_events.func(query=\"Creative Thinking Workshop\", time_min=\"2023-12-12 00:00:00\", time_max=\"2023-12-12 23:59:59\")",
+        "company_directory.find_email_address.func(name=\"Akira Sato\")",
+        "email.search_emails.func(query=\"Update on Creative Thinking Workshop\", date_min=\"2023-11-27\", date_max=\"2023-11-27\")",
+        "calendar.search_events.func(query=\"Update on Creative Thinking Workshop\", time_min=\"2023-12-12 00:00:00\", time_max=\"2023-12-12 23:59:59\")",
+        "email.get_email_information_by_id.func(email_id=\"00000429\", field=\"sender\")",
+        "calendar.search_events.func(query=\"Update on Creative Thinking Workshop\", time_min=\"2023-12-12 11:30:00\", time_max=\"2023-12-12 13:00:00\")",
+        "email.get_email_information_by_id.func(email_id=\"00000429\", field=\"sender/recipient\")",
+        "company_directory.find_email_address.func(name=\"Akira Sato\")",
+        "email.get_email_information_by_id.func(email_id=\"00000429\", field=\"subject\")",
+        "email.get_email_information_by_id.func(email_id=\"00000429\", field=\"sent_datetime\")",
+        "calendar.search_events.func(query=\"Update on Creative Thinking Workshop\", time_min=\"2023-12-12 00:00:00\", time_max=\"2023-12-12 23:59:59\")",
+        "email.search_emails.func(query=\"Update on Creative Thinking Workshop\", date_min=\"2023-11-27\", date_max=\"2023-11-27\")",
+        "calendar.search_events.func(query=\"Update on Creative Thinking Workshop\", time_min=\"2023-12-12 00:00:00\", time_max=\"2023-12-12 23:59:59\")",
+        "calendar.create_event.func(event_name=\"Update on Creative Thinking Workshop\", participant_email=\"akira.sato@atlas.com\", event_start=\"2023-12-12 11:30:00\", duration=\"90\")"
+      ],
+      "prediction_substantive": true,
+      "query": "I need to schedule a 1.5 hour meeting called 'Update on Creative Thinking Workshop' at 11:30 for December 12. It's with the sender of the email from November 27 about 'Update on Creative Thinking Workshop'. Can you do that?",
+      "tool_selection": "domains",
+      "unwanted_side_effects": false
+    },
+    "score": 1.0,
+    "success": true
+  },
+  "failure_category": "",
+  "fallback": false,
+  "final_answer": "{\"coverage_gap\": {\"description\": \"The draft did not explicitly flag that the participant's full legal/formal name could not be verified from the directory.\", \"impact\": \"The meeting is scheduled with the verified sender email address; the display name 'Akira Sato' is inferred from the email signature and is not directory-confirmed.\", \"next_action\": \"If a formal participant name is required, verify 'Akira Sato' through an alternate directory or contact record before finalizing external documentation.\"}, \"meeting\": {\"date\": \"2023-12-12\", \"duration_minutes\": 90, \"end_time\": \"13:00:00\", \"event_id\": \"00000300\", \"participant_email\": \"akira.sato@atlas.com\", \"participant_name\": \"Akira Sato\", \"participant_name_status\": \"approximate general background; directory lookup returned no match\", \"start_time\": \"11:30:00\", \"status\": \"scheduled\", \"title\": \"Update on Creative Thinking Workshop\"}, \"source_email\": {\"body\": \"Hi Sam,\\n\\nI wanted to let you know that I've completed the tasks for the Creative Thinking Workshop. Looking forward to your feedback.\\n\\nThanks,\\nAkira\", \"email_id\": \"00000429\", \"inbox_or_outbox\": \"inbox\", \"sender\": \"akira.sato@atlas.com\", \"sent_datetime\": \"2023-11-27 11:09:24\", \"subject\": \"Update on Creative Thinking Workshop\"}}",
+  "needs_rerun": false,
+  "outcome": {
+    "completion": true,
+    "completion_source": "final_answer",
+    "score": 1.0,
+    "success": true,
+    "success_source": "benchmark_evaluation"
+  },
+  "run_index": 0,
+  "run_status": "completed",
+  "run_summary": {
+    "error": "",
+    "fallback": false,
+    "final_reason": "self_evolved:transaction_committed",
+    "function_calls": [
+      "email.search_emails.func(query=\"Update on Creative Thinking Workshop\", date_min=\"2023-11-27\", date_max=\"2023-11-27\")",
+      "calendar.search_events.func(query=\"Update on Creative Thinking Workshop\", time_min=\"2023-12-12 00:00:00\", time_max=\"2023-12-12 23:59:59\")",
+      "email.get_email_information_by_id.func(email_id=\"00000429\", field=\"sender\")",
+      "calendar.search_events.func(query=\"Creative Thinking Workshop\", time_min=\"2023-12-12 00:00:00\", time_max=\"2023-12-12 23:59:59\")",
+      "company_directory.find_email_address.func(name=\"Akira Sato\")",
+      "email.search_emails.func(query=\"Update on Creative Thinking Workshop\", date_min=\"2023-11-27\", date_max=\"2023-11-27\")",
+      "calendar.search_events.func(query=\"Update on Creative Thinking Workshop\", time_min=\"2023-12-12 00:00:00\", time_max=\"2023-12-12 23:59:59\")",
+      "email.get_email_information_by_id.func(email_id=\"00000429\", field=\"sender\")",
+      "calendar.search_events.func(query=\"Update on Creative Thinking Workshop\", time_min=\"2023-12-12 11:30:00\", time_max=\"2023-12-12 13:00:00\")",
+      "email.get_email_information_by_id.func(email_id=\"00000429\", field=\"sender/recipient\")",
+      "company_directory.find_email_address.func(name=\"Akira Sato\")",
+      "email.get_email_information_by_id.func(email_id=\"00000429\", field=\"subject\")",
+      "email.get_email_information_by_id.func(email_id=\"00000429\", field=\"sent_datetime\")",
+      "calendar.search_events.func(query=\"Update on Creative Thinking Workshop\", time_min=\"2023-12-12 00:00:00\", time_max=\"2023-12-12 23:59:59\")",
+      "email.search_emails.func(query=\"Update on Creative Thinking Workshop\", date_min=\"2023-11-27\", date_max=\"2023-11-27\")",
+      "calendar.search_events.func(query=\"Update on Creative Thinking Workshop\", time_min=\"2023-12-12 00:00:00\", time_max=\"2023-12-12 23:59:59\")",
+      "calendar.create_event.func(event_name=\"Update on Creative Thinking Workshop\", participant_email=\"akira.sato@atlas.com\", event_start=\"2023-12-12 11:30:00\", duration=\"90\")"
+    ],
+    "messages_sent_by_agent": {
+      "agent_0": 2,
+      "agent_1": 1,
+      "agent_2": 1
+    },
+    "messages_sent_total": 4,
+    "needs_rerun": false,
+    "retrieved_docids": [],
+    "run_index": 0,
+    "run_status": "completed",
+    "seed": 24042,
+    "task_id": "multi_domain_24",
+    "tool_call_counts": {
+      "calendar.create_event": 2,
+      "calendar.search_events": 12,
+      "company_directory.find_email_address": 4,
+      "email.get_email_information_by_id": 10,
+      "email.search_emails": 6,
+      "inter_agent_send": 4
+    },
+    "tool_calls_total": 38,
+    "topology": "self_evolved",
+    "turns_executed": 1,
+    "vote_tally": {
+      "{\"coverage_gap\": {\"description\": \"the draft did not explicitly flag that the participant's full legal/formal name could not be verified from the directory.\", \"impact\": \"the meeting is scheduled with the verified sender email address; the display name 'akira sato' is inferred from the email signature and is not directory-confirmed.\", \"next_action\": \"if a formal participant name is required, verify 'akira sato' through an alternate directory or contact record before finalizing external documentation.\"}, \"meeting\": {\"date\": \"2023-12-12\", \"duration_minutes\": 90, \"end_time\": \"13:00:00\", \"event_id\": \"00000300\", \"participant_email\": \"akira.sato@atlas.com\", \"participant_name\": \"akira sato\", \"participant_name_status\": \"approximate general background; directory lookup returned no match\", \"start_time\": \"11:30:00\", \"status\": \"scheduled\", \"title\": \"update on creative thinking workshop\"}, \"source_email\": {\"body\": \"hi sam,\\n\\ni wanted to let you know that i've completed the tasks for the creative thinking workshop. looking forward to your feedback.\\n\\nthanks,\\nakira\", \"email_id\": \"00000429\", \"inbox_or_outbox\": \"inbox\", \"sender\": \"akira.sato@atlas.com\", \"sent_datetime\": \"2023-11-27 11:09:24\", \"subject\": \"update on creative thinking workshop\"}}": 1
+    }
+  },
+  "system": {
+    "agent_types": [
+      "general"
+    ],
+    "agents": 5,
+    "agents_per_level": [
+      5
+    ],
+    "communication_budget": 2,
+    "discussion_rounds": 1,
+    "final_vote_mode": "llm_judge",
+    "group_sizes": null,
+    "harness_backend": "openrouter",
+    "max_turns": 3,
+    "mode": "MAS",
+    "peer_artifact_max_chars": 0,
+    "prompting_baseline": "direct",
+    "self_consistency_samples": 3,
+    "self_refine_rounds": 3,
+    "system_label": "P1_native",
+    "termination_consensus_mode": "llm_judge",
+    "topology": "self_evolved"
+  },
+  "task_id": "multi_domain_24",
+  "termination": {
+    "average_confidence": 0.9,
+    "consensus_count": 2,
+    "consensus_explanation": "Both candidates agree on the same concrete scheduling decision (event name, 2023-12-12 11:30, 90 min, participant akira.sato@atlas.com); index 0 reports the event was created while index 1 only prepared the mutation, but the final claim/action is materially equivalent. No further round is likely to improve correctness.",
+    "consensus_gate_blocked": false,
+    "consensus_gate_reason": "",
+    "consensus_groups": [
+      [
+        0,
+        1
+      ]
+    ],
+    "consensus_is_substantive": true,
+    "consensus_mode": "llm_judge",
+    "consensus_ratio": 1.0,
+    "consensus_signature": "0,1",
+    "consensus_source": "llm_judge",
+    "consensus_valid_count": 2,
+    "control_cost_usd": 0.0,
+    "control_latency_ms": 1717.6803999973345,
+    "control_token_in": 2106,
+    "control_token_out": 124,
+    "discussion_index": 0,
+    "expected_improvement": "low",
+    "mean_delta": null,
+    "next_step": "finalize",
+    "progress_explanation": "Both candidates agree on the same concrete scheduling decision (event name, 2023-12-12 11:30, 90 min, participant akira.sato@atlas.com); index 0 reports the event was created while index 1 only prepared the mutation, but the final claim/action is materially equivalent. No further round is likely to improve correctness.",
+    "progress_source": "llm_judge",
+    "progress_status": "stalled",
+    "reason": "transaction_committed",
+    "reason_detail": "The designated committer completed a state-changing tool call; further turns are suppressed to preserve exactly-once effects.",
+    "round_index": 0,
+    "should_stop": true,
+    "stage_name": "meta_termination",
+    "valid_artifact_count": 2
+  },
+  "trace_metrics": {
+    "accuracy": 1.0,
+    "backtrack_rate": 0.07692307692307693,
+    "communication_count": 4.0,
+    "communication_count_agent_to_agent": 0.0,
+    "communication_count_system_mediated": 4.0,
+    "completion": true,
+    "completion_source": "final_answer",
+    "cost_total": 0.0,
+    "handoff_count": 16.0,
+    "latency_e2e": 54037.45460510254,
+    "latency_total": 54037.397599993215,
+    "loop_score": 0.0,
+    "score": 1.0,
+    "steps_total": 65.0,
+    "success": true,
+    "success_source": "benchmark_evaluation",
+    "token_total": 80867.0,
+    "tokens_total": 80867.0,
+    "tool_calls_total": 21.0,
+    "tool_fail_total": 0.0,
+    "verification_density": 0.12307692307692308
+  }
+}

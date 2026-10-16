@@ -1,0 +1,203 @@
+{
+  "base_main_sha": "7d557dc793221906a46a1f83d4e5888fcc5c28d2",
+  "qualification": "actual post-transaction structural change in a new real run",
+  "cases": [
+    {
+      "task_id": "multi_domain_17",
+      "seed": 17044,
+      "prompt": " Add Parker Martin as a new lead in the crm and assign them to the person with the fewest overdue tasks",
+      "source_branch": "research/pilot01-topology-trigger",
+      "source_metadata": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-pilot01\\results\\pilot01_topology_trigger\\raw\\pilot01_multi_domain_17\\workbench\\P1_native\\multi_domain_17\\run_0.metadata.json",
+      "source_metadata_sha256": "5caaa393b50434e476be794b0b813d1c23490d77bf94caef022c063b7da67e11",
+      "initial_topology_spec": {
+        "agents": [
+          {
+            "agent_id": "agent_0",
+            "allowed_tools": null,
+            "context": {
+              "evidence_access": "own",
+              "max_packet_chars": 0,
+              "share_scope": "group",
+              "summary_only": false,
+              "visible_from": [],
+              "visible_kinds": []
+            },
+            "group_id": "g_transaction",
+            "persona_hint": "",
+            "stage_role": "worker",
+            "structural_role": "coordinator"
+          },
+          {
+            "agent_id": "agent_1",
+            "allowed_tools": null,
+            "context": {
+              "evidence_access": "own",
+              "max_packet_chars": 0,
+              "share_scope": "group",
+              "summary_only": false,
+              "visible_from": [],
+              "visible_kinds": []
+            },
+            "group_id": "g_transaction",
+            "persona_hint": "",
+            "stage_role": "worker",
+            "structural_role": "worker"
+          },
+          {
+            "agent_id": "agent_2",
+            "allowed_tools": null,
+            "context": {
+              "evidence_access": "own",
+              "max_packet_chars": 0,
+              "share_scope": "group",
+              "summary_only": false,
+              "visible_from": [],
+              "visible_kinds": []
+            },
+            "group_id": "g_transaction",
+            "persona_hint": "",
+            "stage_role": "critic",
+            "structural_role": "worker"
+          }
+        ],
+        "extra_edges": [],
+        "groups": [
+          {
+            "group_id": "g_transaction",
+            "leader_id": "agent_0",
+            "member_ids": [
+              "agent_0",
+              "agent_1",
+              "agent_2"
+            ],
+            "parent_agent_id": null,
+            "pattern": "star"
+          }
+        ],
+        "rationale": "type=state mutation with lookup and aggregation; risks=duplicated CRM writes, wrong assignee due to miscounted overdue tasks, premature write before identifying correct person | The task has two dependent steps: (1) read the CRM/task data to find the person with the fewest overdue tasks, then (2) create the lead and assign it to that person. Because the assignment target depends on the lookup, this is a chain, not parallel work. A single executor must perform the state-changing CRM write to avoid duplicate leads. A verifier checks the chosen assignee and confirms the write. Topology: chain/3 — Capability-aware transaction contraction: independent readers report to one deterministic committer.",
+        "root_group_id": "g_transaction",
+        "version": 0
+      },
+      "initial_agent_count": 3,
+      "final_agent_count": 4,
+      "audit_modes": [
+        "evidence_lost_before_synthesis",
+        "message_compaction_loss",
+        "tool_error_cascade",
+        "unanswered_task_requirement"
+      ],
+      "applied_ops": [
+        "add_agent",
+        "set_context_policy"
+      ],
+      "added_agents": [
+        "agent_3"
+      ],
+      "email_tool_calls": 0,
+      "new_agent_tool_calls": 16,
+      "new_agent_message_receipts": 1,
+      "official_success": false,
+      "strict_valid": false
+    },
+    {
+      "task_id": "multi_domain_19",
+      "seed": 19043,
+      "prompt": " Add Jaden Anderson as a new lead in the crm and assign them to the person with the fewest overdue tasks",
+      "source_branch": "research/pilot01-topology-trigger",
+      "source_metadata": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-pilot01\\results\\pilot01_topology_trigger\\raw\\pilot01_multi_domain_19\\workbench\\P1_native\\multi_domain_19\\run_0.metadata.json",
+      "source_metadata_sha256": "9bbbb425f588aec1c19971eec29959a45d587e72d29b04559d655b6cd12d23ad",
+      "initial_topology_spec": {
+        "agents": [
+          {
+            "agent_id": "agent_0",
+            "allowed_tools": null,
+            "context": {
+              "evidence_access": "own",
+              "max_packet_chars": 0,
+              "share_scope": "group",
+              "summary_only": false,
+              "visible_from": [],
+              "visible_kinds": []
+            },
+            "group_id": "g_transaction",
+            "persona_hint": "",
+            "stage_role": "worker",
+            "structural_role": "coordinator"
+          },
+          {
+            "agent_id": "agent_1",
+            "allowed_tools": null,
+            "context": {
+              "evidence_access": "own",
+              "max_packet_chars": 0,
+              "share_scope": "group",
+              "summary_only": false,
+              "visible_from": [],
+              "visible_kinds": []
+            },
+            "group_id": "g_transaction",
+            "persona_hint": "",
+            "stage_role": "worker",
+            "structural_role": "worker"
+          },
+          {
+            "agent_id": "agent_2",
+            "allowed_tools": null,
+            "context": {
+              "evidence_access": "own",
+              "max_packet_chars": 0,
+              "share_scope": "group",
+              "summary_only": false,
+              "visible_from": [],
+              "visible_kinds": []
+            },
+            "group_id": "g_transaction",
+            "persona_hint": "",
+            "stage_role": "critic",
+            "structural_role": "worker"
+          }
+        ],
+        "extra_edges": [],
+        "groups": [
+          {
+            "group_id": "g_transaction",
+            "leader_id": "agent_0",
+            "member_ids": [
+              "agent_0",
+              "agent_1",
+              "agent_2"
+            ],
+            "parent_agent_id": null,
+            "pattern": "star"
+          }
+        ],
+        "rationale": "type=state mutation with lookup and assignment; risks=duplicated CRM writes, incorrect assignee selection due to stale or incomplete overdue task data, premature assignment without verifying fewest overdue tasks | The task requires exactly one state-changing action (adding a lead and assigning it) and a lookup to determine the person with the fewest overdue tasks. A star topology with a coordinator and two workers fits: one worker performs the read-only lookup of overdue task counts, the other worker (verifier) independently checks the lookup result and confirms the correct assignee before the Capability-aware transaction contraction: independent readers report to one deterministic committer.",
+        "root_group_id": "g_transaction",
+        "version": 0
+      },
+      "initial_agent_count": 3,
+      "final_agent_count": 4,
+      "audit_modes": [
+        "confident_synthesis_over_escalation",
+        "correlated_reasoning_masquerading_as_independent_consensus",
+        "message_compaction_loss",
+        "requested_answer_granularity_mismatch",
+        "unanswered_task_requirement",
+        "unrequested_operation_substitution",
+        "unverified_assignee_email_used"
+      ],
+      "applied_ops": [
+        "set_group_pattern",
+        "add_agent"
+      ],
+      "added_agents": [
+        "agent_3"
+      ],
+      "email_tool_calls": 0,
+      "new_agent_tool_calls": 12,
+      "new_agent_message_receipts": 1,
+      "official_success": false,
+      "strict_valid": true
+    }
+  ]
+}

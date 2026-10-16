@@ -378,6 +378,53 @@ class TopologySpec:
             "extra_edges": [list(edge) for edge in self.extra_edges],
         }
 
+    @classmethod
+    def from_payload(cls, payload: dict[str, object]) -> TopologySpec:
+        """Rehydrate a frozen, pre-execution topology without invoking the planner."""
+        agents = []
+        for item in payload["agents"]:
+            policy = item.get("context") or {}
+            agents.append(
+                AgentNode(
+                    agent_id=str(item["agent_id"]),
+                    group_id=str(item["group_id"]),
+                    structural_role=str(item.get("structural_role", "worker")),
+                    stage_role=str(item.get("stage_role", "worker")),
+                    persona_hint=str(item.get("persona_hint", "")),
+                    allowed_tools=(
+                        tuple(item["allowed_tools"])
+                        if item.get("allowed_tools") is not None
+                        else None
+                    ),
+                    context=ContextPolicy(
+                        visible_kinds=tuple(policy.get("visible_kinds", ())),
+                        visible_from=tuple(policy.get("visible_from", ())),
+                        share_scope=str(policy.get("share_scope", "group")),
+                        evidence_access=str(policy.get("evidence_access", "own")),
+                        summary_only=bool(policy.get("summary_only", False)),
+                        max_packet_chars=int(policy.get("max_packet_chars", 0)),
+                    ),
+                )
+            )
+        groups = tuple(
+            GroupSpec(
+                group_id=str(item["group_id"]),
+                pattern=str(item["pattern"]),
+                member_ids=tuple(item["member_ids"]),
+                parent_agent_id=item.get("parent_agent_id"),
+                leader_id=item.get("leader_id"),
+            )
+            for item in payload["groups"]
+        )
+        return cls(
+            version=int(payload["version"]),
+            agents=tuple(agents),
+            groups=groups,
+            root_group_id=str(payload["root_group_id"]),
+            extra_edges=tuple(tuple(edge) for edge in payload.get("extra_edges", ())),
+            rationale=str(payload.get("rationale", "")),
+        )
+
 
 def spec_from_layout(layout: TopologyLayout, *, rationale: str = "") -> TopologySpec:
     """Convert a uniform ``TopologyLayout`` into an equivalent ``TopologySpec``.

@@ -1,0 +1,82 @@
+{
+  "completion": true,
+  "details": {
+    "correct": true,
+    "domains": [
+      "email",
+      "calendar"
+    ],
+    "error": "",
+    "exact_match": true,
+    "ground_truth": [
+      "calendar.create_event.func(event_name=\"Update on project debrief\", participant_email=\"sofia.santos@atlas.com\", event_start=\"2023-12-18 11:30:00\", duration=\"90\")"
+    ],
+    "prediction": [
+      "email.search_emails.func(query=\"Update on project debrief\", date_min=\"2023-10-17\", date_max=\"2023-10-17\")",
+      "email.get_email_information_by_id.func(email_id=\"00000231\", field=\"sender/recipient\")",
+      "company_directory.find_email_address.func(name=\"Sofia Santos\")",
+      "calendar.search_events.func(query=\"Update on project debrief\", time_min=\"2023-12-18 00:00:00\", time_max=\"2023-12-18 23:59:59\")",
+      "email.get_email_information_by_id.func(email_id=\"00000231\", field=\"subject\")",
+      "email.get_email_information_by_id.func(email_id=\"00000231\", field=\"sent_datetime\")",
+      "company_directory.find_email_address.func(name=\"Sofia\")",
+      "calendar.create_event.func(event_name=\"Update on project debrief\", participant_email=\"sofia.santos@atlas.com\", event_start=\"2023-12-18 11:30:00\", duration=\"90\")"
+    ],
+    "prediction_substantive": true,
+    "query": "Find the email from October 17 about Update on project debrief and schedule a 1.5 hour meeting called 'Update on project debrief' at 11:30 with the sender for December 18.",
+    "run_metadata_path": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-pilot01\\results\\pilot01_topology_trigger\\raw\\pilot01_multi_domain_21\\workbench\\P1_native\\multi_domain_21\\run_0.metadata.json",
+    "run_metadata_summary": {
+      "error": "",
+      "fallback": false,
+      "final_reason": "self_evolved:transaction_committed",
+      "function_calls": [
+        "email.search_emails.func(query=\"Update on project debrief\", date_min=\"2023-10-17\", date_max=\"2023-10-17\")",
+        "email.get_email_information_by_id.func(email_id=\"00000231\", field=\"sender/recipient\")",
+        "company_directory.find_email_address.func(name=\"Sofia Santos\")",
+        "calendar.search_events.func(query=\"Update on project debrief\", time_min=\"2023-12-18 00:00:00\", time_max=\"2023-12-18 23:59:59\")",
+        "email.get_email_information_by_id.func(email_id=\"00000231\", field=\"subject\")",
+        "email.get_email_information_by_id.func(email_id=\"00000231\", field=\"sent_datetime\")",
+        "company_directory.find_email_address.func(name=\"Sofia\")",
+        "calendar.create_event.func(event_name=\"Update on project debrief\", participant_email=\"sofia.santos@atlas.com\", event_start=\"2023-12-18 11:30:00\", duration=\"90\")"
+      ],
+      "messages_sent_by_agent": {
+        "agent_0": 2,
+        "agent_1": 1,
+        "agent_2": 1
+      },
+      "messages_sent_total": 4,
+      "needs_rerun": false,
+      "retrieved_docids": [],
+      "run_index": 0,
+      "run_status": "completed",
+      "seed": 21042,
+      "task_id": "multi_domain_21",
+      "tool_call_counts": {
+        "calendar.create_event": 2,
+        "calendar.search_events": 6,
+        "company_directory.find_email_address": 8,
+        "email.get_email_information_by_id": 8,
+        "email.search_emails": 6,
+        "inter_agent_send": 4
+      },
+      "tool_calls_total": 34,
+      "topology": "self_evolved",
+      "turns_executed": 1,
+      "vote_tally": {
+        "scheduled the meeting created calendar event id 00000300 named update on project debrief with participant sofia santos atlas com starting 2023 12 18 11 30 00 for 90 minutes ending 13 00 00 the sender of the october 17 email email id 00000231 subject update on project debrief sent 2023 10 17 12 09 17 is sofia santos atlas com confirmed directly from the email record": 1
+      }
+    },
+    "tool_selection": "domains",
+    "unwanted_side_effects": false
+  },
+  "outcome": {
+    "completion": true,
+    "completion_source": "final_answer",
+    "score": 1.0,
+    "success": true,
+    "success_source": "benchmark_evaluation"
+  },
+  "prediction": "Scheduled the meeting. Created calendar event ID 00000300 named 'Update on project debrief' with participant sofia.santos@atlas.com, starting 2023-12-18 11:30:00 for 90 minutes (ending 13:00:00). The sender of the October 17 email (email_id 00000231, subject 'Update on project debrief', sent 2023-10-17 12:09:17) is sofia.santos@atlas.com, confirmed directly from the email record.",
+  "score": 1.0,
+  "success": true,
+  "task_id": "multi_domain_21"
+}
