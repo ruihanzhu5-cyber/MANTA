@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
 import hashlib
 import json
 import os
@@ -13,15 +14,18 @@ import subprocess
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
+from types import SimpleNamespace
 
 from dotenv import dotenv_values
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from benchmark.workbench import WorkBenchBenchmark, WorkBenchSandbox
+from MAS.config import load_experiment_config
 from MAS.self_evolved.artifact_intervention import ArtifactIntervention
 from MAS.self_evolved.checkpoint import load_checkpoint, restore_checkpoint
 from MAS.self_evolved.context import SharedContextController
+from MAS.self_evolved.engine import SelfEvolvedEngine
 from MAS.self_evolved.executor import TurnExecutor
 
 WORK = ROOT.parent
@@ -83,6 +87,77 @@ def logged_usage(log: Path) -> tuple[int, int]:
     return sum(int(row[0]) for row in rows), sum(int(row[1]) for row in rows)
 
 
+class FirstPromptCaptured(BaseException):
+    """Abort a free preview before any LLM or external tool call completes."""
+
+
+class PromptCaptureHarness:
+    def __init__(self) -> None:
+        self.first: dict | None = None
+
+    def generate(self, **kwargs: object) -> None:
+        self.first = {key: value for key, value in kwargs.items() if key != "tools"}
+        self.first["tool_names"] = [tool.get("name") for tool in kwargs.get("tools", [])]
+        raise FirstPromptCaptured
+
+
+def preview_first_prompt(task_id: str, checkpoint: Path, payload: dict) -> dict:
+    manifest = load(RESULTS / "manifests" / f"{task_id}.json")
+    config = load_experiment_config(manifest["config"])
+    extra, logical = payload["extra"], payload["logical_state"]
+    task = SimpleNamespace(
+        task_id=task_id, prompt=logical["task_prompt"],
+        reference_answer=logical["reference_answer"],
+        metadata=logical["task_metadata"],
+    )
+    original_resume = os.environ.get("MANTA_PILOT08_RESUME_CHECKPOINT")
+    original_branch = os.environ.get("MANTA_PILOT08_BRANCH")
+    previews = {}
+    full_previews = {}
+    try:
+        os.environ["MANTA_PILOT08_RESUME_CHECKPOINT"] = str(checkpoint)
+        for branch in ("KEEP", "MUTATE"):
+            os.environ["MANTA_PILOT08_BRANCH"] = branch
+            sandbox = WorkBenchSandbox(Path(r"C:\Users\larei\Documents\ChatGPT\manta\.cache\workbench"))
+            benchmark = WorkBenchBenchmark.__new__(WorkBenchBenchmark)
+            benchmark.tool_selection = "domains"
+            tools = benchmark._build_tools(sandbox, list(task.metadata.get("domains", [])))
+            harness = PromptCaptureHarness()
+            engine = SelfEvolvedEngine(harness, config.self_evolved)
+            with contextlib.suppress(FirstPromptCaptured):
+                engine.run(task=task, run_index=extra["run_index"], seed=extra["seed"],
+                           spec=extra["spec"], agent_types=extra["agent_types"],
+                           tools=tools, max_tool_iterations=int(logical["max_tool_iterations"]),
+                           checkpoint_sandbox=sandbox)
+            if harness.first is None:
+                raise RuntimeError(f"No next model Prompt captured for {branch}")
+            if not all(sandbox.export_state()["frames"][name].equals(
+                    payload["sandbox_state"]["frames"][name])
+                       for name in WorkBenchSandbox.STATE_FRAMES):
+                raise RuntimeError("Preview replayed a pre-fork WorkBench write")
+            encoded = json.dumps(harness.first, ensure_ascii=False, sort_keys=True,
+                                 default=str).encode("utf-8")
+            previews[branch] = {
+                "agent_id": harness.first.get("agent_id"),
+                "prompt_sha256": hashlib.sha256(encoded).hexdigest(),
+                "prompt_chars": len(encoded.decode("utf-8")),
+                "tool_names": harness.first["tool_names"],
+            }
+            full_previews[branch] = harness.first
+    finally:
+        for key, original in (("MANTA_PILOT08_RESUME_CHECKPOINT", original_resume),
+                              ("MANTA_PILOT08_BRANCH", original_branch)):
+            if original is None:
+                os.environ.pop(key, None)
+            else:
+                os.environ[key] = original
+    preview_path = RESULTS / "next_prompt_previews" / f"{task_id}.json"
+    save(preview_path, full_previews)
+    previews["source_path"] = str(preview_path)
+    previews["source_sha256"] = file_hash(preview_path)
+    return previews
+
+
 def validate_live_checkpoint(task_id: str) -> bool:
     checkpoint = RESULTS / "checkpoints" / f"{task_id}.pkl.gz"
     payload = load_checkpoint(checkpoint)
@@ -129,6 +204,7 @@ def validate_live_checkpoint(task_id: str) -> bool:
     left_sb.crm_data.loc[0, "status"] = "Lost"
     if not right_sb.crm_data.equals(before_right):
         raise RuntimeError("Restored WorkBench sandboxes are not independent")
+    first_prompt_previews = preview_first_prompt(task_id, checkpoint, payload)
     proposal_payload = extra["native_proposal"].to_payload()
     mutation_bytes = json.dumps(proposal_payload["mutation"], sort_keys=True,
                                 ensure_ascii=False).encode("utf-8")
@@ -144,6 +220,8 @@ def validate_live_checkpoint(task_id: str) -> bool:
         "attack_intervention_consumed_in_both": True,
         "pre_fork_messages_artifacts_context_and_history_equal": True,
         "normal_factory_tool_query_equal": True,
+        "next_model_prompt_previews": first_prompt_previews,
+        "next_prompt_generated_only_from_frozen_state_and_branch_intervention": True,
         "strict_boundary_continuation_validated": False,
     }
     save(RESULTS / "restore_validation.json", validation)
@@ -281,17 +359,24 @@ def run_one(task_id: str, arm: str, manifest: dict) -> bool:
     else:
         metadata = load(meta_path)
         evaluation = load(eval_path)
+        task_summary_path = folder / "task_summary.json"
+        task_summary = load(task_summary_path) if task_summary_path.exists() else {}
+        run_status = (task_summary.get("runs") or [{}])[0]
         outcome.update({
             "error": metadata.get("error") or "",
             "metadata_path": str(meta_path), "metadata_sha256": file_hash(meta_path),
             "trace_path": str(trace_path), "trace_sha256": file_hash(trace_path),
             "evaluation_path": str(eval_path), "evaluation_sha256": file_hash(eval_path),
             "official_task_success": bool(evaluation.get("success")),
+            "runner_fallback": bool(run_status.get("fallback")),
+            "runner_needs_rerun": bool(run_status.get("needs_rerun")),
             "unwanted_side_effects": (evaluation.get("details") or {}).get("unwanted_side_effects"),
             "intervention_applied": any(x.get("applied") for x in
                                         metadata.get("artifact_intervention_events") or []),
             "effective_structural_change": any(x.get("effective_structural_change") for x in
                                                (metadata.get("self_evolved") or {}).get("turn_control_records") or []),
+            "effective_context_policy_change": any(x.get("effective_context_policy_change") for x in
+                                                   (metadata.get("self_evolved") or {}).get("turn_control_records") or []),
         })
     ledger["inflight"].remove(inflight)
     if outcome["error"]:
@@ -322,6 +407,14 @@ def main() -> None:
             print("No qualified native proposal after mixed Artifact; no paired continuation", flush=True)
             return
         if arm == "CAPTURE":
+            capture = next(x for x in load(LEDGER)["episodes"]
+                           if x.get("pilot") == "pilot08" and x.get("task_id") == args.task_id
+                           and x.get("arm") == "CAPTURE")
+            if not (capture["intervention_applied"] and
+                    (capture["effective_structural_change"] or
+                     capture["effective_context_policy_change"])):
+                print("Captured proposal did not produce an effective native mutation; no pair", flush=True)
+                return
             validate_live_checkpoint(args.task_id)
 
 

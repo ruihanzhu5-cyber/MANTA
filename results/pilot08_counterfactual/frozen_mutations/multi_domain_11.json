@@ -1,0 +1,126 @@
+{
+  "task_id": "multi_domain_11",
+  "mutation_sha256": "d98c6c5e19a0733c9c98b52a00fe1c14ea742ff6ecd09f4e5f1587561bdbb34f",
+  "native_proposal": {
+    "mutation": {
+      "rationale": "The strongest signal is premature_consensus (agreement 1.00 with only 0.80 confidence and unresolved issues) plus branch_collapse on agent_2. The auditor notes the task itself is unsatisfiable/empty, so adding more searchers with the same read-only access cannot help. The useful counterfactual is to force independent scrutiny of the consensus: convert the star into a debate so the existing agents must surface and contest the unresolved issues rather than rubber-stamp, and add one evidence-checking verifier that checks whether the 'add as new lead' trigger is actually satisfiable (i.e., whether",
+      "target_failure_modes": [
+        "branch_collapse",
+        "premature_consensus"
+      ],
+      "ops": [
+        {
+          "op": "set_group_pattern",
+          "args": {
+            "group_id": "g_transaction",
+            "pattern": "debate"
+          }
+        },
+        {
+          "op": "add_agent",
+          "args": {
+            "group_id": "g_transaction",
+            "structural_role": "verifier",
+            "stage_role": "critic"
+          }
+        }
+      ]
+    },
+    "used_fallback": false,
+    "fallback_reason": "",
+    "prompt_messages": [
+      {
+        "role": "system",
+        "content": "You are a topology planner performing one step in a bounded trace-backed repair loop for a multi-agent system. Given the current topology and audit findings, propose ONE small mutation that addresses the strongest failure signal. You return only a compact JSON mutation; deterministic code applies and validates it. If no mutation is clearly useful, return {\"ops\": []}. A repair must have counterfactual information gain. If the current agents already queried the same read-only API or structured dataset, do not add or expand agents with identical access: change context/decision structure, add at most one evidence-checking verifier, or return no mutation. More agents cannot repair data that the source did not return. Weigh the topology planning skill and playbook memories below as accumulated experience when choosing the repair."
+      },
+      {
+        "role": "user",
+        "content": "## Current topology (version 0)\n  - g_transaction: pattern=star, members=[agent_0, agent_1, agent_2], leader=agent_0\n\n## Audit findings\n  - branch_collapse [medium] agents=['agent_2']: 1 contribution(s) produced no substantive answer.\n  - premature_consensus [medium] agents=[]: Answer agreement 1.00 despite avg confidence 0.80 and open unresolved issues.\nAuditor recommendation: Re-run the task with a corrected task specification (Alex Davis is already a CRM record, so the 'add as new lead' trigger is unsatisfiable) and a working task-enumeration path, since the current topology cannot repair the unsatisfiable requirement or the empty task searches.\n\n## Topology planning skill (accumulated experience — consult before mutating)\n# Topology Planning Skill\n\nAccumulated experience for the self-evolved MAS Topology Planner: how to turn a task into\na small multi-agent topology that succeeds. The planner reads this skill at plan time and\nfollows it unless a task clearly calls for something else. It is maintained by a post-hoc\nLLM reflection agent (`scripts/reflect_topology_skill.py`) that revises the \"Lessons from\nexperience\" section from real run outcomes (labelled with process signals). The\n\"Standing principles\" and \"How to choose a topology\" sections are preserved across\nrevisions; lessons grow over time.\n\n## Standing principles\n\nAlways apply these, on any benchmark, even one never seen before.\n\n1. **Concentrate state changes in a single executor.** Writes, sends, schedules,\n   deletions, and payments must be performed by exactly one agent. Repeating the same\n   state-changing action across agents wastes effort and can double-apply it, corrupting\n   the result. Reading, planning, and genuinely independent sub-actions can still run in\n   parallel.\n2. **Match the topology to the question's shape.** Parallel workers suit independent\n   facets (breadth); a chain of clues where each step depends on resolving the previous is\n   better served by shared context (chain or debate) so the reasoning assembles instead of\n   fragmenting across agents that each see only a piece. Add an agent only when it does\n   work the task needs — a verifier earns its slot only if it also gathers or checks\n   evidence, not if it merely waits.\n3. **Distinguish a premature give-up from honest uncertainty.** If the gathered evidence\n   supports or points toward an answer (including by inference from partial clues), commit\n   the best-supported one rather than stalling (\"let me search more\") or returning a\n   non-answer. Only when the evidence genuinely supports no answer should you say so and\n   note what is missing — never fabricate. Convey degree of belief with a confidence value.\n\n## How to choose a topology\n\nAnalyze the task's dependency structure, evidence needs, action risks, aggregation\nrequirements, and resource budget. Choose the smallest topology in which every agent has\na distinct, necessary contribution.\n\nTreat the following as possibilities, not fixed mappings:\n\n- Independent subtasks may benefit from parallel workers.\n- Dependent subtasks may benefit from sequential execution or shared context.\n- Material uncertainty may justify an independent evidence-checking critic.\n- Tasks requiring decomposition and aggregation may benefit from a coordinator.\n- A singleton is appropriate when another agent would not contribute distinct work.\n\nFor external state mutation, exactly one agent may execute the mutating action; other\nagents may only read, plan, or verify.\n\nUse lessons from prior runs as evidence-weighted suggestions. Consider their relevance,\nsample size, and observed process failures, and depart from them when the current task\nanalysis supports another topology. State why the selected topology is preferable to the\nsimplest viable alternative.\n\n## Lessons from experience\n\nConcrete patterns learned from prior runs, with the evidence behind them. The reflection\nagent grows and prunes this list.\n\n- **Prefer voting over singleton or debate for tool-less reasoning.** Sequential or interactive topologies (chain/2, debate/2, star/2) and singletons correlate with higher process failure rates in tool-less reasoning contexts. Evidence shows `voting/3` and `voting/4` running clean 35/35 in these settings, while `singleton/1` (0/6), `debate/2` (0/4), and `star/2` (0/1) have triggered process failures.\n- **Minimize topology complexity to avoid signal loss.** Inefficient or over-provisioned structures correlate strongly with `message_compaction_loss` (flagged repeatedly across runs). Keep the topology lean to ensure evidence is preserved through the pipeline without being truncated or lost during synthesis.\n- **Include explicit validation for high-precision tasks.** Relying on implicit aggregation without a dedicated validator can trigger process failures; the auditor has flagged `missing_validator` when topologies lacked a distinct verification step to audit the final synthesis.\n\n## Playbook repair memories (long-term and turn-level)\n  - scope=short_term key=workbench::tools::medium: support=turn-level process memory mutation=branch_collapse->pending_trace_backed_repair(process_signal); premature_consensus->pending_trace_backed_repair(process_signal) notes=turn=0; repair_recommended=True; modes=branch_collapse,premature_consensus; decision=continue; Re-run the task with a corrected task specification (Alex Davis is already a CRM record, so the 'add as n\n  - scope=long_term key=workbench::tools::medium: support=2/3 ran clean mutation= notes=best: chain/2 (2/3)\n  - scope=long_term key=browsecomp::tools::medium: support=2/3 ran clean mutation= notes=best: chain/3 (2/2); avoid: chain/2 (0/1)\n\n## Available ops (at most 3 per mutation)\n- expand_agent_to_group: {\"op\": \"expand_agent_to_group\", \"agent_id\": \"agent_1\", \"pattern\": \"star|chain|debate|voting\", \"num_subagents\": 3} — the agent becomes the hub of a new subgroup.\n- set_group_pattern: {\"op\": \"set_group_pattern\", \"group_id\": \"g_root\", \"pattern\": \"debate\"}\n- add_agent: {\"op\": \"add_agent\", \"group_id\": \"g_root\", \"structural_role\": \"verifier\", \"stage_role\": \"critic\"}\n- add_edge / remove_edge: {\"op\": \"add_edge\", \"src\": \"agent_1\", \"dst\": \"agent_2\"}\n- set_context_policy: {\"op\": \"set_context_policy\", \"agent_id\": \"agent_0\", \"evidence_access\": \"global\"}\n\n## Common repairs (symptom -> op)\n- insufficient search coverage: add_agent (worker) to the root group, or set_group_pattern root -> voting, so more searchers cover different facets.\n- duplicate state-changing tool calls: set_group_pattern root -> chain so exactly one agent executes the write (never parallelize a write tool).\n- unverified / low-confidence answer: add_agent (structural_role verifier, stage_role critic), or set_group_pattern root -> debate.\n- blocked / failing branch: expand_agent_to_group on the stuck agent with focused subtasks.\n\n## Constraints\n- At most 7 new agents may be added in total.\n- Do not duplicate a read-only source already exhausted by current agents; every added agent must introduce a distinct evidence source or check.\n- Keep the mutation minimal: target the audited failure, nothing else.\n\n## Output format\nReturn ONLY one JSON object:\n{\"rationale\": \"...\", \"ops\": [{\"op\": \"expand_agent_to_group\", \"agent_id\": \"agent_1\", \"pattern\": \"star\", \"num_subagents\": 3}]}"
+      }
+    ],
+    "response": "{\"rationale\": \"The strongest signal is premature_consensus (agreement 1.00 with only 0.80 confidence and unresolved issues) plus branch_collapse on agent_2. The auditor notes the task itself is unsatisfiable/empty, so adding more searchers with the same read-only access cannot help. The useful counterfactual is to force independent scrutiny of the consensus: convert the star into a debate so the existing agents must surface and contest the unresolved issues rather than rubber-stamp, and add one evidence-checking verifier that checks whether the 'add as new lead' trigger is actually satisfiable (i.e., whether Alex Davis already exists) — a distinct check, not a duplicate search. This is minimal and targets the consensus failure without duplicating exhausted sources.\", \"ops\": [{\"op\": \"set_group_pattern\", \"group_id\": \"g_transaction\", \"pattern\": \"debate\"}, {\"op\": \"add_agent\", \"group_id\": \"g_transaction\", \"structural_role\": \"verifier\", \"stage_role\": \"critic\"}]}",
+    "llm": {
+      "model": "deepseek-flash",
+      "mock_used": false,
+      "token_in": 1836,
+      "token_out": 226,
+      "cost_usd": 0.0,
+      "metadata": {
+        "provider": "deepseek",
+        "missing_cost_note": "API response did not provide cost_usd; recorded as 0.0",
+        "generation_status": "answered",
+        "finish_reason": "stop",
+        "hit_output_limit": false
+      }
+    }
+  },
+  "original_topology": {
+    "version": 0,
+    "root_group_id": "g_transaction",
+    "rationale": "type=state_mutation_with_retrieval; risks=wrong_assignee_due_to_miscount, duplicated_writes, missing_validator, tool_call_failure | Use a lean star/2 with one coordinator-executor and one independent verifier. The coordinator queries the CRM for people and overdue tasks, computes the person with the fewest overdue tasks, then creates Alex Davis as a lead and assigns them to that person. A single worker verifies the overdue-task counts and the created/assigned lead, catching miscounts or incorrect assignment without risking a duplicate write. No parallel searchers are needed because one CRM dat Capability-aware transaction contraction: independent readers report to one deterministic committer.",
+    "agents": [
+      {
+        "agent_id": "agent_0",
+        "group_id": "g_transaction",
+        "structural_role": "coordinator",
+        "stage_role": "worker",
+        "persona_hint": "",
+        "allowed_tools": null,
+        "context": {
+          "visible_kinds": [],
+          "visible_from": [],
+          "share_scope": "group",
+          "evidence_access": "own",
+          "summary_only": false,
+          "max_packet_chars": 0
+        }
+      },
+      {
+        "agent_id": "agent_1",
+        "group_id": "g_transaction",
+        "structural_role": "worker",
+        "stage_role": "critic",
+        "persona_hint": "",
+        "allowed_tools": null,
+        "context": {
+          "visible_kinds": [],
+          "visible_from": [],
+          "share_scope": "group",
+          "evidence_access": "own",
+          "summary_only": false,
+          "max_packet_chars": 0
+        }
+      },
+      {
+        "agent_id": "agent_2",
+        "group_id": "g_transaction",
+        "structural_role": "worker",
+        "stage_role": "worker",
+        "persona_hint": "",
+        "allowed_tools": null,
+        "context": {
+          "visible_kinds": [],
+          "visible_from": [],
+          "share_scope": "group",
+          "evidence_access": "own",
+          "summary_only": false,
+          "max_packet_chars": 0
+        }
+      }
+    ],
+    "groups": [
+      {
+        "group_id": "g_transaction",
+        "pattern": "star",
+        "member_ids": [
+          "agent_0",
+          "agent_1",
+          "agent_2"
+        ],
+        "parent_agent_id": null,
+        "leader_id": "agent_0"
+      }
+    ],
+    "extra_edges": []
+  }
+}
