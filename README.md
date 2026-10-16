@@ -215,3 +215,13 @@ Released under the [MIT License](LICENSE). Benchmarks and baseline reproductions
 This work builds on the BrowseComp, StableToolBench, PlanCraft, WorkBench, and MATH benchmarks, and
 on the ADAS, AFlow, AgentSquare, and MASS reference implementations. See each adapter's and
 reproduction's README for upstream attribution.
+
+## Push log / 推送记录
+
+从 2026-10-16 起，在此记录本 fork 的每次远端分支更新。后续推送成功后及时补记到 `main` 的 README；README 自身的推送也在表中记录。README 更新行可通过[文件历史](https://github.com/ruihanzhu5-cyber/MANTA/commits/main/README.md)确定其提交，避免在文件内引用自身尚未生成的 SHA。
+
+| 日期（北京时间） | 远端分支 | 提交 | 推送内容 |
+| --- | --- | --- | --- |
+| 2026-10-16 | `research/context-topology-ablation` | [`046d871`](https://github.com/ruihanzhu5-cyber/MANTA/commit/046d87167eb6832f721a727ba79eb4a233d18b4a) | HTTPS 上传故障后，经 GitHub API 创建的临时等价提交；文件树与本地实验提交相同，随后被精确提交替代。 |
+| 2026-10-16 | `research/context-topology-ablation` | [`39bd22c`](https://github.com/ruihanzhu5-cyber/MANTA/commit/39bd22c56b7937a46f1984c668c49b457b168b6e) | 将分支更新到本地原始提交：Context × Topology 消融实现、8 组 DeepSeek 实验汇总与研究报告。 |
+| 2026-10-16 | `main` | 本 README 所在提交 | 建立推送记录，并登记上面两次研究分支更新及本次 README 推送。 |
