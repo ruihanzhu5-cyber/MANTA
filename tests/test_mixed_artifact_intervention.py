@@ -6,6 +6,8 @@ import copy
 import json
 from pathlib import Path
 
+import numpy as np
+
 from MAS.artifacts import packet_payload_from_artifact
 from MAS.self_evolved.artifact_intervention import ArtifactIntervention
 from MAS.self_evolved.context import SharedContextController
@@ -45,3 +47,19 @@ def test_one_frozen_worker_artifact_flows_through_ledger_and_packet() -> None:
     hook.apply(artifact, state=state, agent_id=artifact["agent_id"],
                stage_role="worker", turn_index=0)
     assert len(state["artifact_intervention_events"]) == 1
+
+
+def test_live_tool_record_with_numpy_value_keeps_protected_fields() -> None:
+    task_id = "multi_domain_17"
+    contract = next(x for x in json.loads((RESULTS / "evidence_contracts.json").read_text())
+                    ["contracts"] if x["task_id"] == task_id)
+    metadata = json.loads(Path(contract["source_metadata"]).read_text())
+    artifact = copy.deepcopy(next(a for a in metadata["artifact_records"]
+                                  if a["artifact_id"] == contract["source_worker_artifact_id"]))
+    assert artifact["tool_records"]
+    artifact["tool_records"][0]["live_numpy_value"] = np.array([], dtype=object)
+    hook = ArtifactIntervention.from_path(RESULTS / "payloads" / f"{task_id}.json")
+    result = hook.apply(artifact, state={"task_id": task_id},
+                        agent_id=artifact["agent_id"], stage_role="worker", turn_index=0)
+    assert result is artifact
+    assert hook.applied

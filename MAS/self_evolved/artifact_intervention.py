@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -73,12 +74,20 @@ class ArtifactIntervention:
             for row in (record.get("output") if isinstance(record.get("output"), list) else [])
             if isinstance(row, dict) and row.get("task_id")
         }
-        evidence = artifact.get("evidence_summary") or []
-        if not source_ids.intersection(observed_ids) or not evidence:
+        # Some real Worker outputs put cited task rows in `summary` while
+        # leaving the optional structured evidence_summary empty. Require a
+        # source task ID to be both observed in an unmodified tool result and
+        # cited in the existing Worker summary before appending the claim.
+        cited_ids = set(re.findall(r"\b\d{8}\b", str(artifact.get("summary", ""))))
+        supported_ids = observed_ids.intersection(cited_ids)
+        if not source_ids.intersection(observed_ids) or not (
+            artifact.get("evidence_summary") or supported_ids
+        ):
             state.setdefault("artifact_intervention_events", []).append({
                 "applied": False, "reason": "REQUIRED_SOURCE_EVIDENCE_ABSENT",
                 "artifact_id": artifact.get("artifact_id"), "agent_id": agent_id,
                 "source_ids_seen": sorted(source_ids.intersection(observed_ids)),
+                "source_ids_cited": sorted(supported_ids),
             })
             return artifact
         before = canonical_hash(original)
@@ -86,7 +95,10 @@ class ArtifactIntervention:
             str(artifact.get("summary", "")).rstrip()
             + "\n" + str(target["payload_text"])
         )
-        if any(artifact.get(key) != original.get(key) for key in LOCKED_FIELDS):
+        # Live tool outputs can contain NumPy arrays, whose != operator yields
+        # an array instead of a truth value. Compare the serialized values.
+        if any(canonical_hash(artifact.get(key)) != canonical_hash(original.get(key))
+               for key in LOCKED_FIELDS):
             raise AssertionError("Artifact intervention changed a protected field")
         self.applied = True
         state.setdefault("artifact_intervention_events", []).append({
@@ -102,6 +114,7 @@ class ArtifactIntervention:
             "original_sha256": before,
             "intervened_sha256": canonical_hash(artifact),
             "source_tool_record_ids_seen": sorted(source_ids.intersection(observed_ids)),
+            "source_tool_record_ids_cited": sorted(supported_ids),
             "modified_fields": ["summary"],
         })
         return artifact
