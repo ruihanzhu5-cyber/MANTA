@@ -17,11 +17,13 @@ Agents never decide loop termination; the controller logic here does.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 import re
 import time
 from difflib import SequenceMatcher
+from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 
@@ -50,9 +52,9 @@ from .executor import TurnExecutor, TurnResult, apply_updates, state_changing_to
 from .harness import AgentHarness
 from .planner import TopologyPlannerAgent
 from .playbook import PlaybookMaintainer, ShortTermTopologyPlaybook, TopologyPlaybook, task_key
-from .retrieval import augment_with_constraint_search
 from .retirement_observer import observe_retirement_candidates
-from .spec import AgentNode, ContextPolicy, GroupSpec, TopologySpec
+from .retrieval import augment_with_constraint_search
+from .spec import AgentNode, ContextPolicy, GroupSpec, TopologyMutation, TopologySpec
 from .transaction import (
     augment_with_transaction_tools,
     calendar_scheduling_mode,
@@ -127,9 +129,13 @@ class SelfEvolvedEngine:
         )
         mutation_tool_names = state_changing_tool_names(list(tools or []))
         if mutation_tool_names:
-            topo_spec = self._transactional_star_spec(
-                topo_spec, minimum_agents=min(3, max(2, num_agents))
-            )
+            if not (
+                topo_spec.root_group_id == "g_transaction"
+                and topo_spec.group(topo_spec.root_group_id).pattern == "star"
+            ):
+                topo_spec = self._transactional_star_spec(
+                    topo_spec, minimum_agents=min(3, max(2, num_agents))
+                )
             plan_payload["transaction_protocol"] = {
                 "committer_id": topo_spec.group(topo_spec.root_group_id).leader_id,
                 "mutation_tools": sorted(mutation_tool_names),
@@ -175,6 +181,7 @@ class SelfEvolvedEngine:
         audit_reports: list[dict[str, Any]] = []
         mutation_payload: dict[str, Any] | None = None
         mutation_payloads: list[dict[str, Any]] = []
+        turn_control_records: list[dict[str, Any]] = []
         short_term_playbook = ShortTermTopologyPlaybook()
 
         self._emit_meta_event(
@@ -238,6 +245,8 @@ class SelfEvolvedEngine:
         decision: TerminationDecision = {}
 
         for turn_index in range(max_turns):
+            message_start = len(state.get("messages", []))
+            view_start = len(state.get("message_views", []))
             result = executor.run_turn(state, topo_spec, turn_index=turn_index)
             turn_results.append(result)
             apply_updates(state, self._stage._descriptor_monitor_node(state))
@@ -292,6 +301,28 @@ class SelfEvolvedEngine:
                     ),
                     "repair_suppressed": "repeated_decision_signature",
                 }
+            if not bool(decision.get("should_stop", True)) and not self.se_config.allow_topology_mutation:
+                decision = {**decision, "next_step": "KEEP_TOPOLOGY"}
+            turn_record = {
+                "turn_index": turn_index,
+                "topology_spec": topo_spec.to_payload(),
+                "agent_count": len(topo_spec.agents),
+                "edge_count": sum(len(v) for v in topo_spec.to_layout().adjacency.values()) // 2,
+                "audit_report": audit_report,
+                "repair_recommended": self._repair_recommended(audit_report),
+                "termination_decision": dict(decision),
+                "transaction_committed": transaction_committed,
+                "repair_available": repair_available,
+                "mutation_proposal": None,
+                "applied_mutation": None,
+                "effective_structural_change": False,
+                "effective_context_policy_change": False,
+                "relay_packets_generated": list(state.get("messages", []))[message_start:],
+                "relay_packet_receipts": list(state.get("message_views", []))[view_start:],
+                "task_ended": bool(decision.get("should_stop", True)),
+                "end_reason": str(decision.get("reason", "")) if decision.get("should_stop", True) else "",
+            }
+            turn_control_records.append(turn_record)
             state["termination_decision"] = decision
             apply_updates(
                 state,
@@ -315,7 +346,13 @@ class SelfEvolvedEngine:
                 break
 
             # Trace-backed repair (one mutation per turn, capped by repair_budget).
-            if is_retrieval:
+            if not self.se_config.allow_topology_mutation:
+                mutated = (
+                    topo_spec,
+                    {"control": "KEEP_TOPOLOGY", "proposed_mutation": None,
+                     "applied_mutation": None, "reason": "fixed_topology_audit_retry"},
+                )
+            elif is_retrieval:
                 mutated = self._apply_retrieval_rescue_mutation(
                     state,
                     topo_spec,
@@ -344,6 +381,11 @@ class SelfEvolvedEngine:
                     ),
                 }
                 state["termination_decision"] = decision
+                turn_record["termination_decision"] = dict(decision)
+                turn_record["task_ended"] = True
+                turn_record["end_reason"] = str(decision.get("reason", ""))
+                proposals = state.get("self_evolved_mutation_proposals", [])
+                turn_record["mutation_proposal"] = proposals[-1] if proposals else None
                 apply_updates(
                     state,
                     {
@@ -354,29 +396,38 @@ class SelfEvolvedEngine:
                     },
                 )
                 break
+            previous_spec = topo_spec
             topo_spec, mutation_payload = mutated
             if mutation_tool_names:
-                topo_spec = self._transactional_star_spec(
-                    topo_spec, minimum_agents=min(3, max(2, num_agents))
-                )
+                if topo_spec is not previous_spec:
+                    topo_spec = self._transactional_star_spec(
+                        topo_spec, minimum_agents=min(3, max(2, num_agents))
+                    )
                 mutation_payload = {
                     **mutation_payload,
-                    "transaction_protocol_reapplied": True,
+                    "transaction_protocol_reapplied": topo_spec is not previous_spec,
                     "committer_id": topo_spec.group(topo_spec.root_group_id).leader_id,
                 }
+            proposals = state.get("self_evolved_mutation_proposals", [])
+            turn_record["mutation_proposal"] = proposals[-1] if proposals else None
+            turn_record["applied_mutation"] = mutation_payload
+            turn_record["effective_structural_change"] = (
+                self._structural_view(previous_spec) != self._structural_view(topo_spec)
+            )
+            turn_record["effective_context_policy_change"] = (
+                self._context_view(previous_spec) != self._context_view(topo_spec)
+            )
+            turn_record["post_mutation_topology_spec"] = topo_spec.to_payload()
             mutation_payloads.append(mutation_payload)
             state["self_evolved_repair_directive"] = self._repair_directive(audit_report)
             layout = topo_spec.to_layout()
             state["layout"] = layout
             context.set_spec(topo_spec)
-            spec_versions.append(topo_spec.to_payload())
-            self._record_context_state(
-                state,
-                topo_spec,
-                layout,
-                reason="mutation",
-                turn_index=turn_index,
-            )
+            if topo_spec is not previous_spec:
+                spec_versions.append(topo_spec.to_payload())
+                self._record_context_state(
+                    state, topo_spec, layout, reason="mutation", turn_index=turn_index,
+                )
 
         # 7. FINALIZE.
         final_result = turn_results[-1] if turn_results else TurnResult(output_artifact=None)
@@ -448,6 +499,7 @@ class SelfEvolvedEngine:
             audit_reports=audit_reports,
             mutation_payload=mutation_payload,
             mutation_payloads=mutation_payloads,
+            turn_control_records=turn_control_records,
             plan_payload=plan_payload,
             playbook_candidate=playbook_candidate,
             retirement_observations=retirement_observations,
@@ -512,6 +564,20 @@ class SelfEvolvedEngine:
     def _propose_initial_spec(
         self, task: Any, num_agents: int, benchmark_name: str, tools_available: bool
     ) -> tuple[TopologySpec, dict[str, Any]]:
+        if self.se_config.frozen_initial_spec_path:
+            source = Path(self.se_config.frozen_initial_spec_path)
+            frozen = json.loads(source.read_text(encoding="utf-8"))
+            payload = frozen["topology_spec"]
+            if str(frozen.get("task_id")) != str(getattr(task, "task_id", "")):
+                raise ValueError("Frozen topology task_id differs from requested task")
+            canonical = json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
+            spec = TopologySpec.from_payload(payload)
+            return spec, {
+                "rationale": spec.rationale, "used_fallback": False, "fallback_reason": "",
+                "prompt_messages": [], "response": "", "llm": {}, "playbook_keys": [],
+                "initial_spec_source": str(source.resolve()),
+                "initial_spec_sha256": hashlib.sha256(canonical).hexdigest(),
+            }
         if self.se_config.initial_planner_mode == "fixed":
             fixed = self.planner.fallback_initial_spec(num_agents)
             return fixed, {
@@ -613,6 +679,24 @@ class SelfEvolvedEngine:
         return bool(audit_report.get("repair_recommended", False))
 
     @staticmethod
+    def _structural_view(spec: TopologySpec) -> dict[str, Any]:
+        """Ignore version, prose and context when checking actual graph changes."""
+        payload = spec.to_payload()
+        return {
+            "root_group_id": payload["root_group_id"],
+            "agents": [
+                (node["agent_id"], node["group_id"], node["structural_role"], node["stage_role"])
+                for node in payload["agents"]
+            ],
+            "groups": payload["groups"],
+            "extra_edges": payload["extra_edges"],
+        }
+
+    @staticmethod
+    def _context_view(spec: TopologySpec) -> dict[str, Any]:
+        return {node.agent_id: node.context.__dict__ for node in spec.agents}
+
+    @staticmethod
     def _repair_repeated_decision(turn_results: list[TurnResult]) -> bool:
         """Stop spending repair budget when one mutation leaves the decision unchanged."""
 
@@ -698,7 +782,21 @@ class SelfEvolvedEngine:
             )
             return None
 
-        mutated_spec = mutation.apply(topo_spec, max_agents=int(self.se_config.max_total_agents))
+        applied_mutation = mutation
+        if not self.se_config.allow_context_policy_mutation:
+            structural_ops = tuple(op for op in mutation.ops if op.op != "set_context_policy")
+            if not structural_ops:
+                return topo_spec, {
+                    **proposal_payload, "control": "KEEP_TOPOLOGY",
+                    "proposed_mutation": mutation.to_payload(), "applied_mutation": None,
+                    "reason": "policy_only_proposal_excluded",
+                }
+            applied_mutation = TopologyMutation(
+                rationale=mutation.rationale,
+                target_failure_modes=mutation.target_failure_modes,
+                ops=structural_ops,
+            )
+        mutated_spec = applied_mutation.apply(topo_spec, max_agents=int(self.se_config.max_total_agents))
         mutated_layout = mutated_spec.to_layout()
         new_agents = [
             agent_id
@@ -709,6 +807,9 @@ class SelfEvolvedEngine:
 
         mutation_payload = {
             **proposal.to_payload(),
+            "control": "APPLY_MUTATION",
+            "proposed_mutation": mutation.to_payload(),
+            "applied_mutation": applied_mutation.to_payload(),
             "added_agents": list(new_agents),
             "spec_version": int(mutated_spec.version),
         }
@@ -3302,6 +3403,7 @@ class SelfEvolvedEngine:
         audit_reports: list[dict[str, Any]],
         mutation_payload: dict[str, Any] | None,
         mutation_payloads: list[dict[str, Any]],
+        turn_control_records: list[dict[str, Any]],
         plan_payload: dict[str, Any],
         playbook_candidate: dict[str, Any] | None = None,
         retirement_observations: tuple[Any, ...] = (),
@@ -3361,6 +3463,7 @@ class SelfEvolvedEngine:
                 "context_state_versions": list(state.get("context_state_versions", [])),
                 "mutation": mutation_payload,
                 "mutations": list(mutation_payloads),
+                "turn_control_records": list(turn_control_records),
                 "mutation_proposals": list(state.get("self_evolved_mutation_proposals", [])),
                 "audit_reports": list(audit_reports),
                 "planner": dict(plan_payload),

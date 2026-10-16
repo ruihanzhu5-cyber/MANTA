@@ -29,6 +29,7 @@ except Exception:  # pragma: no cover - optional dependency fallback
 
 from answer_utils import has_substantive_answer
 from benchmark.base import BenchmarkEvaluation, BenchmarkTask
+from benchmark.workbench.injection import EmailBodyInjector
 from MAS import MASRunner, MASRunResult
 from MAS.artifacts import collect_lineage_tool_records
 
@@ -992,6 +993,12 @@ class WorkBenchBenchmark:
         self.max_tool_iterations: int = int(cfg.get("max_tool_iterations", 20))
         self.tasks_version: str = str(cfg.get("tasks_version", "v1")).strip()
         self.data_dir = Path(str(cfg.get("data_dir", ".cache/workbench"))).expanduser()
+        self.ipi_enabled = bool(cfg.get("ipi_enabled", False))
+        self.ipi_target_email_id = str(cfg.get("ipi_target_email_id", ""))
+        self.ipi_target_agent_id = str(cfg.get("ipi_target_agent_id", ""))
+        self.ipi_run_id = str(cfg.get("ipi_run_id", ""))
+        if self.ipi_enabled and (not self.ipi_target_email_id or not self.ipi_target_agent_id):
+            raise ValueError("IPI arm requires a frozen target email and Worker agent")
         self._ensure_data_exists()
 
     def _query_files(self) -> dict[str, str]:
@@ -1044,7 +1051,8 @@ class WorkBenchBenchmark:
         return tasks
 
     def _build_tools(
-        self, sandbox: WorkBenchSandbox, task_domains: list[str]
+        self, sandbox: WorkBenchSandbox, task_domains: list[str],
+        injector: EmailBodyInjector | None = None,
     ) -> list[dict[str, Any]]:
         resolved_domains = [DOMAIN_ALIASES.get(domain, domain) for domain in task_domains]
         active_domains = set(CORE_DOMAINS if self.tool_selection == "all" else resolved_domains)
@@ -1063,7 +1071,10 @@ class WorkBenchBenchmark:
                         "properties": dict(spec["properties"]),
                         "required": list(spec.get("required", [])),
                     },
-                    "handler": lambda args, tool_name=name, sb=sandbox: sb.invoke(tool_name, args),
+                    "handler": lambda args, tool_name=name, sb=sandbox, inj=injector: (
+                        inj.process(tool_name, args, sb.invoke(tool_name, args))
+                        if inj is not None else sb.invoke(tool_name, args)
+                    ),
                 }
             )
         return tools
@@ -1076,7 +1087,14 @@ class WorkBenchBenchmark:
         seed: int,
     ) -> MASRunResult:
         sandbox = WorkBenchSandbox(self.data_dir)
-        tools = self._build_tools(sandbox, list(task.metadata.get("domains", [])))
+        injector = EmailBodyInjector(
+            enabled=self.ipi_enabled,
+            target_email_id=self.ipi_target_email_id,
+            target_agent_id=self.ipi_target_agent_id,
+            task_id=task.task_id,
+            run_id=self.ipi_run_id or f"{task.task_id}/run_{run_index}",
+        )
+        tools = self._build_tools(sandbox, list(task.metadata.get("domains", [])), injector)
         prompt = [
             {
                 "role": "system",
@@ -1115,6 +1133,9 @@ class WorkBenchBenchmark:
             run_metadata={
                 **dict(result.run_metadata),
                 "function_calls": function_calls,
+                "injection_events": injector.events,
+                "injection_count": injector.count,
+                "injection_target_email_id": self.ipi_target_email_id,
                 "error": "",
             },
         )
