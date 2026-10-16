@@ -199,6 +199,11 @@ class SelfEvolvedConfig:
     # scripts/reflect_topology_skill.py).
     skill_update_batch_size: int = 12
     default_packet_max_chars: int = 0  # 0 = full fidelity; optional generous structural budget
+    # Experiment controls default to the original native behavior.
+    allow_topology_mutation: bool = True
+    allow_context_policy_mutation: bool = True
+    frozen_initial_spec_path: str = ""
+    artifact_intervention_path: str = ""  # Pilot 07 only; empty disables the hook
 
     def validate(self) -> None:
         if self.harness_backend not in {"openrouter", "claude_agent_sdk"}:
@@ -228,6 +233,10 @@ class SelfEvolvedConfig:
             raise ValueError("self_evolved.skill_update_batch_size must be >= 0")
         if self.default_packet_max_chars < 0:
             raise ValueError("self_evolved.default_packet_max_chars must be >= 0")
+        if self.frozen_initial_spec_path and not Path(self.frozen_initial_spec_path).is_file():
+            raise ValueError("self_evolved.frozen_initial_spec_path must name an existing JSON file")
+        if self.artifact_intervention_path and not Path(self.artifact_intervention_path).is_file():
+            raise ValueError("self_evolved.artifact_intervention_path must name an existing JSON file")
 
 
 @dataclass
@@ -366,6 +375,10 @@ def load_experiment_config(path: str | Path) -> ExperimentConfig:
         playbook_read=bool(self_evolved_raw.get("playbook_read", True)),
         skill_update_batch_size=int(self_evolved_raw.get("skill_update_batch_size", 12)),
         default_packet_max_chars=int(self_evolved_raw.get("default_packet_max_chars", 0)),
+        allow_topology_mutation=bool(self_evolved_raw.get("allow_topology_mutation", True)),
+        allow_context_policy_mutation=bool(self_evolved_raw.get("allow_context_policy_mutation", True)),
+        frozen_initial_spec_path=str(self_evolved_raw.get("frozen_initial_spec_path", "")),
+        artifact_intervention_path=str(self_evolved_raw.get("artifact_intervention_path", "")),
     )
 
     models = {str(key): str(value) for key, value in models_raw.items()}

@@ -88,6 +88,11 @@ FIELDS_NOT_TO_LOWER = {"status", "list_name", "board"}
 
 
 class WorkBenchSandbox:
+    STATE_FRAMES = (
+        "calendar_events", "emails", "analytics_data", "plots_data",
+        "project_tasks", "crm_data", "company_directory",
+    )
+
     def __init__(self, data_root: Path) -> None:
         self.data_root = data_root
         self.reset_state()
@@ -123,6 +128,26 @@ class WorkBenchSandbox:
             "project_management": self.project_tasks.copy(),
             "customer_relationship_manager": self.crm_data.copy(),
         }
+
+    def export_state(self) -> dict[str, Any]:
+        """Copy every mutable WorkBench table, including evaluator-hidden tables."""
+        return {
+            "version": 1,
+            "data_root": str(self.data_root.resolve()),
+            "frames": {name: getattr(self, name).copy(deep=True) for name in self.STATE_FRAMES},
+        }
+
+    def import_state(self, snapshot: dict[str, Any]) -> None:
+        """Restore a previously exported local state with dtypes and indexes intact."""
+        if snapshot.get("version") != 1 or snapshot.get("data_root") != str(self.data_root.resolve()):
+            raise ValueError("WorkBench sandbox snapshot version or data root mismatch")
+        frames = snapshot.get("frames")
+        if not isinstance(frames, dict) or set(frames) != set(self.STATE_FRAMES):
+            raise ValueError("WorkBench sandbox snapshot has missing or extra tables")
+        if any(not isinstance(frames[name], pd.DataFrame) for name in self.STATE_FRAMES):
+            raise TypeError("WorkBench sandbox snapshot must contain DataFrames")
+        for name in self.STATE_FRAMES:
+            setattr(self, name, frames[name].copy(deep=True))
 
     def invoke(self, tool_name: str, arguments: dict[str, Any]) -> Any:
         method = getattr(self, "_tool_" + tool_name.replace(".", "__"), None)
@@ -1104,6 +1129,7 @@ class WorkBenchBenchmark:
             tools=tools,
             max_tool_iterations=self.max_tool_iterations,
             benchmark_name="workbench",
+            checkpoint_sandbox=sandbox,
         )
         function_calls = self._extract_selected_function_calls(
             dict(result.run_metadata),

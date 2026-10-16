@@ -48,6 +48,7 @@ class MASRunner:
         group_sizes: list[int] | None = None,
         agents_per_level: list[int] | None = None,
         benchmark_name: str | None = None,
+        checkpoint_sandbox: Any | None = None,
     ) -> MASRunResult:
         mas_cfg = self.config.mas
 
@@ -101,7 +102,7 @@ class MASRunner:
             if resolved_topology == TOPOLOGY_SELF_EVOLVED
             else self.engine
         )
-        run_result = engine.run(
+        run_kwargs = dict(
             task=task,
             run_index=run_index,
             seed=seed,
@@ -111,6 +112,9 @@ class MASRunner:
             max_tool_iterations=max(1, int(max_tool_iterations)),
             descriptor=descriptor,
         )
+        if resolved_topology == TOPOLOGY_SELF_EVOLVED:
+            run_kwargs["checkpoint_sandbox"] = checkpoint_sandbox
+        run_result = engine.run(**run_kwargs)
 
         return MASRunResult(
             final_answer=run_result.final_answer,
