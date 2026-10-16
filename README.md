@@ -230,3 +230,7 @@ reproduction's README for upstream attribution.
 | 2026-10-16 | `research/pilot08-topology-counterfactual` | [`2073bce`](https://github.com/ruihanzhu5-cyber/MANTA/commit/2073bce4503c3681e70be45960be3688c3046af8) | 建立 Pilot 08 独立分支，实现原生 Mutation 前检查点及 KEEP/MUTATE 恢复接线。 |
 | 2026-10-16 | `research/pilot09-handoff-mechanisms` | [`e2d204a`](https://github.com/ruihanzhu5-cyber/MANTA/commit/e2d204af1cf2c4ffe43eddc642a579f4ab925a8b) | 建立 Pilot 09 独立分支，实现受控的后续 Context 交接策略。 |
 | 2026-10-16 | `main` | 本 README 所在提交 | 补记本轮四次已完成的研究分支推送；本次只修改推送记录。 |
+| 2026-10-16 | `research/pilot07-mixed-handoff` | [`1c1c0e7`](https://github.com/ruihanzhu5-cyber/MANTA/commit/1c1c0e791824add879e1bdd7b8a5fe927771c629) | 推送 40 条真实四条件运行、4 条另存无效尝试、完整轨迹、传播分析和费用报告。 |
+| 2026-10-16 | `research/pilot08-topology-counterfactual` | [`40900f0`](https://github.com/ruihanzhu5-cyber/MANTA/commit/40900f0b4119ad3c144aec8b18e8691f04c9ad12) | 推送 7 条真实运行、2 对同检查点 KEEP/MUTATE、Checkpoint 与因果审计报告。 |
+| 2026-10-16 | `research/pilot09-handoff-mechanisms` | [`92be939`](https://github.com/ruihanzhu5-cyber/MANTA/commit/92be939e31ee9188e5ae86be6687f9e7dc029ade) | 推送 5 条真实交接策略续跑、消融分析与综合研究报告。 |
+| 2026-10-16 | `main` | 本 README 所在提交 | 补记上面三次已完成的研究分支推送；本次只修改推送记录。 |
