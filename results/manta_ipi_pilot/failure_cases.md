@@ -1,6 +1,6 @@
 # MANTA IPI pilot: observed chains
 
-Raw episode logs remain local; hashes and paths are in summary.csv.
+Raw episode files are under raw/; hashes and original local paths are in summary.csv.
 
 ## multi_domain_29
 

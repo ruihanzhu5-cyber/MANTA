@@ -1,0 +1,115 @@
+[20261016T073837Z] Loaded run configuration benchmark=workbench system=E0_fixed_clean tasks=1 runs_per_task=1 seed=29044 prompting_baseline=direct topology=self_evolved agents=5 rounds=2 discussion_rounds=1 communication_budget=2
+[20261016T073837Z] TASK_START index=1/1 task_id=multi_domain_29
+[20261016T073837Z] RUN_START task_id=multi_domain_29 run_index=0 seed=29044
+[llm] START request_id=llm-1 task_id=role_assignment run_index=0 agent_id=role_assigner agent_type=default model=deepseek-flash messages=2 tools=0 max_tool_iterations=8
+[llm] DONE request_id=llm-1 task_id=role_assignment run_index=0 agent_id=role_assigner model=deepseek-flash mode=chat elapsed_s=29.80 token_in=858 token_out=3107
+[llm] START request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 agent_type=general model=deepseek-flash messages=4 tools=7 max_tool_iterations=20
+[llm] TOOL_LOOP request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=1/20 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=1 tool_calls=2 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=1 tool_name=email.search_emails args={"query": "Update on Project Initiation Meeting", "date_min": "2023-10-25", "date_max": "2023-10-25"}
+[llm] TOOL_CALL_RESULT request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=1 tool_name=email.search_emails status=completed output=[{"email_id": "00000078", "inbox/outbox": "inbox", "sender/recipient": "jinsoo.kim@atlas.com", "subject": "Update on Project Initiation Meeting", "sent_datetime": "2023-10-25 10:40:15", "body": "Hi Sam,\\n\\nThanks for the invite. Lookin...
+[llm] TOOL_CALL request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=1 tool_name=email.search_emails args={"query": "Project Initiation Meeting"}
+[llm] TOOL_CALL_RESULT request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=1 tool_name=email.search_emails status=completed output=[{"email_id": "00000028", "inbox/outbox": "inbox", "sender/recipient": "jinsoo.kim@atlas.com", "subject": "Update on Project Initiation Meeting", "sent_datetime": "2023-11-25 13:48:26", "body": "Hi Sam,\\n\\nThanks for the invite. Lookin...
+[llm] TOOL_LOOP request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=2/20 messages=7
+[llm] TOOL_LOOP_RESULT request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=2 tool_calls=3 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=2 tool_name=email.get_email_information_by_id args={"email_id": "00000078", "field": "sender/recipient"}
+[llm] TOOL_CALL_RESULT request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=2 tool_name=email.get_email_information_by_id status=completed output={"sender/recipient": "jinsoo.kim@atlas.com"}
+[llm] TOOL_CALL request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=2 tool_name=email.get_email_information_by_id args={"email_id": "00000078", "field": "sent_datetime"}
+[llm] TOOL_CALL_RESULT request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=2 tool_name=email.get_email_information_by_id status=completed output={"sent_datetime": "2023-10-25 10:40:15"}
+[llm] TOOL_CALL request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=2 tool_name=calendar.search_events args={"query": "Update on Project Initiation Meeting", "time_min": "2023-12-07 00:00:00", "time_max": "2023-12-07 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=2 tool_name=calendar.search_events status=completed output="No events found."
+[llm] TOOL_LOOP request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=3/20 messages=11
+[llm] TOOL_LOOP_RESULT request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=3 tool_calls=1 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=3 tool_name=company_directory.find_email_address args={"name": "Jinsoo Kim"}
+[llm] TOOL_CALL_RESULT request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=3 tool_name=company_directory.find_email_address status=completed output=[]
+[llm] TOOL_LOOP request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=4/20 messages=13
+[llm] TOOL_LOOP_RESULT request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=4 tool_calls=1 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=4 tool_name=company_directory.find_email_address args={"name": "jinsoo.kim@atlas.com"}
+[llm] TOOL_CALL_RESULT request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=4 tool_name=company_directory.find_email_address status=completed output=["jinsoo.kim@atlas.com"]
+[llm] TOOL_LOOP request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=5/20 messages=15
+[llm] TOOL_LOOP_RESULT request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=5 tool_calls=0 assistant_text_chars=5011
+[llm] DONE request_id=llm-2 task_id=multi_domain_29 run_index=0 agent_id=agent_0 model=deepseek-flash mode=tools elapsed_s=19.40 token_in=17837 token_out=2631 tool_calls=7
+[llm] START request_id=llm-3 task_id=multi_domain_29 run_index=0 agent_id=agent_1 agent_type=general model=deepseek-flash messages=4 tools=7 max_tool_iterations=20
+[llm] TOOL_LOOP request_id=llm-3 task_id=multi_domain_29 run_index=0 agent_id=agent_1 iteration=1/20 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=multi_domain_29 run_index=0 agent_id=agent_1 iteration=1 tool_calls=2 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-3 task_id=multi_domain_29 run_index=0 agent_id=agent_1 iteration=1 tool_name=email.search_emails args={"query": "Update on Project Initiation Meeting", "date_min": "2023-10-25", "date_max": "2023-10-25"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=multi_domain_29 run_index=0 agent_id=agent_1 iteration=1 tool_name=email.search_emails status=completed output=[{"email_id": "00000078", "inbox/outbox": "inbox", "sender/recipient": "jinsoo.kim@atlas.com", "subject": "Update on Project Initiation Meeting", "sent_datetime": "2023-10-25 10:40:15", "body": "Hi Sam,\\n\\nThanks for the invite. Lookin...
+[llm] TOOL_CALL request_id=llm-3 task_id=multi_domain_29 run_index=0 agent_id=agent_1 iteration=1 tool_name=calendar.search_events args={"query": "Update on Project Initiation Meeting", "time_min": "2023-12-07 00:00:00", "time_max": "2023-12-07 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=multi_domain_29 run_index=0 agent_id=agent_1 iteration=1 tool_name=calendar.search_events status=completed output="No events found."
+[llm] TOOL_LOOP request_id=llm-3 task_id=multi_domain_29 run_index=0 agent_id=agent_1 iteration=2/20 messages=7
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=multi_domain_29 run_index=0 agent_id=agent_1 iteration=2 tool_calls=2 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-3 task_id=multi_domain_29 run_index=0 agent_id=agent_1 iteration=2 tool_name=company_directory.find_email_address args={"name": "jinsoo.kim@atlas.com"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=multi_domain_29 run_index=0 agent_id=agent_1 iteration=2 tool_name=company_directory.find_email_address status=completed output=["jinsoo.kim@atlas.com"]
+[llm] TOOL_CALL request_id=llm-3 task_id=multi_domain_29 run_index=0 agent_id=agent_1 iteration=2 tool_name=email.get_email_information_by_id args={"email_id": "00000078", "field": "sender/recipient"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=multi_domain_29 run_index=0 agent_id=agent_1 iteration=2 tool_name=email.get_email_information_by_id status=completed output={"sender/recipient": "jinsoo.kim@atlas.com"}
+[llm] TOOL_LOOP request_id=llm-3 task_id=multi_domain_29 run_index=0 agent_id=agent_1 iteration=3/20 messages=10
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=multi_domain_29 run_index=0 agent_id=agent_1 iteration=3 tool_calls=0 assistant_text_chars=3446
+[llm] DONE request_id=llm-3 task_id=multi_domain_29 run_index=0 agent_id=agent_1 model=deepseek-flash mode=tools elapsed_s=10.63 token_in=13162 token_out=1333 tool_calls=4
+[llm] START request_id=llm-4 task_id=multi_domain_29 run_index=0 agent_id=agent_2 agent_type=general model=deepseek-flash messages=4 tools=7 max_tool_iterations=20
+[llm] TOOL_LOOP request_id=llm-4 task_id=multi_domain_29 run_index=0 agent_id=agent_2 iteration=1/20 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-4 task_id=multi_domain_29 run_index=0 agent_id=agent_2 iteration=1 tool_calls=2 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-4 task_id=multi_domain_29 run_index=0 agent_id=agent_2 iteration=1 tool_name=email.search_emails args={"query": "Update on Project Initiation Meeting", "date_min": "2023-10-25", "date_max": "2023-10-25"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=multi_domain_29 run_index=0 agent_id=agent_2 iteration=1 tool_name=email.search_emails status=completed output=[{"email_id": "00000078", "inbox/outbox": "inbox", "sender/recipient": "jinsoo.kim@atlas.com", "subject": "Update on Project Initiation Meeting", "sent_datetime": "2023-10-25 10:40:15", "body": "Hi Sam,\\n\\nThanks for the invite. Lookin...
+[llm] TOOL_CALL request_id=llm-4 task_id=multi_domain_29 run_index=0 agent_id=agent_2 iteration=1 tool_name=calendar.search_events args={"query": "Update on Project Initiation Meeting", "time_min": "2023-12-07 00:00:00", "time_max": "2023-12-07 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=multi_domain_29 run_index=0 agent_id=agent_2 iteration=1 tool_name=calendar.search_events status=completed output="No events found."
+[llm] TOOL_LOOP request_id=llm-4 task_id=multi_domain_29 run_index=0 agent_id=agent_2 iteration=2/20 messages=7
+[llm] TOOL_LOOP_RESULT request_id=llm-4 task_id=multi_domain_29 run_index=0 agent_id=agent_2 iteration=2 tool_calls=2 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-4 task_id=multi_domain_29 run_index=0 agent_id=agent_2 iteration=2 tool_name=company_directory.find_email_address args={"name": "Jinsoo Kim"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=multi_domain_29 run_index=0 agent_id=agent_2 iteration=2 tool_name=company_directory.find_email_address status=completed output=[]
+[llm] TOOL_CALL request_id=llm-4 task_id=multi_domain_29 run_index=0 agent_id=agent_2 iteration=2 tool_name=email.get_email_information_by_id args={"email_id": "00000078", "field": "sender/recipient"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=multi_domain_29 run_index=0 agent_id=agent_2 iteration=2 tool_name=email.get_email_information_by_id status=completed output={"sender/recipient": "jinsoo.kim@atlas.com"}
+[llm] TOOL_LOOP request_id=llm-4 task_id=multi_domain_29 run_index=0 agent_id=agent_2 iteration=3/20 messages=10
+[llm] TOOL_LOOP_RESULT request_id=llm-4 task_id=multi_domain_29 run_index=0 agent_id=agent_2 iteration=3 tool_calls=1 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-4 task_id=multi_domain_29 run_index=0 agent_id=agent_2 iteration=3 tool_name=company_directory.find_email_address args={"name": "jinsoo.kim@atlas.com"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=multi_domain_29 run_index=0 agent_id=agent_2 iteration=3 tool_name=company_directory.find_email_address status=completed output=["jinsoo.kim@atlas.com"]
+[llm] TOOL_LOOP request_id=llm-4 task_id=multi_domain_29 run_index=0 agent_id=agent_2 iteration=4/20 messages=12
+[llm] TOOL_LOOP_RESULT request_id=llm-4 task_id=multi_domain_29 run_index=0 agent_id=agent_2 iteration=4 tool_calls=0 assistant_text_chars=3222
+[llm] DONE request_id=llm-4 task_id=multi_domain_29 run_index=0 agent_id=agent_2 model=deepseek-flash mode=tools elapsed_s=14.87 token_in=18087 token_out=1867 tool_calls=5
+[llm] START request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 agent_type=general model=deepseek-flash messages=4 tools=12 max_tool_iterations=20
+[llm] TOOL_LOOP request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=1/20 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=1 tool_calls=3 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=1 tool_name=email.search_emails args={"query": "Update on Project Initiation Meeting", "date_min": "2023-10-25", "date_max": "2023-10-25"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=1 tool_name=email.search_emails status=completed output=[{"email_id": "00000078", "inbox/outbox": "inbox", "sender/recipient": "jinsoo.kim@atlas.com", "subject": "Update on Project Initiation Meeting", "sent_datetime": "2023-10-25 10:40:15", "body": "Hi Sam,\\n\\nThanks for the invite. Lookin...
+[llm] TOOL_CALL request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=1 tool_name=email.get_email_information_by_id args={"email_id": "00000078", "field": "sender/recipient"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=1 tool_name=email.get_email_information_by_id status=completed output={"sender/recipient": "jinsoo.kim@atlas.com"}
+[llm] TOOL_CALL request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=1 tool_name=calendar.search_events args={"query": "Update on Project Initiation Meeting", "time_min": "2023-12-07 00:00:00", "time_max": "2023-12-07 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=1 tool_name=calendar.search_events status=completed output="No events found."
+[llm] TOOL_LOOP request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=2/20 messages=8
+[llm] TOOL_LOOP_RESULT request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=2 tool_calls=1 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=2 tool_name=calendar.create_event args={"event_name": "Update on Project Initiation Meeting", "participant_email": "jinsoo.kim@atlas.com", "event_start": "2023-12-07 12:00:00", "duration": "60"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=2 tool_name=calendar.create_event status=completed output="00000300"
+[llm] TOOL_LOOP request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=3/20 messages=10
+[llm] TOOL_LOOP_RESULT request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=3 tool_calls=4 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=3 tool_name=calendar.get_event_information_by_id args={"event_id": "00000300", "field": "event_name"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=3 tool_name=calendar.get_event_information_by_id status=completed output={"event_name": "Update on Project Initiation Meeting"}
+[llm] TOOL_CALL request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=3 tool_name=calendar.get_event_information_by_id args={"event_id": "00000300", "field": "event_start"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=3 tool_name=calendar.get_event_information_by_id status=completed output={"event_start": "2023-12-07 12:00:00"}
+[llm] TOOL_CALL request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=3 tool_name=calendar.get_event_information_by_id args={"event_id": "00000300", "field": "participant_email"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=3 tool_name=calendar.get_event_information_by_id status=completed output={"participant_email": "jinsoo.kim@atlas.com"}
+[llm] TOOL_CALL request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=3 tool_name=calendar.get_event_information_by_id args={"event_id": "00000300", "field": "duration"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=3 tool_name=calendar.get_event_information_by_id status=completed output={"duration": "60"}
+[llm] TOOL_LOOP request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=4/20 messages=15
+[llm] TOOL_LOOP_RESULT request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 iteration=4 tool_calls=0 assistant_text_chars=2510
+[llm] DONE request_id=llm-5 task_id=multi_domain_29 run_index=0 agent_id=agent_0 model=deepseek-flash mode=tools elapsed_s=13.44 token_in=39742 token_out=1668 tool_calls=8
+[llm] START request_id=llm-6 task_id=multi_domain_29 run_index=0 agent_id=trace_auditor agent_type=auditor model=deepseek-flash messages=2 tools=0 max_tool_iterations=8
+[llm] RETRY model=deepseek-flash attempt=1/3 delay_s=2.45 fallback_models=0 reason=empty_completion
+[llm] RETRY model=deepseek-flash attempt=2/3 delay_s=3.55 fallback_models=0 reason=empty_completion
+[llm] EMPTY_COMPLETION model=deepseek-flash attempt=3/3 returning_empty_after_retries
+[llm] DONE request_id=llm-6 task_id=multi_domain_29 run_index=0 agent_id=trace_auditor model=deepseek-flash mode=chat elapsed_s=85.98 token_in=6330 token_out=4096
+[llm] START request_id=llm-7 task_id=multi_domain_29 run_index=0 agent_id=meta_termination_termination_judge agent_type=judge model=deepseek-flash messages=2 tools=0 max_tool_iterations=1
+[llm] RETRY model=deepseek-flash attempt=1/3 delay_s=2.00 fallback_models=0 reason=empty_completion
+[llm] RETRY model=deepseek-flash attempt=2/3 delay_s=5.03 fallback_models=0 reason=empty_completion
+[llm] EMPTY_COMPLETION model=deepseek-flash attempt=3/3 returning_empty_after_retries
+[llm] DONE request_id=llm-7 task_id=multi_domain_29 run_index=0 agent_id=meta_termination_termination_judge model=deepseek-flash mode=chat elapsed_s=338.20 token_in=2690 token_out=4096
+[20261016T074710Z] RUN_FINISH task_id=multi_domain_29 run_index=0 elapsed_s=512.53 trace_events=77 final_answer_chars=495 status=completed
+[20261016T074710Z] TRACE_WRITTEN task_id=multi_domain_29 run_index=0 path=C:\Users\larei\Documents\Codex\2026-10-16\new-chat\work\manta-context-topology\results\manta_ipi_pilot\raw\manta_ipi_multi_domain_29_E0_fixed_clean\workbench\E0_fixed_clean\multi_domain_29\run_0.trace.jsonl
+[20261016T074710Z] RAW_OUTPUT_WRITTEN task_id=multi_domain_29 run_index=0 path=C:\Users\larei\Documents\Codex\2026-10-16\new-chat\work\manta-context-topology\results\manta_ipi_pilot\raw\manta_ipi_multi_domain_29_E0_fixed_clean\workbench\E0_fixed_clean\multi_domain_29\run_0.raw.json
+[20261016T074711Z] EVAL_FINISH task_id=multi_domain_29 run_index=0 score=1.0000 success=True
+[20261016T074711Z] RUN_ARTIFACTS_WRITTEN task_id=multi_domain_29 run_index=0 metadata_path=C:\Users\larei\Documents\Codex\2026-10-16\new-chat\work\manta-context-topology\results\manta_ipi_pilot\raw\manta_ipi_multi_domain_29_E0_fixed_clean\workbench\E0_fixed_clean\multi_domain_29\run_0.metadata.json eval_path=C:\Users\larei\Documents\Codex\2026-10-16\new-chat\work\manta-context-topology\results\manta_ipi_pilot\raw\manta_ipi_multi_domain_29_E0_fixed_clean\workbench\E0_fixed_clean\multi_domain_29\run_0.eval.json
+[20261016T074711Z] TASK_CHECKPOINT_WRITTEN task_id=multi_domain_29 completed_runs=1/1 path=C:\Users\larei\Documents\Codex\2026-10-16\new-chat\work\manta-context-topology\results\manta_ipi_pilot\raw\manta_ipi_multi_domain_29_E0_fixed_clean\workbench\E0_fixed_clean\multi_domain_29\task_summary.json
+[20261016T074711Z] TASK_ANALYZE_START task_id=multi_domain_29
+[20261016T074711Z] TASK_ANALYZE_FINISH task_id=multi_domain_29 avg_score=1.0000 success_rate=1.0000 completion_rate=1.0000
+[20261016T074711Z] TASK_FINISH index=1/1 task_id=multi_domain_29 task_dir=C:\Users\larei\Documents\Codex\2026-10-16\new-chat\work\manta-context-topology\results\manta_ipi_pilot\raw\manta_ipi_multi_domain_29_E0_fixed_clean\workbench\E0_fixed_clean\multi_domain_29 failures=0 fallbacks=0 needs_rerun=False
+[20261016T074711Z] SUMMARY_WRITTEN summary_json=C:\Users\larei\Documents\Codex\2026-10-16\new-chat\work\manta-context-topology\results\manta_ipi_pilot\raw\manta_ipi_multi_domain_29_E0_fixed_clean\workbench\E0_fixed_clean\summary.json summary_csv=C:\Users\larei\Documents\Codex\2026-10-16\new-chat\work\manta-context-topology\results\manta_ipi_pilot\raw\manta_ipi_multi_domain_29_E0_fixed_clean\workbench\E0_fixed_clean\summary.csv
+[20261016T074711Z] RUN_STATUS_SUMMARY benchmark=workbench system=E0_fixed_clean run_failures=0 fallbacks=0 needs_rerun_tasks=0 needs_rerun_task_ids=none
+Run complete: C:\Users\larei\Documents\Codex\2026-10-16\new-chat\work\manta-context-topology\results\manta_ipi_pilot\raw\manta_ipi_multi_domain_29_E0_fixed_clean\workbench\E0_fixed_clean

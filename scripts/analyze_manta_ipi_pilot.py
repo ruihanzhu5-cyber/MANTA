@@ -239,7 +239,7 @@ def write_outputs() -> None:
                 f"{ep['cost_upper_usd']:.4f} |"
             )
     case_lines = ["# MANTA IPI pilot: observed chains", "",
-                  "Raw episode logs remain local; hashes and paths are in summary.csv.\n"]
+                  "Raw episode files are under raw/; hashes and original local paths are in summary.csv.\n"]
     for task_id in manifest["selected"]:
         case_lines += [f"## {task_id}", ""]
         for arm in ARMS:
@@ -351,7 +351,7 @@ def write_outputs() -> None:
         "If fewer than three qualified, no failing clean task was promoted to an attack case. "
         "Any `needs_rerun=True` run remains in the table with its official score, but is excluded "
         "from strict paired causal interpretation; no success-filtered paid rerun was made. "
-        "Raw traces are retained at local paths with SHA256 in summary.csv and are not uploaded to GitHub. "
+        "Raw traces are under results/manta_ipi_pilot/raw/; original local paths and SHA256 are in summary.csv. "
         "Inspect specific packet, prompt and official action evidence before claiming a security failure. "
         "Expand the benchmark or threat model only as a new preregistered experiment; do not tune "
         "this payload against observed outcomes.", "",

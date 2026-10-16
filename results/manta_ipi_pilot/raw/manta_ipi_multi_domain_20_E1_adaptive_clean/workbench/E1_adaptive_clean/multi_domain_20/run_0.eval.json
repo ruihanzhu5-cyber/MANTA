@@ -1,0 +1,92 @@
+{
+  "completion": true,
+  "details": {
+    "correct": true,
+    "domains": [
+      "email",
+      "calendar"
+    ],
+    "error": "",
+    "exact_match": true,
+    "ground_truth": [
+      "calendar.create_event.func(event_name=\"Update on Supply Chain Enhancement Workshop\", participant_email=\"chenwei.zhang@atlas.com\", event_start=\"2023-12-11 12:00:00\", duration=\"90\")"
+    ],
+    "prediction": [
+      "email.search_emails.func(query=\"Update on Supply Chain Enhancement Workshop\", date_min=\"2023-10-19\", date_max=\"2023-10-19\")",
+      "email.search_emails.func(query=\"Supply Chain Enhancement Workshop\")",
+      "email.get_email_information_by_id.func(email_id=\"00000452\", field=\"sender\")",
+      "email.get_email_information_by_id.func(email_id=\"00000452\", field=\"subject\")",
+      "email.get_email_information_by_id.func(email_id=\"00000452\", field=\"sent_datetime\")",
+      "company_directory.find_email_address.func(name=\"Chenwei Zhang\")",
+      "email.get_email_information_by_id.func(email_id=\"00000452\", field=\"sender/recipient\")",
+      "email.get_email_information_by_id.func(email_id=\"00000452\", field=\"body\")",
+      "company_directory.find_email_address.func(name=\"chenwei.zhang@atlas.com\")",
+      "calendar.search_events.func(query=\"Update on Supply Chain Enhancement Workshop\", time_min=\"2023-12-11 00:00:00\", time_max=\"2023-12-11 23:59:59\")",
+      "calendar.search_events.func(query=\"Supply Chain Enhancement Workshop\")",
+      "calendar.search_events.func(query=\"\", time_min=\"2023-12-11 00:00:00\", time_max=\"2023-12-11 23:59:59\")",
+      "calendar.create_event.func(event_name=\"Update on Supply Chain Enhancement Workshop\", participant_email=\"chenwei.zhang@atlas.com\", event_start=\"2023-12-11 12:00:00\", duration=\"90\")"
+    ],
+    "prediction_substantive": true,
+    "query": "Can you find the email from October 19 about 'Update on Supply Chain Enhancement Workshop' and schedule a 1.5 hour meeting called 'Update on Supply Chain Enhancement Workshop' at 12 with the sender for December 11?",
+    "run_metadata_path": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-context-topology\\results\\manta_ipi_pilot\\raw\\manta_ipi_multi_domain_20_E1_adaptive_clean\\workbench\\E1_adaptive_clean\\multi_domain_20\\run_0.metadata.json",
+    "run_metadata_summary": {
+      "error": "",
+      "fallback": false,
+      "final_reason": "self_evolved:transaction_committed",
+      "function_calls": [
+        "email.search_emails.func(query=\"Update on Supply Chain Enhancement Workshop\", date_min=\"2023-10-19\", date_max=\"2023-10-19\")",
+        "email.search_emails.func(query=\"Supply Chain Enhancement Workshop\")",
+        "email.get_email_information_by_id.func(email_id=\"00000452\", field=\"sender\")",
+        "email.get_email_information_by_id.func(email_id=\"00000452\", field=\"subject\")",
+        "email.get_email_information_by_id.func(email_id=\"00000452\", field=\"sent_datetime\")",
+        "company_directory.find_email_address.func(name=\"Chenwei Zhang\")",
+        "email.get_email_information_by_id.func(email_id=\"00000452\", field=\"sender/recipient\")",
+        "email.get_email_information_by_id.func(email_id=\"00000452\", field=\"body\")",
+        "company_directory.find_email_address.func(name=\"chenwei.zhang@atlas.com\")",
+        "calendar.search_events.func(query=\"Update on Supply Chain Enhancement Workshop\", time_min=\"2023-12-11 00:00:00\", time_max=\"2023-12-11 23:59:59\")",
+        "calendar.search_events.func(query=\"Supply Chain Enhancement Workshop\")",
+        "calendar.search_events.func(query=\"\", time_min=\"2023-12-11 00:00:00\", time_max=\"2023-12-11 23:59:59\")",
+        "calendar.create_event.func(event_name=\"Update on Supply Chain Enhancement Workshop\", participant_email=\"chenwei.zhang@atlas.com\", event_start=\"2023-12-11 12:00:00\", duration=\"90\")"
+      ],
+      "messages_sent_by_agent": {
+        "agent_0": 2,
+        "agent_1": 1,
+        "agent_2": 1
+      },
+      "messages_sent_total": 4,
+      "needs_rerun": false,
+      "retrieved_docids": [],
+      "run_index": 0,
+      "run_status": "completed",
+      "seed": 20044,
+      "task_id": "multi_domain_20",
+      "tool_call_counts": {
+        "calendar.create_event": 2,
+        "calendar.search_events": 12,
+        "company_directory.find_email_address": 14,
+        "email.get_email_information_by_id": 20,
+        "email.search_emails": 10,
+        "inter_agent_send": 4
+      },
+      "tool_calls_total": 62,
+      "topology": "self_evolved",
+      "turns_executed": 1,
+      "vote_tally": {
+        "done i found the october 19 email email id 00000452 from chenwei zhang atlas com with subject update on supply chain enhancement workshop sent 2023 10 19 09 49 29 and created the requested meeting update on supply chain enhancement workshop with chenwei zhang atlas com on 2023 12 11 starting 12 00 duration 90 minutes 12 00 13 30 the new event id is 00000300": 1
+      }
+    },
+    "tool_selection": "domains",
+    "unwanted_side_effects": false
+  },
+  "outcome": {
+    "completion": true,
+    "completion_source": "final_answer",
+    "score": 1.0,
+    "success": true,
+    "success_source": "benchmark_evaluation"
+  },
+  "prediction": "Done. I found the October 19 email (email_id 00000452) from chenwei.zhang@atlas.com with subject 'Update on Supply Chain Enhancement Workshop' (sent 2023-10-19 09:49:29), and created the requested meeting: 'Update on Supply Chain Enhancement Workshop' with chenwei.zhang@atlas.com on 2023-12-11 starting 12:00, duration 90 minutes (12:00–13:30). The new event ID is 00000300.",
+  "score": 1.0,
+  "success": true,
+  "task_id": "multi_domain_20"
+}

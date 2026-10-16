@@ -1,0 +1,199 @@
+{
+  "benchmark": "workbench",
+  "evaluation": {
+    "details": {
+      "correct": true,
+      "domains": [
+        "email",
+        "calendar"
+      ],
+      "error": "",
+      "exact_match": true,
+      "ground_truth": [
+        "calendar.create_event.func(event_name=\"Update on Annual Budget Planning Session\", participant_email=\"anaya.patel@atlas.com\", event_start=\"2023-12-08 10:30:00\", duration=\"30\")"
+      ],
+      "prediction": [
+        "email.search_emails.func(query=\"Update on Annual Budget Planning Session\", date_min=\"2023-11-13\", date_max=\"2023-11-13\")",
+        "email.search_emails.func(query=\"Update on Annual Budget Planning Session\")",
+        "email.get_email_information_by_id.func(email_id=\"00000062\", field=\"sender/recipient\")",
+        "email.get_email_information_by_id.func(email_id=\"00000062\", field=\"subject\")",
+        "email.get_email_information_by_id.func(email_id=\"00000062\", field=\"sent_datetime\")",
+        "company_directory.find_email_address.func(name=\"Anaya Patel\")",
+        "company_directory.find_email_address.func(name=\"anaya.patel@atlas.com\")",
+        "company_directory.find_email_address.func(name=\"Anaya\")",
+        "email.get_email_information_by_id.func(email_id=\"00000062\", field=\"sender\")",
+        "email.get_email_information_by_id.func(email_id=\"00000062\", field=\"recipient\")",
+        "calendar.search_events.func(query=\"Update on Annual Budget Planning Session\", time_min=\"2023-12-08 00:00:00\", time_max=\"2023-12-08 23:59:59\")",
+        "calendar.create_event.func(event_name=\"Update on Annual Budget Planning Session\", participant_email=\"anaya.patel@atlas.com\", event_start=\"2023-12-08 10:30:00\", duration=\"30\")",
+        "calendar.get_event_information_by_id.func(event_id=\"00000300\", field=\"event_start\")",
+        "calendar.get_event_information_by_id.func(event_id=\"00000300\", field=\"duration\")",
+        "calendar.get_event_information_by_id.func(event_id=\"00000300\", field=\"participant_email\")",
+        "calendar.get_event_information_by_id.func(event_id=\"00000300\", field=\"event_name\")"
+      ],
+      "prediction_substantive": true,
+      "query": "I need to schedule a 30 minute meeting called 'Update on Annual Budget Planning Session' at 10:30 for December 8. It's with the sender of the email from November 13 about 'Update on Annual Budget Planning Session'. Can you do that?",
+      "tool_selection": "domains",
+      "unwanted_side_effects": false
+    },
+    "score": 1.0,
+    "success": true
+  },
+  "final_answer_preview": "Done. A 30-minute meeting titled 'Update on Annual Budget Planning Session' was created for Friday, 2023-12-08 at 10:30:00 (running until 11:00:00) with Anaya Patel <anaya.patel@atlas.com>, the sender of the 2023-11-13 email on that topic. The new calendar event was verified by read-back: event_id 00000300, event_na...",
+  "metrics": {
+    "accuracy": 1.0,
+    "backtrack_rate": 0.06172839506172839,
+    "communication_count": 4.0,
+    "communication_count_agent_to_agent": 0.0,
+    "communication_count_system_mediated": 4.0,
+    "completion": true,
+    "completion_source": "final_answer",
+    "cost_total": 0.0,
+    "handoff_count": 13.0,
+    "latency_e2e": 177648.42820167542,
+    "latency_total": 177648.35709999845,
+    "loop_score": 0.0,
+    "score": 1.0,
+    "steps_total": 81.0,
+    "success": true,
+    "success_source": "benchmark_evaluation",
+    "token_total": 103408.0,
+    "tokens_total": 103408.0,
+    "tool_calls_total": 30.0,
+    "tool_fail_total": 0.0,
+    "verification_density": 0.08641975308641975
+  },
+  "outcome": {
+    "completion": true,
+    "completion_source": "final_answer",
+    "score": 1.0,
+    "success": true,
+    "success_source": "benchmark_evaluation"
+  },
+  "run_index": 0,
+  "runtime": {
+    "error": "",
+    "fallback": false,
+    "final_reason": "self_evolved:transaction_committed",
+    "function_calls": [
+      "email.search_emails.func(query=\"Update on Annual Budget Planning Session\", date_min=\"2023-11-13\", date_max=\"2023-11-13\")",
+      "email.search_emails.func(query=\"Update on Annual Budget Planning Session\")",
+      "email.get_email_information_by_id.func(email_id=\"00000062\", field=\"sender/recipient\")",
+      "email.get_email_information_by_id.func(email_id=\"00000062\", field=\"subject\")",
+      "email.get_email_information_by_id.func(email_id=\"00000062\", field=\"sent_datetime\")",
+      "company_directory.find_email_address.func(name=\"Anaya Patel\")",
+      "company_directory.find_email_address.func(name=\"anaya.patel@atlas.com\")",
+      "company_directory.find_email_address.func(name=\"Anaya\")",
+      "email.get_email_information_by_id.func(email_id=\"00000062\", field=\"sender\")",
+      "email.get_email_information_by_id.func(email_id=\"00000062\", field=\"recipient\")",
+      "calendar.search_events.func(query=\"Update on Annual Budget Planning Session\", time_min=\"2023-12-08 00:00:00\", time_max=\"2023-12-08 23:59:59\")",
+      "calendar.create_event.func(event_name=\"Update on Annual Budget Planning Session\", participant_email=\"anaya.patel@atlas.com\", event_start=\"2023-12-08 10:30:00\", duration=\"30\")",
+      "calendar.get_event_information_by_id.func(event_id=\"00000300\", field=\"event_start\")",
+      "calendar.get_event_information_by_id.func(event_id=\"00000300\", field=\"duration\")",
+      "calendar.get_event_information_by_id.func(event_id=\"00000300\", field=\"participant_email\")",
+      "calendar.get_event_information_by_id.func(event_id=\"00000300\", field=\"event_name\")"
+    ],
+    "messages_sent_by_agent": {
+      "agent_0": 2,
+      "agent_1": 1,
+      "agent_2": 1
+    },
+    "messages_sent_total": 4,
+    "needs_rerun": false,
+    "retrieved_docids": [],
+    "run_index": 0,
+    "run_status": "completed",
+    "seed": 27043,
+    "task_id": "multi_domain_27",
+    "tool_call_counts": {
+      "calendar.create_event": 2,
+      "calendar.get_event_information_by_id": 8,
+      "calendar.search_events": 4,
+      "company_directory.find_email_address": 16,
+      "email.get_email_information_by_id": 12,
+      "email.search_emails": 10,
+      "inter_agent_send": 4
+    },
+    "tool_calls_total": 56,
+    "topology": "self_evolved",
+    "turns_executed": 1,
+    "vote_tally": {
+      "done a 30 minute meeting titled update on annual budget planning session was created for friday 2023 12 08 at 10 30 00 running until 11 00 00 with anaya patel anaya patel atlas com the sender of the 2023 11 13 email on that topic the new calendar event was verified by read back event id 00000300 event name update on annual budget planning session participant email anaya patel atlas com event start 2023 12 08 10 30 00 duration 30": 1
+    }
+  },
+  "stages": {
+    "act": {
+      "events": 6.0,
+      "latency_ms": 52049.054200000275,
+      "tokens": 88788.0,
+      "tool_errors": 0.0,
+      "verify_density": 0.0
+    },
+    "finalize": {
+      "events": 1.0,
+      "latency_ms": 1.0,
+      "tokens": 58.0,
+      "tool_errors": 0.0,
+      "verify_density": 0.0
+    },
+    "plan": {
+      "events": 2.0,
+      "latency_ms": 27.615799999490264,
+      "tokens": 0.0,
+      "tool_errors": 0.0,
+      "verify_density": 0.0
+    },
+    "retrieve": {
+      "events": 60.0,
+      "latency_ms": 60.0,
+      "tokens": 0.0,
+      "tool_errors": 0.0,
+      "verify_density": 0.0
+    },
+    "revise": {
+      "events": 5.0,
+      "latency_ms": 5.0,
+      "tokens": 0.0,
+      "tool_errors": 0.0,
+      "verify_density": 0.0
+    },
+    "verify": {
+      "events": 7.0,
+      "latency_ms": 125505.68709999869,
+      "tokens": 14562.0,
+      "tool_errors": 0.0,
+      "verify_density": 1.0
+    }
+  },
+  "task_id": "multi_domain_27",
+  "termination": {
+    "average_confidence": 1.0,
+    "consensus_count": 1,
+    "consensus_explanation": "Termination judge returned invalid JSON; lexical consensus was used instead.",
+    "consensus_gate_blocked": false,
+    "consensus_gate_reason": "",
+    "consensus_groups": [],
+    "consensus_is_substantive": null,
+    "consensus_mode": "llm_judge",
+    "consensus_ratio": 0.5,
+    "consensus_signature": "designated committer calendar write agent holder of calendar create event executed false interval arithmetic duration minutes 30 end 2023 12 08 11 00 00 start 2023 12 08 10 30 00 within working window 09 00 to 18 00 true note no calendar write tool exists in this read only stage the committer must execute the call above verbatim the user supplied fixed start 10 30 is preserved exactly and no availability precondition is imposed proposed mutation arguments duration 30 event name update on annual budget planning session event start 2023 12 08 10 30 00 participant email anaya patel atlas com tool calendar create event status proposed mutation ready for committer",
+    "consensus_source": "lexical_fallback_parse_error",
+    "consensus_valid_count": 2,
+    "control_cost_usd": 0.0,
+    "control_latency_ms": 87370.65809999876,
+    "control_token_in": 2715,
+    "control_token_out": 4096,
+    "discussion_index": 0,
+    "expected_improvement": null,
+    "mean_delta": null,
+    "next_step": "finalize",
+    "progress_explanation": "Semantic progress judgment was unavailable because the termination judge returned invalid JSON.",
+    "progress_source": "lexical_fallback_parse_error",
+    "progress_status": "unclear",
+    "reason": "transaction_committed",
+    "reason_detail": "The designated committer completed a state-changing tool call; further turns are suppressed to preserve exactly-once effects.",
+    "round_index": 0,
+    "should_stop": true,
+    "stage_name": "meta_termination",
+    "valid_artifact_count": 2
+  }
+}

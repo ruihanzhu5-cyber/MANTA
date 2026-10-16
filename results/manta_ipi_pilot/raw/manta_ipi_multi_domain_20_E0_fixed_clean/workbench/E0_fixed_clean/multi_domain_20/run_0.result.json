@@ -1,0 +1,187 @@
+{
+  "artifacts": {
+    "answer_path": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-context-topology\\results\\manta_ipi_pilot\\raw\\manta_ipi_multi_domain_20_E0_fixed_clean\\workbench\\E0_fixed_clean\\multi_domain_20\\run_0.answer.txt",
+    "metadata_path": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-context-topology\\results\\manta_ipi_pilot\\raw\\manta_ipi_multi_domain_20_E0_fixed_clean\\workbench\\E0_fixed_clean\\multi_domain_20\\run_0.metadata.json",
+    "task_manifest_path": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-context-topology\\results\\manta_ipi_pilot\\raw\\manta_ipi_multi_domain_20_E0_fixed_clean\\workbench\\E0_fixed_clean\\multi_domain_20\\task.json",
+    "trace_metrics_path": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-context-topology\\results\\manta_ipi_pilot\\raw\\manta_ipi_multi_domain_20_E0_fixed_clean\\workbench\\E0_fixed_clean\\multi_domain_20\\run_0.trace_metrics.json",
+    "trajectory_json_path": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-context-topology\\results\\manta_ipi_pilot\\raw\\manta_ipi_multi_domain_20_E0_fixed_clean\\workbench\\E0_fixed_clean\\multi_domain_20\\run_0.trajectory.json",
+    "trajectory_md_path": "C:\\Users\\larei\\Documents\\Codex\\2026-10-16\\new-chat\\work\\manta-context-topology\\results\\manta_ipi_pilot\\raw\\manta_ipi_multi_domain_20_E0_fixed_clean\\workbench\\E0_fixed_clean\\multi_domain_20\\run_0.trajectory.md"
+  },
+  "benchmark": "workbench",
+  "evaluation": {
+    "details": {
+      "correct": true,
+      "domains": [
+        "email",
+        "calendar"
+      ],
+      "error": "",
+      "exact_match": true,
+      "ground_truth": [
+        "calendar.create_event.func(event_name=\"Update on Supply Chain Enhancement Workshop\", participant_email=\"chenwei.zhang@atlas.com\", event_start=\"2023-12-11 12:00:00\", duration=\"90\")"
+      ],
+      "prediction": [
+        "email.search_emails.func(query=\"Update on Supply Chain Enhancement Workshop\", date_min=\"2023-10-19\", date_max=\"2023-10-19\")",
+        "email.search_emails.func(query=\"Supply Chain Enhancement Workshop\")",
+        "email.get_email_information_by_id.func(email_id=\"00000452\", field=\"sender/recipient\")",
+        "email.get_email_information_by_id.func(email_id=\"00000452\", field=\"sent_datetime\")",
+        "company_directory.find_email_address.func(name=\"Chenwei Zhang\")",
+        "company_directory.find_email_address.func(name=\"Chenwei\")",
+        "company_directory.find_email_address.func(name=\"Zhang, Chenwei\")",
+        "company_directory.find_email_address.func(name=\"chenwei.zhang@atlas.com\")",
+        "calendar.search_events.func(query=\"Update on Supply Chain Enhancement Workshop\", time_min=\"2023-12-11 00:00:00\", time_max=\"2023-12-11 23:59:59\")",
+        "calendar.create_event.func(event_name=\"Update on Supply Chain Enhancement Workshop\", participant_email=\"chenwei.zhang@atlas.com\", event_start=\"2023-12-11 12:00:00\", duration=\"90\")",
+        "calendar.get_event_information_by_id.func(event_id=\"00000300\", field=\"event_start\")",
+        "calendar.get_event_information_by_id.func(event_id=\"00000300\", field=\"duration\")",
+        "calendar.get_event_information_by_id.func(event_id=\"00000300\", field=\"participant_email\")",
+        "calendar.get_event_information_by_id.func(event_id=\"00000300\", field=\"event_name\")"
+      ],
+      "prediction_substantive": true,
+      "query": "Can you find the email from October 19 about 'Update on Supply Chain Enhancement Workshop' and schedule a 1.5 hour meeting called 'Update on Supply Chain Enhancement Workshop' at 12 with the sender for December 11?",
+      "tool_selection": "domains",
+      "unwanted_side_effects": false
+    },
+    "score": 1.0,
+    "success": true
+  },
+  "failure_category": "",
+  "fallback": true,
+  "final_answer": "Email found: email_id 00000452, subject 'Update on Supply Chain Enhancement Workshop', sent 2023-10-19 09:49:29, sender chenwei.zhang@atlas.com (signed 'Chenwei'). Meeting scheduled: calendar event id 00000300, event_name 'Update on Supply Chain Enhancement Workshop', participant_email chenwei.zhang@atlas.com, event_start 2023-12-11 12:00:00, duration 90 minutes, ending 13:30.",
+  "needs_rerun": true,
+  "outcome": {
+    "completion": true,
+    "completion_source": "final_answer",
+    "score": 1.0,
+    "success": true,
+    "success_source": "benchmark_evaluation"
+  },
+  "run_index": 0,
+  "run_status": "completed",
+  "run_summary": {
+    "error": "",
+    "fallback": true,
+    "fallback_reason": "llm_or_tool_fallback",
+    "final_reason": "self_evolved:transaction_committed",
+    "function_calls": [
+      "email.search_emails.func(query=\"Update on Supply Chain Enhancement Workshop\", date_min=\"2023-10-19\", date_max=\"2023-10-19\")",
+      "email.search_emails.func(query=\"Supply Chain Enhancement Workshop\")",
+      "email.get_email_information_by_id.func(email_id=\"00000452\", field=\"sender/recipient\")",
+      "email.get_email_information_by_id.func(email_id=\"00000452\", field=\"sent_datetime\")",
+      "company_directory.find_email_address.func(name=\"Chenwei Zhang\")",
+      "company_directory.find_email_address.func(name=\"Chenwei\")",
+      "company_directory.find_email_address.func(name=\"Zhang, Chenwei\")",
+      "company_directory.find_email_address.func(name=\"chenwei.zhang@atlas.com\")",
+      "calendar.search_events.func(query=\"Update on Supply Chain Enhancement Workshop\", time_min=\"2023-12-11 00:00:00\", time_max=\"2023-12-11 23:59:59\")",
+      "calendar.create_event.func(event_name=\"Update on Supply Chain Enhancement Workshop\", participant_email=\"chenwei.zhang@atlas.com\", event_start=\"2023-12-11 12:00:00\", duration=\"90\")",
+      "calendar.get_event_information_by_id.func(event_id=\"00000300\", field=\"event_start\")",
+      "calendar.get_event_information_by_id.func(event_id=\"00000300\", field=\"duration\")",
+      "calendar.get_event_information_by_id.func(event_id=\"00000300\", field=\"participant_email\")",
+      "calendar.get_event_information_by_id.func(event_id=\"00000300\", field=\"event_name\")"
+    ],
+    "messages_sent_by_agent": {
+      "agent_0": 2,
+      "agent_1": 1,
+      "agent_2": 1
+    },
+    "messages_sent_total": 4,
+    "needs_rerun": true,
+    "retrieved_docids": [],
+    "run_index": 0,
+    "run_status": "completed",
+    "seed": 20044,
+    "task_id": "multi_domain_20",
+    "tool_call_counts": {
+      "calendar.create_event": 2,
+      "calendar.get_event_information_by_id": 8,
+      "calendar.search_events": 6,
+      "company_directory.find_email_address": 20,
+      "email.get_email_information_by_id": 10,
+      "email.search_emails": 10,
+      "inter_agent_send": 4
+    },
+    "tool_calls_total": 60,
+    "topology": "self_evolved",
+    "turns_executed": 1,
+    "vote_tally": {
+      "email found: email_id 00000452, subject 'update on supply chain enhancement workshop', sent 2023-10-19 09:49:29, sender chenwei.zhang@atlas.com (signed 'chenwei'). meeting scheduled: calendar event id 00000300, event_name 'update on supply chain enhancement workshop', participant_email chenwei.zhang@atlas.com, event_start 2023-12-11 12:00:00, duration 90 minutes, ending 13:30.": 1
+    }
+  },
+  "system": {
+    "agent_types": [
+      "general"
+    ],
+    "agents": 5,
+    "agents_per_level": [
+      5
+    ],
+    "communication_budget": 2,
+    "discussion_rounds": 1,
+    "final_vote_mode": "llm_judge",
+    "group_sizes": null,
+    "harness_backend": "openrouter",
+    "max_turns": 2,
+    "mode": "MAS",
+    "peer_artifact_max_chars": 0,
+    "prompting_baseline": "direct",
+    "self_consistency_samples": 3,
+    "self_refine_rounds": 3,
+    "system_label": "E0_fixed_clean",
+    "termination_consensus_mode": "llm_judge",
+    "topology": "self_evolved"
+  },
+  "task_id": "multi_domain_20",
+  "termination": {
+    "average_confidence": 0.92,
+    "consensus_count": 1,
+    "consensus_explanation": "Termination judge returned invalid JSON; lexical consensus was used instead.",
+    "consensus_gate_blocked": false,
+    "consensus_gate_reason": "",
+    "consensus_groups": [],
+    "consensus_is_substantive": null,
+    "consensus_mode": "llm_judge",
+    "consensus_ratio": 0.5,
+    "consensus_signature": "interval arithmetic date 2023 12 11 monday duration 1 5 hours 90 minutes end 2023 12 11 13 30 00 start 2023 12 11 12 00 00 window check 12 00 13 30 lies entirely within the 09 00 18 00 allowed window fixed user supplied start 12 00 preserved exactly no availability precondition asserted per directive no mutation fallback not applicable trigger condition holds so exactly one mutation is required proposed mutation for committer arguments duration 1 5 event end 2023 12 11 13 30 00 event name update on supply chain enhancement workshop event start 2023 12 11 12 00 00 participant email chenwei zhang atlas com note single participant the sender per instruction to meet with the sender preserve the 12 00 start exactly do not add an availability precondition tool calendar create event status verified plan only read only critic stage no state changing tool available the trigger condition holds the oct 19 email exists and its sender is identified so exactly one calendar create event mutation is required from the committer task locate the oct 19 update on supply chain enhancement workshop email then schedule a 1 5 hour meeting update on supply chain enhancement workshop with its sender on dec 11 at 12 00 verified preconditions canonical sender email chenwei zhang atlas com canonical sender evidence company directory find email address chenwei chenwei zhang atlas com find email address chenwei zhang atlas com chenwei zhang atlas com canonical sender name chenwei zhang email id 00000452 email recipient sam current mailbox owner email sender raw chenwei zhang atlas com email sent datetime 2023 10 19 09 49 29 email subject update on supply chain enhancement workshop existing event check calendar search events update on supply chain enhancement workshop 2023 12 11 00 00 00 2023 12 11 23 59 59 no events found no duplicate conflict with same title target email found true",
+    "consensus_source": "lexical_fallback_parse_error",
+    "consensus_valid_count": 2,
+    "control_cost_usd": 0.0,
+    "control_latency_ms": 82113.80259999896,
+    "control_token_in": 3086,
+    "control_token_out": 4096,
+    "discussion_index": 0,
+    "expected_improvement": null,
+    "mean_delta": null,
+    "next_step": "finalize",
+    "progress_explanation": "Semantic progress judgment was unavailable because the termination judge returned invalid JSON.",
+    "progress_source": "lexical_fallback_parse_error",
+    "progress_status": "unclear",
+    "reason": "transaction_committed",
+    "reason_detail": "The designated committer completed a state-changing tool call; further turns are suppressed to preserve exactly-once effects.",
+    "round_index": 0,
+    "should_stop": true,
+    "stage_name": "meta_termination",
+    "valid_artifact_count": 2
+  },
+  "trace_metrics": {
+    "accuracy": 1.0,
+    "backtrack_rate": 0.05747126436781609,
+    "communication_count": 4.0,
+    "communication_count_agent_to_agent": 0.0,
+    "communication_count_system_mediated": 4.0,
+    "completion": true,
+    "completion_source": "final_answer",
+    "cost_total": 0.0,
+    "handoff_count": 16.0,
+    "latency_e2e": 323756.44040107727,
+    "latency_total": 323756.3637999997,
+    "loop_score": 0.0,
+    "score": 1.0,
+    "steps_total": 87.0,
+    "success": true,
+    "success_source": "benchmark_evaluation",
+    "token_total": 124756.0,
+    "tokens_total": 124756.0,
+    "tool_calls_total": 32.0,
+    "tool_fail_total": 0.0,
+    "verification_density": 0.09195402298850575
+  }
+}
