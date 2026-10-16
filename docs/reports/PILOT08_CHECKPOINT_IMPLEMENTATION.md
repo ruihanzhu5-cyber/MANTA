@@ -1,0 +1,11 @@
+# Pilot 08: native proposal boundary implementation
+
+Base `origin/main`: `7d557dc793221906a46a1f83d4e5888fcc5c28d2`.
+
+This branch selectively ports the Pilot 07 Artifact intervention and frozen-initial-topology support (Pilot 07 initial commit `9299d633711aac02b632dd5f36924364483bf8ad`), plus the WorkBench sandbox and executor signature export/import from Pilot 06 (`d80cd57339f6ac16589a08ffa8c726a8077a18e5`). It adds `checkpoint.py`, a minimal split at the native Planner proposal boundary in `engine.py`, a same-checkpoint KEEP/MUTATE continuation, and a budgeted runner. No Auditor, Planner prompt, STOP rule, WorkBench ground truth, or evaluator rule was changed.
+
+The checkpoint is captured **after** the native Auditor and Planner have produced a legal proposal and **before** native application. It includes the full logical Agent state (messages, Artifacts, interaction history, evidence ledger, controller decisions, topology, current turn, short-term playbook, prior token-bearing trace), the frozen native proposal, all seven WorkBench sandbox tables, the executor's executed-call signature set, and the consumed Artifact-intervention state. Live LLM handles, tool closures, and descriptor objects are excluded. Restoration rebuilds tool handlers through the normal WorkBench factory and binds them to independent sandboxes.
+
+`scripts/validate_native_checkpoint.py` has passed the free component-level two-restore check. Its JSON result is `results/pilot08_counterfactual/restore_validation.json` with status `COMPONENT_RESTORE_ONLY`. This is **not** a strict paired causal result. `scripts/run_paired_counterfactual.py` must still capture a real qualified boundary, pass `validate_live_checkpoint`, and run both real DeepSeek continuations. Independent same-seed reruns are never used as a substitute.
+
+The frozen Pilot 07 task, payload, initial topology, model settings, and source hashes are recorded in `results/pilot08_counterfactual/manifests/<task_id>.json`. Saved trial outputs and checkpoint hashes will be added to this branch if the native Planner reaches the boundary within the authorized budget. All cumulative costs use the shared `manta_three_pilots_budget.json` ledger and conservative uncached peak pricing.

@@ -17,11 +17,14 @@ Agents never decide loop termination; the controller logic here does.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
+import os
 import re
 import time
 from difflib import SequenceMatcher
+from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 
@@ -44,15 +47,17 @@ from ..langgraph_engine import (
 )
 from ..monitor import DescriptorHook, NullDescriptor
 from ..relay import TOPOLOGY_SELF_EVOLVED
+from .artifact_intervention import ArtifactIntervention
 from .auditor import TraceAuditorAgent
+from .checkpoint import load_checkpoint, restore_checkpoint, save_checkpoint
 from .context import SharedContextController
 from .executor import TurnExecutor, TurnResult, apply_updates, state_changing_tool_names
 from .harness import AgentHarness
 from .planner import TopologyPlannerAgent
 from .playbook import PlaybookMaintainer, ShortTermTopologyPlaybook, TopologyPlaybook, task_key
-from .retrieval import augment_with_constraint_search
 from .retirement_observer import observe_retirement_candidates
-from .spec import AgentNode, ContextPolicy, GroupSpec, TopologySpec
+from .retrieval import augment_with_constraint_search
+from .spec import AgentNode, ContextPolicy, GroupSpec, TopologyMutation, TopologySpec
 from .transaction import (
     augment_with_transaction_tools,
     calendar_scheduling_mode,
@@ -73,6 +78,7 @@ class SelfEvolvedEngine:
         self._playbook_loaded = False
         self._skill_cache: str | None = None
         self._skill_loaded = False
+        self._checkpoint_hook: Any | None = None
 
     def run(
         self,
@@ -85,6 +91,7 @@ class SelfEvolvedEngine:
         tools: list[dict[str, Any]] | None = None,
         max_tool_iterations: int = 8,
         descriptor: DescriptorHook | None = None,
+        checkpoint_sandbox: Any | None = None,
     ) -> LangGraphRunResult:
         spec = spec.normalized()
         if not agent_types:
@@ -94,6 +101,14 @@ class SelfEvolvedEngine:
         calendar_mode = calendar_scheduling_mode(task_prompt)
         tools = augment_with_constraint_search(list(tools or []))
         tools = augment_with_transaction_tools(tools, task_prompt=task_prompt)
+        resume_path = os.environ.get("MANTA_PILOT08_RESUME_CHECKPOINT")
+        if resume_path:
+            return self._resume_from_checkpoint(
+                task=task, run_index=run_index, seed=seed, spec=spec,
+                agent_types=agent_types, tools=tools, descriptor=descriptor or NullDescriptor(),
+                checkpoint_sandbox=checkpoint_sandbox, checkpoint_path=resume_path,
+                branch=os.environ.get("MANTA_PILOT08_BRANCH", ""),
+            )
 
         num_agents = min(int(spec.num_agents), int(self.se_config.max_initial_agents))
         # Tool-bearing tasks run a multi-iteration tool loop per agent. Extra agents
@@ -127,9 +142,13 @@ class SelfEvolvedEngine:
         )
         mutation_tool_names = state_changing_tool_names(list(tools or []))
         if mutation_tool_names:
-            topo_spec = self._transactional_star_spec(
-                topo_spec, minimum_agents=min(3, max(2, num_agents))
-            )
+            if not (
+                topo_spec.root_group_id == "g_transaction"
+                and topo_spec.group(topo_spec.root_group_id).pattern == "star"
+            ):
+                topo_spec = self._transactional_star_spec(
+                    topo_spec, minimum_agents=min(3, max(2, num_agents))
+                )
             plan_payload["transaction_protocol"] = {
                 "committer_id": topo_spec.group(topo_spec.root_group_id).leader_id,
                 "mutation_tools": sorted(mutation_tool_names),
@@ -164,6 +183,11 @@ class SelfEvolvedEngine:
             role_assignment_payload=role_assignment_payload,
             workflow_definition=workflow_definition,
         )
+        if self.se_config.artifact_intervention_path:
+            state["artifact_intervention"] = ArtifactIntervention.from_path(
+                self.se_config.artifact_intervention_path
+            )
+            state["record_mixed_context_receipts"] = True
         if mutation_tool_names:
             state["self_evolved_mutation_tool_names"] = sorted(mutation_tool_names)
             state["self_evolved_committer_id"] = str(
@@ -175,6 +199,7 @@ class SelfEvolvedEngine:
         audit_reports: list[dict[str, Any]] = []
         mutation_payload: dict[str, Any] | None = None
         mutation_payloads: list[dict[str, Any]] = []
+        turn_control_records: list[dict[str, Any]] = []
         short_term_playbook = ShortTermTopologyPlaybook()
 
         self._emit_meta_event(
@@ -222,9 +247,151 @@ class SelfEvolvedEngine:
             turn_index=None,
         )
 
-        # 3-6. EXECUTE / AUDIT / CONTROL / MUTATE loop.
+        return self._continue_native({
+            "task": task,
+            "run_index": run_index,
+            "seed": seed,
+            "spec": spec,
+            "agent_types": agent_types,
+            "tools": tools,
+            "checkpoint_sandbox": checkpoint_sandbox,
+            "state": state,
+            "topo_spec": topo_spec,
+            "layout": layout,
+            "spec_versions": spec_versions,
+            "audit_reports": audit_reports,
+            "mutation_payload": mutation_payload,
+            "mutation_payloads": mutation_payloads,
+            "turn_control_records": turn_control_records,
+            "short_term_playbook": short_term_playbook,
+            "plan_payload": plan_payload,
+            "workflow_definition": workflow_definition,
+            "role_assignment_payload": role_assignment_payload,
+            "mutation_tool_names": mutation_tool_names,
+            "num_agents": num_agents,
+            "is_retrieval": is_retrieval,
+            "calendar_mode": calendar_mode,
+        })
+
+    def _resume_from_checkpoint(
+        self, *, task: Any, run_index: int, seed: int, spec: ExperimentSpec,
+        agent_types: list[str], tools: list[dict[str, Any]], descriptor: DescriptorHook,
+        checkpoint_sandbox: Any, checkpoint_path: str, branch: str,
+    ) -> LangGraphRunResult:
+        if branch not in {"KEEP", "MUTATE"}:
+            raise ValueError("Pilot 08 continuation requires KEEP or MUTATE")
+        payload = load_checkpoint(checkpoint_path)
+        extra = payload["extra"]
+        if (extra["task_id"] != str(getattr(task, "task_id", ""))
+                or extra["seed"] != seed or extra["run_index"] != run_index
+                or extra["spec"] != spec or extra["agent_types"] != agent_types):
+            raise ValueError("Checkpoint task, seed, model experiment spec or agents differ")
+        topo_spec = extra["topo_spec"]
         context = SharedContextController(topo_spec)
         executor = TurnExecutor(self._stage, context)
+        intervention = (ArtifactIntervention.from_path(self.se_config.artifact_intervention_path)
+                        if self.se_config.artifact_intervention_path else None)
+        state = restore_checkpoint(
+            payload, tools=tools, sandbox=checkpoint_sandbox,
+            llm_client=self.llm_client, descriptor=descriptor,
+            intervention=intervention, executor=executor,
+        )
+        if not intervention or not intervention.applied:
+            raise ValueError("Checkpoint does not contain a consumed mixed Artifact")
+        proposal = extra["native_proposal"]
+        if proposal.mutation is None:
+            raise ValueError("Checkpoint lacks a legal native Mutation Proposal")
+        audit_report = extra["audit_reports"][-1]
+        turn_index = int(extra["turn_index"])
+        if branch == "KEEP":
+            mutated = (topo_spec, {
+                **proposal.to_payload(), "control": "KEEP_TOPOLOGY",
+                "proposed_mutation": proposal.mutation.to_payload(),
+                "applied_mutation": None, "reason": "pilot08_same_state_keep",
+            })
+        else:
+            self._checkpoint_hook = None
+            mutated = self._apply_mutation(
+                state, topo_spec, audit_report, task=task, agent_types=agent_types,
+                short_term_playbook=extra["short_term_playbook"],
+                frozen_proposal=proposal,
+            )
+            if mutated is None:
+                raise ValueError("Frozen native proposal could not be applied")
+        previous_spec = topo_spec
+        topo_spec, mutation_payload = mutated
+        mutation_tool_names = extra["mutation_tool_names"]
+        if mutation_tool_names:
+            if topo_spec is not previous_spec:
+                topo_spec = self._transactional_star_spec(
+                    topo_spec, minimum_agents=min(3, max(2, int(extra["num_agents"])))
+                )
+            mutation_payload = {
+                **mutation_payload,
+                "transaction_protocol_reapplied": topo_spec is not previous_spec,
+                "committer_id": topo_spec.group(topo_spec.root_group_id).leader_id,
+            }
+        turn_record = extra["turn_control_records"][-1]
+        proposals = state.get("self_evolved_mutation_proposals", [])
+        turn_record["mutation_proposal"] = proposals[-1] if proposals else None
+        turn_record["applied_mutation"] = mutation_payload
+        turn_record["effective_structural_change"] = (
+            self._structural_view(previous_spec) != self._structural_view(topo_spec)
+        )
+        turn_record["effective_context_policy_change"] = (
+            self._context_view(previous_spec) != self._context_view(topo_spec)
+        )
+        turn_record["post_mutation_topology_spec"] = topo_spec.to_payload()
+        extra["mutation_payloads"].append(mutation_payload)
+        state["self_evolved_repair_directive"] = self._repair_directive(audit_report)
+        layout = topo_spec.to_layout()
+        state["layout"] = layout
+        context.set_spec(topo_spec)
+        if topo_spec is not previous_spec:
+            extra["spec_versions"].append(topo_spec.to_payload())
+            self._record_context_state(
+                state, topo_spec, layout, reason="mutation", turn_index=turn_index,
+            )
+        runtime = {
+            **extra,
+            "task": task, "run_index": run_index, "seed": seed, "spec": spec,
+            "agent_types": agent_types, "tools": tools,
+            "checkpoint_sandbox": checkpoint_sandbox,
+            "state": state, "topo_spec": topo_spec, "layout": layout,
+            "context": context, "executor": executor,
+            "mutation_payload": mutation_payload,
+            "start_turn_index": turn_index + 1,
+        }
+        return self._continue_native(runtime)
+
+    def _continue_native(self, runtime: dict[str, Any]) -> LangGraphRunResult:
+        task = runtime["task"]
+        run_index = runtime["run_index"]
+        seed = runtime["seed"]
+        spec = runtime["spec"]
+        agent_types = runtime["agent_types"]
+        tools = runtime["tools"]
+        checkpoint_sandbox = runtime["checkpoint_sandbox"]
+        state = runtime["state"]
+        topo_spec = runtime["topo_spec"]
+        layout = runtime["layout"]
+        spec_versions = runtime["spec_versions"]
+        audit_reports = runtime["audit_reports"]
+        mutation_payload = runtime["mutation_payload"]
+        mutation_payloads = runtime["mutation_payloads"]
+        turn_control_records = runtime["turn_control_records"]
+        short_term_playbook = runtime["short_term_playbook"]
+        plan_payload = runtime["plan_payload"]
+        workflow_definition = runtime["workflow_definition"]
+        role_assignment_payload = runtime["role_assignment_payload"]
+        mutation_tool_names = runtime["mutation_tool_names"]
+        num_agents = runtime["num_agents"]
+        is_retrieval = runtime["is_retrieval"]
+        calendar_mode = runtime["calendar_mode"]
+
+        # 3-6. EXECUTE / AUDIT / CONTROL / MUTATE loop.
+        context = runtime.get("context") or SharedContextController(topo_spec)
+        executor = runtime.get("executor") or TurnExecutor(self._stage, context)
         max_turns = int(self.se_config.max_turns)
         repair_budget = max(0, int(self.se_config.repair_budget))
         # A full retrieval repair re-runs every searcher over large contexts and may
@@ -234,10 +401,44 @@ class SelfEvolvedEngine:
         # while keeping peak fan-out bounded.
         if is_retrieval:
             max_turns = min(max_turns, 2)
-        turn_results: list[TurnResult] = []
-        decision: TerminationDecision = {}
+        turn_results: list[TurnResult] = runtime.get("turn_results", [])
+        decision: TerminationDecision = runtime.get("decision", {})
 
-        for turn_index in range(max_turns):
+        checkpoint_path = (os.environ.get("MANTA_PILOT08_CAPTURE_CHECKPOINT")
+                           if not runtime.get("start_turn_index") else None)
+        self._checkpoint_hook = None
+        if checkpoint_path:
+            def capture_native_boundary(proposal: Any) -> None:
+                intervention = state.get("artifact_intervention")
+                if (proposal.mutation is None or not intervention or not intervention.applied
+                        or Path(checkpoint_path).exists()):
+                    return
+                extra = {
+                    "task_id": str(getattr(task, "task_id", "")),
+                    "run_index": run_index, "seed": seed, "spec": spec,
+                    "agent_types": list(agent_types), "topo_spec": topo_spec,
+                    "turn_index": turn_index, "native_proposal": proposal,
+                    "spec_versions": spec_versions, "audit_reports": audit_reports,
+                    "mutation_payload": mutation_payload,
+                    "mutation_payloads": mutation_payloads,
+                    "turn_control_records": turn_control_records,
+                    "short_term_playbook": short_term_playbook,
+                    "turn_results": turn_results, "decision": decision,
+                    "plan_payload": plan_payload,
+                    "workflow_definition": workflow_definition,
+                    "role_assignment_payload": role_assignment_payload,
+                    "max_turns": max_turns, "repair_budget": repair_budget,
+                    "mutation_tool_names": mutation_tool_names,
+                    "num_agents": num_agents, "is_retrieval": is_retrieval,
+                    "calendar_mode": calendar_mode,
+                }
+                save_checkpoint(checkpoint_path, state=state,
+                                sandbox=checkpoint_sandbox, executor=executor, extra=extra)
+            self._checkpoint_hook = capture_native_boundary
+
+        for turn_index in range(int(runtime.get("start_turn_index", 0)), max_turns):
+            message_start = len(state.get("messages", []))
+            view_start = len(state.get("message_views", []))
             result = executor.run_turn(state, topo_spec, turn_index=turn_index)
             turn_results.append(result)
             apply_updates(state, self._stage._descriptor_monitor_node(state))
@@ -292,6 +493,28 @@ class SelfEvolvedEngine:
                     ),
                     "repair_suppressed": "repeated_decision_signature",
                 }
+            if not bool(decision.get("should_stop", True)) and not self.se_config.allow_topology_mutation:
+                decision = {**decision, "next_step": "KEEP_TOPOLOGY"}
+            turn_record = {
+                "turn_index": turn_index,
+                "topology_spec": topo_spec.to_payload(),
+                "agent_count": len(topo_spec.agents),
+                "edge_count": sum(len(v) for v in topo_spec.to_layout().adjacency.values()) // 2,
+                "audit_report": audit_report,
+                "repair_recommended": self._repair_recommended(audit_report),
+                "termination_decision": dict(decision),
+                "transaction_committed": transaction_committed,
+                "repair_available": repair_available,
+                "mutation_proposal": None,
+                "applied_mutation": None,
+                "effective_structural_change": False,
+                "effective_context_policy_change": False,
+                "relay_packets_generated": list(state.get("messages", []))[message_start:],
+                "relay_packet_receipts": list(state.get("message_views", []))[view_start:],
+                "task_ended": bool(decision.get("should_stop", True)),
+                "end_reason": str(decision.get("reason", "")) if decision.get("should_stop", True) else "",
+            }
+            turn_control_records.append(turn_record)
             state["termination_decision"] = decision
             apply_updates(
                 state,
@@ -315,7 +538,13 @@ class SelfEvolvedEngine:
                 break
 
             # Trace-backed repair (one mutation per turn, capped by repair_budget).
-            if is_retrieval:
+            if not self.se_config.allow_topology_mutation:
+                mutated = (
+                    topo_spec,
+                    {"control": "KEEP_TOPOLOGY", "proposed_mutation": None,
+                     "applied_mutation": None, "reason": "fixed_topology_audit_retry"},
+                )
+            elif is_retrieval:
                 mutated = self._apply_retrieval_rescue_mutation(
                     state,
                     topo_spec,
@@ -344,6 +573,11 @@ class SelfEvolvedEngine:
                     ),
                 }
                 state["termination_decision"] = decision
+                turn_record["termination_decision"] = dict(decision)
+                turn_record["task_ended"] = True
+                turn_record["end_reason"] = str(decision.get("reason", ""))
+                proposals = state.get("self_evolved_mutation_proposals", [])
+                turn_record["mutation_proposal"] = proposals[-1] if proposals else None
                 apply_updates(
                     state,
                     {
@@ -354,29 +588,38 @@ class SelfEvolvedEngine:
                     },
                 )
                 break
+            previous_spec = topo_spec
             topo_spec, mutation_payload = mutated
             if mutation_tool_names:
-                topo_spec = self._transactional_star_spec(
-                    topo_spec, minimum_agents=min(3, max(2, num_agents))
-                )
+                if topo_spec is not previous_spec:
+                    topo_spec = self._transactional_star_spec(
+                        topo_spec, minimum_agents=min(3, max(2, num_agents))
+                    )
                 mutation_payload = {
                     **mutation_payload,
-                    "transaction_protocol_reapplied": True,
+                    "transaction_protocol_reapplied": topo_spec is not previous_spec,
                     "committer_id": topo_spec.group(topo_spec.root_group_id).leader_id,
                 }
+            proposals = state.get("self_evolved_mutation_proposals", [])
+            turn_record["mutation_proposal"] = proposals[-1] if proposals else None
+            turn_record["applied_mutation"] = mutation_payload
+            turn_record["effective_structural_change"] = (
+                self._structural_view(previous_spec) != self._structural_view(topo_spec)
+            )
+            turn_record["effective_context_policy_change"] = (
+                self._context_view(previous_spec) != self._context_view(topo_spec)
+            )
+            turn_record["post_mutation_topology_spec"] = topo_spec.to_payload()
             mutation_payloads.append(mutation_payload)
             state["self_evolved_repair_directive"] = self._repair_directive(audit_report)
             layout = topo_spec.to_layout()
             state["layout"] = layout
             context.set_spec(topo_spec)
-            spec_versions.append(topo_spec.to_payload())
-            self._record_context_state(
-                state,
-                topo_spec,
-                layout,
-                reason="mutation",
-                turn_index=turn_index,
-            )
+            if topo_spec is not previous_spec:
+                spec_versions.append(topo_spec.to_payload())
+                self._record_context_state(
+                    state, topo_spec, layout, reason="mutation", turn_index=turn_index,
+                )
 
         # 7. FINALIZE.
         final_result = turn_results[-1] if turn_results else TurnResult(output_artifact=None)
@@ -448,10 +691,12 @@ class SelfEvolvedEngine:
             audit_reports=audit_reports,
             mutation_payload=mutation_payload,
             mutation_payloads=mutation_payloads,
+            turn_control_records=turn_control_records,
             plan_payload=plan_payload,
             playbook_candidate=playbook_candidate,
             retirement_observations=retirement_observations,
         )
+        self._checkpoint_hook = None
         return LangGraphRunResult(
             final_answer=final_answer,
             trace_events=trace_events,
@@ -512,6 +757,20 @@ class SelfEvolvedEngine:
     def _propose_initial_spec(
         self, task: Any, num_agents: int, benchmark_name: str, tools_available: bool
     ) -> tuple[TopologySpec, dict[str, Any]]:
+        if self.se_config.frozen_initial_spec_path:
+            source = Path(self.se_config.frozen_initial_spec_path)
+            frozen = json.loads(source.read_text(encoding="utf-8"))
+            payload = frozen["topology_spec"]
+            if str(frozen.get("task_id")) != str(getattr(task, "task_id", "")):
+                raise ValueError("Frozen topology task_id differs from requested task")
+            canonical = json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
+            spec = TopologySpec.from_payload(payload)
+            return spec, {
+                "rationale": spec.rationale, "used_fallback": False, "fallback_reason": "",
+                "prompt_messages": [], "response": "", "llm": {}, "playbook_keys": [],
+                "initial_spec_source": str(source.resolve()),
+                "initial_spec_sha256": hashlib.sha256(canonical).hexdigest(),
+            }
         if self.se_config.initial_planner_mode == "fixed":
             fixed = self.planner.fallback_initial_spec(num_agents)
             return fixed, {
@@ -613,6 +872,24 @@ class SelfEvolvedEngine:
         return bool(audit_report.get("repair_recommended", False))
 
     @staticmethod
+    def _structural_view(spec: TopologySpec) -> dict[str, Any]:
+        """Ignore version, prose and context when checking actual graph changes."""
+        payload = spec.to_payload()
+        return {
+            "root_group_id": payload["root_group_id"],
+            "agents": [
+                (node["agent_id"], node["group_id"], node["structural_role"], node["stage_role"])
+                for node in payload["agents"]
+            ],
+            "groups": payload["groups"],
+            "extra_edges": payload["extra_edges"],
+        }
+
+    @staticmethod
+    def _context_view(spec: TopologySpec) -> dict[str, Any]:
+        return {node.agent_id: node.context.__dict__ for node in spec.agents}
+
+    @staticmethod
     def _repair_repeated_decision(turn_results: list[TurnResult]) -> bool:
         """Stop spending repair budget when one mutation leaves the decision unchanged."""
 
@@ -650,30 +927,32 @@ class SelfEvolvedEngine:
         task: Any,
         agent_types: list[str],
         short_term_playbook: ShortTermTopologyPlaybook,
+        frozen_proposal: Any | None = None,
     ) -> tuple[TopologySpec, dict[str, Any]] | None:
-        playbook_entries = (
+        if frozen_proposal is None:
+            playbook_entries = (
             self._playbook_entries(
                 task,
                 str(state.get("benchmark_name", "")),
                 bool(state.get("tools")),
             )
             or []
-        )
-        playbook_entries = [*short_term_playbook.planner_entries(), *playbook_entries]
-        proposal_started = time.perf_counter()
-        proposal = self.planner.propose_mutation(
+            )
+            playbook_entries = [*short_term_playbook.planner_entries(), *playbook_entries]
+            proposal_started = time.perf_counter()
+            proposal = self.planner.propose_mutation(
             task=task,
             spec=topo_spec,
             audit_report=audit_report or {},
             playbook_entries=playbook_entries,
             principles=self._playbook_principles(),
             skill_text=self._skill_text(),
-        )
-        proposal_latency_ms = max((time.perf_counter() - proposal_started) * 1000.0, 1.0)
-        proposal_payload = proposal.to_payload()
-        state.setdefault("self_evolved_mutation_proposals", []).append(proposal_payload)
-        llm_payload = proposal_payload.get("llm", {})
-        self._emit_meta_event(
+            )
+            proposal_latency_ms = max((time.perf_counter() - proposal_started) * 1000.0, 1.0)
+            proposal_payload = proposal.to_payload()
+            state.setdefault("self_evolved_mutation_proposals", []).append(proposal_payload)
+            llm_payload = proposal_payload.get("llm", {})
+            self._emit_meta_event(
             state,
             actor="topology_planner",
             event_type="revise",
@@ -683,7 +962,12 @@ class SelfEvolvedEngine:
             token_out=int(llm_payload.get("token_out", 0)),
             latency_ms=proposal_latency_ms,
             cost_usd=float(llm_payload.get("cost_usd", 0.0)),
-        )
+            )
+            if self._checkpoint_hook is not None:
+                self._checkpoint_hook(proposal)
+        else:
+            proposal = frozen_proposal
+            proposal_payload = proposal.to_payload()
         mutation = proposal.mutation
         if mutation is None:
             self._emit_meta_event(
@@ -698,7 +982,21 @@ class SelfEvolvedEngine:
             )
             return None
 
-        mutated_spec = mutation.apply(topo_spec, max_agents=int(self.se_config.max_total_agents))
+        applied_mutation = mutation
+        if not self.se_config.allow_context_policy_mutation:
+            structural_ops = tuple(op for op in mutation.ops if op.op != "set_context_policy")
+            if not structural_ops:
+                return topo_spec, {
+                    **proposal_payload, "control": "KEEP_TOPOLOGY",
+                    "proposed_mutation": mutation.to_payload(), "applied_mutation": None,
+                    "reason": "policy_only_proposal_excluded",
+                }
+            applied_mutation = TopologyMutation(
+                rationale=mutation.rationale,
+                target_failure_modes=mutation.target_failure_modes,
+                ops=structural_ops,
+            )
+        mutated_spec = applied_mutation.apply(topo_spec, max_agents=int(self.se_config.max_total_agents))
         mutated_layout = mutated_spec.to_layout()
         new_agents = [
             agent_id
@@ -709,6 +1007,9 @@ class SelfEvolvedEngine:
 
         mutation_payload = {
             **proposal.to_payload(),
+            "control": "APPLY_MUTATION",
+            "proposed_mutation": mutation.to_payload(),
+            "applied_mutation": applied_mutation.to_payload(),
             "added_agents": list(new_agents),
             "spec_version": int(mutated_spec.version),
         }
@@ -3302,6 +3603,7 @@ class SelfEvolvedEngine:
         audit_reports: list[dict[str, Any]],
         mutation_payload: dict[str, Any] | None,
         mutation_payloads: list[dict[str, Any]],
+        turn_control_records: list[dict[str, Any]],
         plan_payload: dict[str, Any],
         playbook_candidate: dict[str, Any] | None = None,
         retirement_observations: tuple[Any, ...] = (),
@@ -3353,6 +3655,9 @@ class SelfEvolvedEngine:
             "topology_layout": layout.to_payload(),
             "workflow_definition": workflow_definition,
             "artifact_records": artifacts,
+            "evidence_ledger": list(state.get("evidence_ledger", [])),
+            "artifact_intervention_events": list(state.get("artifact_intervention_events", [])),
+            "context_digest_deliveries": list(state.get("context_digest_deliveries", [])),
             "final_reason": str(state.get("final_reason", "")),
             "self_evolved": {
                 "harness_backend": str(self.se_config.harness_backend),
@@ -3361,6 +3666,7 @@ class SelfEvolvedEngine:
                 "context_state_versions": list(state.get("context_state_versions", [])),
                 "mutation": mutation_payload,
                 "mutations": list(mutation_payloads),
+                "turn_control_records": list(turn_control_records),
                 "mutation_proposals": list(state.get("self_evolved_mutation_proposals", [])),
                 "audit_reports": list(audit_reports),
                 "planner": dict(plan_payload),

@@ -178,7 +178,7 @@ class SharedContextController:
             lines
         )
         round_index = int(state.get("round_index", 0))
-        return {
+        packet = {
             "message_id": f"digest_{agent_id}_r{round_index}_{len(ledger)}",
             "dispatch_id": int(state.get("dispatch_id", -1)),
             "sender": DIGEST_SENDER,
@@ -191,6 +191,14 @@ class SharedContextController:
             "content": content,
             "payload": {"scope": effective, "entries": [dict(entry) for entry in entries]},
         }
+        if state.get("record_mixed_context_receipts"):
+            state.setdefault("context_digest_deliveries", []).append({
+                "reader_id": agent_id,
+                "scope": effective,
+                "packet": packet,
+                "dispatch_id": int(state.get("dispatch_id", -1)),
+            })
+        return packet
 
     def branch_agent_ids(self, agent_id: str) -> set[str]:
         """Agents in the same root branch: walk up to the root-group anchor,
