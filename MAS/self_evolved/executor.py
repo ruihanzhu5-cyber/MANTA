@@ -177,6 +177,20 @@ class TurnExecutor:
         # to one run (the executor is created per run) and shared across turns.
         self._executed_signatures: set[str] = set()
 
+    def export_state(self) -> dict[str, Any]:
+        """Export the per-run exactly-once signature ledger at a turn boundary."""
+        return {"version": 1, "executed_signatures": sorted(self._executed_signatures)}
+
+    def import_state(self, snapshot: dict[str, Any]) -> None:
+        if snapshot.get("version") != 1:
+            raise ValueError("Unsupported TurnExecutor snapshot")
+        signatures = snapshot.get("executed_signatures")
+        if not isinstance(signatures, list) or any(not isinstance(x, str) for x in signatures):
+            raise ValueError("Invalid TurnExecutor signatures")
+        if len(signatures) != len(set(signatures)):
+            raise ValueError("Duplicate TurnExecutor signatures")
+        self._executed_signatures = set(signatures)
+
     def run_turn(self, state: dict[str, Any], spec: TopologySpec, *, turn_index: int) -> TurnResult:
         state["round_index"] = int(turn_index)
         state["discussion_index"] = 0
