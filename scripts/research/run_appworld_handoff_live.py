@@ -99,6 +99,7 @@ def config_for(
 def _trace_summary(run_root: Path, log_path: Path) -> dict[str, Any]:
     text = log_path.read_text(encoding="utf-8", errors="replace") if log_path.exists() else ""
     usage = [(int(a), int(b)) for a, b in re.findall(r"\bDONE\b[^\n]*\btoken_in=(\d+)\s+token_out=(\d+)", text)]
+    llm_requests = len(re.findall(r"TOOL_LOOP request_id=", text)) + len(re.findall(r"FORCE_FINAL request_id=", text))
     metrics_files = list(run_root.rglob("run_0.trace_metrics.json"))
     eval_files = list(run_root.rglob("run_0.eval.json"))
     trace_files = list(run_root.rglob("run_0.trace.jsonl"))
@@ -106,6 +107,7 @@ def _trace_summary(run_root: Path, log_path: Path) -> dict[str, Any]:
         "complete_artifacts": len(metrics_files) == len(eval_files) == len(trace_files) == 1,
         "token_in": sum(a for a, _ in usage), "token_out": sum(b for _, b in usage),
         "model_events": len(usage),
+        "llm_requests": llm_requests,
     }
     if not result["complete_artifacts"]:
         result["official_score_available"] = False
@@ -123,6 +125,20 @@ def _trace_summary(run_root: Path, log_path: Path) -> dict[str, Any]:
     metrics = json.loads(metrics_files[0].read_text(encoding="utf-8"))
     evaluation = json.loads(eval_files[0].read_text(encoding="utf-8"))
     trace = [json.loads(line) for line in trace_files[0].read_text(encoding="utf-8").splitlines() if line.strip()]
+    metadata_files = list(run_root.rglob("run_0.metadata.json"))
+    metadata = json.loads(metadata_files[0].read_text(encoding="utf-8")) if len(metadata_files) == 1 else {}
+    appworld_events = list(metadata.get("appworld_tool_events") or [])
+    relay_messages = list(metadata.get("relay_messages") or [])
+    worker_relays = [
+        item for item in relay_messages
+        if str(item.get("sender", "")).startswith("agent_")
+        and str(item.get("sender")) != "agent_0"
+        and "agent_0" in list(item.get("recipients") or [])
+        and str(item.get("phase", "")).endswith("relay")
+    ]
+    coordinator_views = [item for item in (metadata.get("message_views") or []) if item.get("viewer") == "agent_0"]
+    visible_ids = {message_id for view in coordinator_views for message_id in (view.get("visible_message_ids") or [])}
+    received_relays = [item for item in worker_relays if item.get("message_id") in visible_ids]
     token_in = max(result["token_in"], sum(int(event.get("token_in") or 0) for event in trace))
     token_out = max(result["token_out"], sum(int(event.get("token_out") or 0) for event in trace))
     estimated = (token_in * 0.30 + token_out * 1.20) / 1_000_000
@@ -132,7 +148,16 @@ def _trace_summary(run_root: Path, log_path: Path) -> dict[str, Any]:
         "official_task_success": bool(evaluation.get("success")),
         "token_in": token_in, "token_out": token_out,
         "model_events": max(len(usage), sum(bool(event.get("token_in") or event.get("token_out")) for event in trace)),
-        "tool_calls": int(metrics.get("metrics", {}).get("tool_calls_total") or 0),
+        "llm_requests": llm_requests,
+        "tool_calls": max(int(metrics.get("metrics", {}).get("tool_calls_total") or 0), len(appworld_events)),
+        "appworld_event_count": len(appworld_events),
+        "tool_error_count": sum(bool(event.get("execution_error")) for event in appworld_events),
+        "appworld_task_completed": bool(metadata.get("appworld_task_completed")),
+        "long_horizon_stage_count": int(metadata.get("long_horizon_stage_count") or 0),
+        "relay_count": len(relay_messages),
+        "worker_coordinator_relay_count": len(worker_relays),
+        "coordinator_received_relay_count": len(received_relays),
+        "coordinator_received_relay_ids": [str(item.get("message_id")) for item in received_relays],
         "observed_cost_usd": observed, "cost_upper_usd": max(observed, estimated),
         "evaluation": evaluation,
     })
