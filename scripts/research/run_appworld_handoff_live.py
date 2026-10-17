@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -34,11 +35,27 @@ def write_json(path: Path, data: Any) -> None:
     tmp.replace(path)
 
 
+def sha256_file(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def current_code_sha() -> str:
+    try:
+        return subprocess.run(
+            ["git", "rev-parse", "HEAD"], cwd=ROOT, check=True,
+            capture_output=True, text=True,
+        ).stdout.strip()
+    except Exception:
+        return "UNKNOWN"
+
+
 def load_ledger(cap: float) -> dict[str, Any]:
     if LEDGER.exists():
         ledger = json.loads(LEDGER.read_text(encoding="utf-8"))
         if abs(float(ledger.get("approved_cap_usd", cap)) - cap) > 1e-9:
             raise RuntimeError("Existing live ledger cap differs; use a fresh artifact directory")
+        if ledger.get("inflight"):
+            raise RuntimeError("BUDGET_UNCERTAIN_STOP: ledger contains unresolved in-flight episodes")
         return ledger
     return {"approved_cap_usd": cap, "inflight": [], "episodes": [],
             "created_utc": datetime.now(UTC).isoformat(), "model": "deepseek-flash"}
@@ -113,11 +130,16 @@ def _trace_summary(run_root: Path, log_path: Path) -> dict[str, Any]:
     return result
 
 
-def run_one(task_id: str, arm: str, variant: str, ledger: dict[str, Any], *, reserve: float, max_seconds: int, dry_run: bool, seed: int = 42, run_id: str = "manual") -> dict[str, Any]:
+def run_one(task_id: str, arm: str, variant: str, ledger: dict[str, Any], *, reserve: float, max_seconds: int, dry_run: bool, seed: int = 42, run_id: str = "manual", manifest_sha256: str = "UNKNOWN", code_sha: str = "UNKNOWN") -> dict[str, Any]:
     key = (task_id, arm, variant, int(seed), run_id)
     prior = [row for row in ledger["episodes"] if (row.get("task_id"), row.get("arm"), row.get("variant"), int(row.get("seed", 42)), row.get("run_id", "manual")) == key]
-    if prior and prior[-1].get("complete_artifacts"):
-        return prior[-1]
+    if prior:
+        # A completed row is resumable without another request.  An incomplete
+        # or unknown row is deliberately preserved and never silently re-run:
+        # its provider usage may be unsettled.
+        if prior[-1].get("complete_artifacts"):
+            return prior[-1]
+        return {**prior[-1], "resume_blocked": True, "status": "UNKNOWN_UNSETTLED"}
     if dry_run:
         return {"task_id": task_id, "arm": arm, "variant": variant, "seed": seed, "run_id": run_id, "dry_run": True}
     with LOCK:
@@ -127,6 +149,7 @@ def run_one(task_id: str, arm: str, variant: str, ledger: dict[str, Any], *, res
                     "started_utc": datetime.now(UTC).isoformat()}
         ledger["inflight"].append(inflight); write_json(LEDGER, ledger)
     config = config_for(task_id, arm, variant, seed=seed, run_id=run_id)
+    config_sha256 = sha256_file(config)
     experiment_id = f"appworld_b0_v02_{task_id}_{arm.lower()}_{variant.lower()}_seed{seed}_{run_id}"
     run_root = OUT / "raw" / experiment_id
     log_path = OUT / "logs" / f"{experiment_id}.log"
@@ -148,7 +171,9 @@ def run_one(task_id: str, arm: str, variant: str, ledger: dict[str, Any], *, res
     except Exception as exc:
         error = f"{type(exc).__name__}: {exc}"
     summary = _trace_summary(run_root, log_path)
-    episode = {"task_id": task_id, "arm": arm, "variant": variant, "seed": seed, "run_id": run_id, "return_code": return_code,
+    episode = {"task_id": task_id, "arm": arm, "variant": variant, "seed": seed, "run_id": run_id,
+               "code_sha": code_sha, "config_sha256": config_sha256, "manifest_sha256": manifest_sha256,
+               "return_code": return_code,
                "error": error, "duration_seconds": round(time.monotonic() - started, 2), **summary}
     with LOCK:
         if inflight in ledger["inflight"]: ledger["inflight"].remove(inflight)
@@ -157,10 +182,10 @@ def run_one(task_id: str, arm: str, variant: str, ledger: dict[str, Any], *, res
     return episode
 
 
-def run_batch(items: list[tuple[str, str, str]], ledger: dict[str, Any], *, workers: int, reserve: float, max_seconds: int, dry_run: bool, seed: int = 42, run_id: str = "manual") -> list[dict[str, Any]]:
+def run_batch(items: list[tuple[str, str, str]], ledger: dict[str, Any], *, workers: int, reserve: float, max_seconds: int, dry_run: bool, seed: int = 42, run_id: str = "manual", manifest_sha256: str = "UNKNOWN", code_sha: str = "UNKNOWN") -> list[dict[str, Any]]:
     results: list[dict[str, Any]] = []
     with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
-        futures = {pool.submit(run_one, *item, ledger, reserve=reserve, max_seconds=max_seconds, dry_run=dry_run, seed=seed, run_id=run_id): item for item in items}
+        futures = {pool.submit(run_one, *item, ledger, reserve=reserve, max_seconds=max_seconds, dry_run=dry_run, seed=seed, run_id=run_id, manifest_sha256=manifest_sha256, code_sha=code_sha): item for item in items}
         for future in as_completed(futures):
             try: results.append(future.result())
             except Exception as exc: results.append({"item": futures[future], "error": f"{type(exc).__name__}: {exc}"})
@@ -174,7 +199,7 @@ def main() -> int:
     parser.add_argument("--parallel-episodes", type=int, default=None)
     parser.add_argument("--model-max-inflight", type=int, default=8)
     parser.add_argument("--max-seconds-per-run", type=int, default=1800)
-    parser.add_argument("--task-ids", default="6c2c621_1,530b157_1")
+    parser.add_argument("--task-ids", default="")
     parser.add_argument("--clean-manifest", default=str(OUT / "clean_screen_manifest.json"))
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--run-id", default=datetime.now(UTC).strftime("run_%Y%m%dT%H%M%SZ"))
@@ -193,10 +218,14 @@ def main() -> int:
     requested_arms = [item.strip() for item in args.arms.split(",") if item.strip()]
     phases = [args.phase] if args.phase != "all" else ["functional", "clean", "attack"]
     functional_results: list[dict[str, Any]] = []
+    manifest_sha256 = "UNKNOWN"
+    code_sha = current_code_sha()
+    frozen_case_order = ["6c2c621_1", "530b157_1", "6171bbc_1", "50e1ac9_1", "0d8a4ee_1"]
     for phase in phases:
         workers = args.parallel_episodes or (2 if phase == "functional" else 4)
         if phase == "functional":
-            items = [(task_id, arm, "NATIVE_PACKET") for task_id in ids for arm in (requested_arms or ["SINGLE_AGENT_LH", "MANTA_NATIVE"])]
+            functional_ids = ids or ["6c2c621_1", "530b157_1"]
+            items = [(task_id, arm, "NATIVE_PACKET") for task_id in functional_ids for arm in (requested_arms or ["SINGLE_AGENT_LH", "MANTA_NATIVE"])]
         elif phase == "clean":
             manifest_path = Path(args.clean_manifest)
             if not manifest_path.exists():
@@ -204,17 +233,21 @@ def main() -> int:
                 return 3
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
             frozen = [str(item.get("task_id")) for item in manifest.get("frozen_cases", []) if item.get("task_id")]
-            if not frozen or manifest.get("status") != "FROZEN":
-                print("B0_GATE_STOP: clean manifest is not frozen")
+            if frozen != frozen_case_order or manifest.get("status") != "FROZEN" or manifest.get("ground_truth_used") is not False:
+                print("B0_GATE_STOP: clean manifest is not the frozen five-case public manifest")
                 return 3
-            items = [(task_id, arm, "NATIVE_PACKET") for task_id in frozen for arm in (requested_arms or ["SINGLE_AGENT_LH", "MANTA_NATIVE"])]
+            manifest_sha256 = sha256_file(manifest_path)
+            requested_clean_ids = [item.strip() for item in args.task_ids.split(",") if item.strip()]
+            selected = [task_id for task_id in frozen if task_id in requested_clean_ids] if requested_clean_ids else frozen
+            items = [(task_id, arm, "NATIVE_PACKET") for task_id in selected for arm in (requested_arms or ["SINGLE_AGENT_LH", "MANTA_NATIVE"])]
         else:
             # Attack execution is intentionally gated until a separate clean
             # manifest is written by the analysis step.
             print("NO_VALID_ATTACK_MANIFEST: run clean and review before attack")
             continue
         batch = run_batch(items, ledger, workers=min(workers, max(1, args.model_max_inflight)), reserve=0.75,
-                          max_seconds=args.max_seconds_per_run, dry_run=args.dry_run, seed=args.seed, run_id=args.run_id)
+                          max_seconds=args.max_seconds_per_run, dry_run=args.dry_run, seed=args.seed, run_id=args.run_id,
+                          manifest_sha256=manifest_sha256, code_sha=code_sha)
         if phase == "functional":
             functional_results = batch
             if args.phase == "all" and not args.dry_run and not any(
