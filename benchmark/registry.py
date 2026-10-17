@@ -13,6 +13,7 @@ BENCHMARK_REGISTRY = {
     "scicode": ("benchmark.scicode", "SciCodeBenchmark"),
     "webshop": ("benchmark.webshop", "WebShopBenchmark"),
     "workbench": ("benchmark.workbench", "WorkBenchBenchmark"),
+    "appworld": ("benchmark.appworld", "AppWorldBenchmark"),
 }
 
 

@@ -1,0 +1,56 @@
+# Official AppWorld 0.1.3.post1 / data 0.1.0, dev split only.
+# The runner creates arm-specific copies of this file in ignored artifacts/.
+[openrouter]
+api_key = ""
+base_url = "https://api.deepseek.com"
+timeout_s = 150.0
+
+[experiment]
+output_dir = "artifacts/appworld_baselines"
+runs_per_task = 1
+seed = 42
+task_limit = 6
+
+[models]
+default = "deepseek-flash"
+judge = "deepseek-flash"
+
+[mas]
+topology = "self_evolved"
+number_of_agents = 3
+agent_types = ["general"]
+levels = 1
+intra_level_link_ratio = 1.0
+full_linked = true
+communication_count_internally = 2
+discussion_rounds = 1
+minimum_discussion_rounds = 1
+max_turns = 3
+turn_mode = "multi_turn"
+enable_dynamic_roles = true
+final_vote_mode = "llm_judge"
+termination_consensus_mode = "llm_judge"
+peer_artifact_max_chars = 0
+
+[self_evolved]
+harness_backend = "openrouter"
+max_initial_agents = 5
+max_total_agents = 10
+max_turns = 3
+repair_budget = 2
+audit_mode = "hybrid"
+playbook_path = "config/topology_playbook.json"
+skill_path = "config/topology_skill.md"
+playbook_read = true
+skill_update_batch_size = 0
+default_packet_max_chars = 0
+
+[appworld]
+root = "."
+python_executable = "artifacts/appworld-venv/Scripts/python.exe"
+split = "dev"
+task_ids = ["530b157_1", "6171bbc_1", "6c2c621_1", "68ee2c9_1", "4fab96f_1", "d4e9306_1"]
+max_tool_iterations = 12
+experiment_tag = "manta_appworld_v01"
+arm = "MANTA_NATIVE"
+attack_overlay_path = ""

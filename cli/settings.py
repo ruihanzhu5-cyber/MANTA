@@ -34,6 +34,8 @@ def _benchmark_section_config(config: Any, benchmark_name: str) -> dict[str, Any
         return dict(config.math500)
     elif benchmark_name == "workbench":
         return dict(config.workbench)
+    elif benchmark_name == "appworld":
+        return dict(config.appworld)
     elif benchmark_name == "scicode":
         return dict(config.scicode)
     elif benchmark_name == "agentbench":
