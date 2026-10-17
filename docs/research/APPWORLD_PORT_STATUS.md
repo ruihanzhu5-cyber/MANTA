@@ -94,4 +94,9 @@ redacted summary are under ignored `artifacts/appworld_baselines/`.
 
 The 12 final normal trajectories are also committed in the redacted bundle at
 [`docs/research/appworld_traces_redacted/`](appworld_traces_redacted/). Raw
-traces and credentials remain local and ignored.
+credentials and the older ignored experiment directory remain local.
+
+The complete artifacts for the same 12 final normal runs are now in
+[`docs/research/appworld_traces_full/`](appworld_traces_full/). The bundle
+contains the full messages, tool arguments and outputs; project `.env` and
+provider credential files are not included.

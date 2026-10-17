@@ -86,3 +86,8 @@ bundle in [`appworld_traces_redacted/`](appworld_traces_redacted/). The bundle
 keeps event order, actors, tool names, statuses, token counts, timing, official
 evaluation, handoff counts, mutation counts and output hashes while removing
 credentials, personal data, raw arguments and raw outputs.
+
+The complete raw artifacts for those same 12 runs are in
+[`appworld_traces_full/`](appworld_traces_full/), including model messages,
+tool arguments and outputs, event metadata, evaluator output and generated
+analysis files. No project `.env` or provider credential file is included.

@@ -1,0 +1,136 @@
+{
+  "layout": {
+    "adjacency": {
+      "agent_0": [
+        "agent_1",
+        "agent_2"
+      ],
+      "agent_1": [
+        "agent_0"
+      ],
+      "agent_2": [
+        "agent_0"
+      ]
+    },
+    "agent_ids": [
+      "agent_0",
+      "agent_1",
+      "agent_2"
+    ],
+    "agents_per_level": [
+      1,
+      2
+    ],
+    "children_by_agent": {
+      "agent_0": [
+        "agent_1",
+        "agent_2"
+      ]
+    },
+    "groups": [],
+    "leaves": [],
+    "level_by_agent": {
+      "agent_0": 0,
+      "agent_1": 1,
+      "agent_2": 1
+    },
+    "managers": [],
+    "orchestrator_id": "agent_0",
+    "parent_by_agent": {
+      "agent_1": "agent_0",
+      "agent_2": "agent_0"
+    },
+    "representatives": [],
+    "roles": {
+      "agent_0": "orchestrator",
+      "agent_1": "specialist",
+      "agent_2": "specialist"
+    },
+    "specialists": [
+      "agent_1",
+      "agent_2"
+    ],
+    "topological_order": [
+      "agent_0",
+      "agent_1",
+      "agent_2"
+    ],
+    "topology": "orchestrator_no_discussion"
+  },
+  "mermaid_path": "C:\\Users\\larei\\Documents\\ChatGPT\\manta\\artifacts\\appworld_baselines\\raw\\appworld_6c2c621_1_static_star_attempt2\\appworld\\STATIC_STAR\\mas_graph.mmd",
+  "png_path": "C:\\Users\\larei\\Documents\\ChatGPT\\manta\\artifacts\\appworld_baselines\\raw\\appworld_6c2c621_1_static_star_attempt2\\appworld\\STATIC_STAR\\mas_graph.png",
+  "render_backend": "langgraph_mermaid_api",
+  "render_error": "",
+  "topology": "orchestrator_no_discussion",
+  "workflow": {
+    "mermaid_path": "C:\\Users\\larei\\Documents\\ChatGPT\\manta\\artifacts\\appworld_baselines\\raw\\appworld_6c2c621_1_static_star_attempt2\\appworld\\STATIC_STAR\\workflow_graph.mmd",
+    "png_path": "C:\\Users\\larei\\Documents\\ChatGPT\\manta\\artifacts\\appworld_baselines\\raw\\appworld_6c2c621_1_static_star_attempt2\\appworld\\STATIC_STAR\\workflow_graph.png",
+    "render_backend": "langgraph_mermaid_api",
+    "render_error": "",
+    "topology": "orchestrator_no_discussion",
+    "workflow": {
+      "aggregation_logic": "Specialist artifacts are relayed upward as reports; the orchestrator merges those reports into one artifact.",
+      "conditional_edges": [
+        "dispatch_specialists -> specialist_worker (parallel Send fan-out) else relay_specialist_reports",
+        "termination_checker -> dispatch_specialists | finalize"
+      ],
+      "dispatch_logic": "The orchestrator emits bounded task packages to the activated specialists.",
+      "edges": [
+        "START -> orchestrator_plan",
+        "orchestrator_plan -> dispatch_specialists",
+        "specialist_worker -> relay_specialist_reports",
+        "relay_specialist_reports -> orchestrator_merge",
+        "orchestrator_merge -> descriptor_monitor",
+        "descriptor_monitor -> termination_checker",
+        "finalize -> END"
+      ],
+      "logging_outputs": [
+        "trace_events",
+        "relay_messages",
+        "message_views",
+        "interaction_logs",
+        "descriptor_records",
+        "termination_history"
+      ],
+      "nodes": {
+        "descriptor_monitor": "Shared descriptor hook.",
+        "dispatch_specialists": "Build task packages for specialists.",
+        "finalize": "Finalize the run.",
+        "orchestrator_merge": "Merge specialist reports.",
+        "orchestrator_plan": "Initial planner/orchestrator artifact.",
+        "relay_specialist_reports": "Bounded specialist-to-orchestrator reports.",
+        "specialist_worker": "Independent specialist execution.",
+        "termination_checker": "Explicit round stopper."
+      },
+      "state_fields": [
+        "task_id",
+        "task_prompt",
+        "topology",
+        "layout",
+        "rounds",
+        "discussion_rounds",
+        "final_vote_mode",
+        "round_index",
+        "discussion_index",
+        "messages",
+        "artifacts",
+        "termination_decision",
+        "vote_tally",
+        "selected_artifact_id",
+        "selected_agent_id",
+        "selected_source_artifact_ids",
+        "descriptor_records",
+        "message_budget",
+        "sent_counts",
+        "budget_sent_counts"
+      ],
+      "stopping_criteria": [
+        "Max rounds reached",
+        "Consensus across specialist artifacts",
+        "Semantic no-progress across orchestrator merge artifacts",
+        "Invalid or failed branch fallback"
+      ],
+      "topology": "orchestrator_no_discussion"
+    }
+  }
+}

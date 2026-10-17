@@ -1,0 +1,300 @@
+{
+  "benchmark": "appworld",
+  "config_path": "C:\\Users\\larei\\Documents\\ChatGPT\\manta\\artifacts\\appworld_baselines\\configs\\STATIC_STAR_d4e9306_1_attempt1.toml",
+  "experiment_id": "appworld_d4e9306_1_static_star_attempt1",
+  "experiment_settings_path": "C:\\Users\\larei\\Documents\\ChatGPT\\manta\\artifacts\\appworld_baselines\\raw\\appworld_d4e9306_1_static_star_attempt1\\appworld\\STATIC_STAR\\experiment_settings.json",
+  "graph": {
+    "layout": {
+      "adjacency": {
+        "agent_0": [
+          "agent_1",
+          "agent_2"
+        ],
+        "agent_1": [
+          "agent_0"
+        ],
+        "agent_2": [
+          "agent_0"
+        ]
+      },
+      "agent_ids": [
+        "agent_0",
+        "agent_1",
+        "agent_2"
+      ],
+      "agents_per_level": [
+        1,
+        2
+      ],
+      "children_by_agent": {
+        "agent_0": [
+          "agent_1",
+          "agent_2"
+        ]
+      },
+      "groups": [],
+      "leaves": [],
+      "level_by_agent": {
+        "agent_0": 0,
+        "agent_1": 1,
+        "agent_2": 1
+      },
+      "managers": [],
+      "orchestrator_id": "agent_0",
+      "parent_by_agent": {
+        "agent_1": "agent_0",
+        "agent_2": "agent_0"
+      },
+      "representatives": [],
+      "roles": {
+        "agent_0": "orchestrator",
+        "agent_1": "specialist",
+        "agent_2": "specialist"
+      },
+      "specialists": [
+        "agent_1",
+        "agent_2"
+      ],
+      "topological_order": [
+        "agent_0",
+        "agent_1",
+        "agent_2"
+      ],
+      "topology": "orchestrator_no_discussion"
+    },
+    "mermaid_path": "C:\\Users\\larei\\Documents\\ChatGPT\\manta\\artifacts\\appworld_baselines\\raw\\appworld_d4e9306_1_static_star_attempt1\\appworld\\STATIC_STAR\\mas_graph.mmd",
+    "png_path": "C:\\Users\\larei\\Documents\\ChatGPT\\manta\\artifacts\\appworld_baselines\\raw\\appworld_d4e9306_1_static_star_attempt1\\appworld\\STATIC_STAR\\mas_graph.png",
+    "render_backend": "langgraph_mermaid_api",
+    "render_error": "",
+    "topology": "orchestrator_no_discussion",
+    "workflow": {
+      "mermaid_path": "C:\\Users\\larei\\Documents\\ChatGPT\\manta\\artifacts\\appworld_baselines\\raw\\appworld_d4e9306_1_static_star_attempt1\\appworld\\STATIC_STAR\\workflow_graph.mmd",
+      "png_path": "C:\\Users\\larei\\Documents\\ChatGPT\\manta\\artifacts\\appworld_baselines\\raw\\appworld_d4e9306_1_static_star_attempt1\\appworld\\STATIC_STAR\\workflow_graph.png",
+      "render_backend": "langgraph_mermaid_api",
+      "render_error": "",
+      "topology": "orchestrator_no_discussion",
+      "workflow": {
+        "aggregation_logic": "Specialist artifacts are relayed upward as reports; the orchestrator merges those reports into one artifact.",
+        "conditional_edges": [
+          "dispatch_specialists -> specialist_worker (parallel Send fan-out) else relay_specialist_reports",
+          "termination_checker -> dispatch_specialists | finalize"
+        ],
+        "dispatch_logic": "The orchestrator emits bounded task packages to the activated specialists.",
+        "edges": [
+          "START -> orchestrator_plan",
+          "orchestrator_plan -> dispatch_specialists",
+          "specialist_worker -> relay_specialist_reports",
+          "relay_specialist_reports -> orchestrator_merge",
+          "orchestrator_merge -> descriptor_monitor",
+          "descriptor_monitor -> termination_checker",
+          "finalize -> END"
+        ],
+        "logging_outputs": [
+          "trace_events",
+          "relay_messages",
+          "message_views",
+          "interaction_logs",
+          "descriptor_records",
+          "termination_history"
+        ],
+        "nodes": {
+          "descriptor_monitor": "Shared descriptor hook.",
+          "dispatch_specialists": "Build task packages for specialists.",
+          "finalize": "Finalize the run.",
+          "orchestrator_merge": "Merge specialist reports.",
+          "orchestrator_plan": "Initial planner/orchestrator artifact.",
+          "relay_specialist_reports": "Bounded specialist-to-orchestrator reports.",
+          "specialist_worker": "Independent specialist execution.",
+          "termination_checker": "Explicit round stopper."
+        },
+        "state_fields": [
+          "task_id",
+          "task_prompt",
+          "topology",
+          "layout",
+          "rounds",
+          "discussion_rounds",
+          "final_vote_mode",
+          "round_index",
+          "discussion_index",
+          "messages",
+          "artifacts",
+          "termination_decision",
+          "vote_tally",
+          "selected_artifact_id",
+          "selected_agent_id",
+          "selected_source_artifact_ids",
+          "descriptor_records",
+          "message_budget",
+          "sent_counts",
+          "budget_sent_counts"
+        ],
+        "stopping_criteria": [
+          "Max rounds reached",
+          "Consensus across specialist artifacts",
+          "Semantic no-progress across orchestrator merge artifacts",
+          "Invalid or failed branch fallback"
+        ],
+        "topology": "orchestrator_no_discussion"
+      }
+    }
+  },
+  "output_layout": "hierarchical",
+  "run_status_summary": {
+    "fallback_count": 0,
+    "needs_rerun_task_count": 0,
+    "needs_rerun_task_ids": [],
+    "run_failure_count": 0
+  },
+  "runs_per_task": 1,
+  "system": {
+    "agent_types": [
+      "general"
+    ],
+    "agents": 3,
+    "agents_per_level": [
+      3
+    ],
+    "communication_budget": 2,
+    "discussion_rounds": 1,
+    "final_vote_mode": "llm_judge",
+    "group_sizes": null,
+    "harness_backend": "openrouter",
+    "max_turns": 3,
+    "mode": "MAS",
+    "peer_artifact_max_chars": 0,
+    "prompting_baseline": "direct",
+    "self_consistency_samples": 3,
+    "self_refine_rounds": 3,
+    "system_label": "STATIC_STAR",
+    "termination_consensus_mode": "llm_judge",
+    "topology": "orchestrator_no_discussion"
+  },
+  "system_label": "STATIC_STAR",
+  "task_count": 1,
+  "tasks": [
+    {
+      "artifacts": {
+        "analysis_path": "C:\\Users\\larei\\Documents\\ChatGPT\\manta\\artifacts\\appworld_baselines\\raw\\appworld_d4e9306_1_static_star_attempt1\\appworld\\STATIC_STAR\\d4e9306_1\\analysis.json",
+        "task_summary_path": "C:\\Users\\larei\\Documents\\ChatGPT\\manta\\artifacts\\appworld_baselines\\raw\\appworld_d4e9306_1_static_star_attempt1\\appworld\\STATIC_STAR\\d4e9306_1\\task_summary.json"
+      },
+      "descriptor": {
+        "C1_latency_p95": 212979.69929999317,
+        "C2_tokens_total": 2185489.0,
+        "C3_cost_total": 0.0,
+        "C4_tool_calls_total": 166.0,
+        "D1_tool_error_rate": 0.0,
+        "D2_agent_to_agent_communication_count": 0.0,
+        "D2_communication_count": 8.0,
+        "D2_system_mediated_communication_count": 8.0,
+        "D3_handoff_count": 13.0,
+        "P1_steps_total": 355.0,
+        "P2_backtrack_rate": 0.005633802816901409,
+        "P3_loop_score": 0.29577464788732394,
+        "P4_verification_density": 0.036619718309859155,
+        "Q1_success_rate": 0.0,
+        "Q2_completion_rate": 1.0,
+        "R1_success_var": 0.0,
+        "R2_latency_var": 0.0,
+        "R3_tokens_var": 0.0,
+        "accuracy": 0.0,
+        "communication_count": 8.0,
+        "cost_per_success": NaN,
+        "eval_avg_score": 0.0,
+        "handoff_count": 13.0,
+        "latency_e2e": 212980.01217842102,
+        "pass_at_1": 0.0,
+        "pass_at_3": NaN,
+        "pass_at_5": NaN,
+        "pass_at_8": NaN,
+        "stability": NaN,
+        "stage_act_events": 7.0,
+        "stage_act_latency_ms": 209597.66130000207,
+        "stage_act_tokens": 2183484.0,
+        "stage_act_tool_errors": 0.0,
+        "stage_act_verify_density": 0.0,
+        "stage_finalize_events": 1.0,
+        "stage_finalize_latency_ms": 1.0,
+        "stage_finalize_tokens": 12.0,
+        "stage_finalize_tool_errors": 0.0,
+        "stage_finalize_verify_density": 0.0,
+        "stage_plan_events": 0.0,
+        "stage_plan_latency_ms": 0.0,
+        "stage_plan_tokens": 0.0,
+        "stage_plan_tool_errors": 0.0,
+        "stage_plan_verify_density": 0.0,
+        "stage_retrieve_events": 332.0,
+        "stage_retrieve_latency_ms": 332.0,
+        "stage_retrieve_tokens": 0.0,
+        "stage_retrieve_tool_errors": 0.0,
+        "stage_retrieve_verify_density": 0.0,
+        "stage_revise_events": 2.0,
+        "stage_revise_latency_ms": 2.0,
+        "stage_revise_tokens": 0.0,
+        "stage_revise_tool_errors": 0.0,
+        "stage_revise_verify_density": 0.0,
+        "stage_verify_events": 13.0,
+        "stage_verify_latency_ms": 3047.0379999910947,
+        "stage_verify_tokens": 1993.0,
+        "stage_verify_tool_errors": 0.0,
+        "stage_verify_verify_density": 1.0,
+        "success_rate": 0.0,
+        "token_total": 2185489.0,
+        "tokens_cv": NaN,
+        "tokens_total": 2185489.0,
+        "tool_calls_total": 166.0,
+        "tool_error_rate": 0.0
+      },
+      "evaluation": {
+        "accuracy": 0.0,
+        "avg_score": 0.0,
+        "completion_rate": 1.0,
+        "count": 1,
+        "excluded_count": 0,
+        "runs": [
+          {
+            "accuracy": 0.0,
+            "completion": true,
+            "completion_source": "final_answer",
+            "details": {
+              "appworld_task_completed": false,
+              "experiment_name": "manta_appworld_v01_static_star_d4e9306_1_r0_s42",
+              "official_evaluation": {
+                "difficulty": 1,
+                "num_tests": 6,
+                "success": false
+              },
+              "official_score_available": true,
+              "run_completed": true
+            },
+            "included_in_score": true,
+            "score": 0.0,
+            "success": false,
+            "success_source": "benchmark_evaluation",
+            "task_id": "d4e9306_1"
+          }
+        ],
+        "success_rate": 0.0,
+        "valid_count": 1
+      },
+      "fallback_count": 0,
+      "needs_rerun": false,
+      "prompt_preview": "Follow artists of all the songs and albums I have ever liked on Spotify.",
+      "reference_answer": "",
+      "run_failure_count": 0,
+      "run_status_summary": {
+        "completed": 1
+      },
+      "stage_bottleneck": {
+        "findings": [
+          "Verification is sparse; hallucination risk may be elevated"
+        ],
+        "peak_latency_stage": "stage_act_latency_ms",
+        "peak_token_stage": "stage_act_tokens"
+      },
+      "task_dir": "C:\\Users\\larei\\Documents\\ChatGPT\\manta\\artifacts\\appworld_baselines\\raw\\appworld_d4e9306_1_static_star_attempt1\\appworld\\STATIC_STAR\\d4e9306_1",
+      "task_id": "d4e9306_1"
+    }
+  ],
+  "timestamp": "appworld_d4e9306_1_static_star_attempt1"
+}
