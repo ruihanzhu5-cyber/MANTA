@@ -3482,7 +3482,7 @@ class SelfEvolvedEngine:
             "seed": int(seed),
             "topology": TOPOLOGY_SELF_EVOLVED,
             "handoff_variant": str(
-                (state.get("task_metadata") or {}).get("handoff_variant", "NATIVE_PACKET")
+                (getattr(task, "metadata", {}) or {}).get("handoff_variant", "NATIVE_PACKET")
             ),
             "layout": layout,
             "workflow_definition": workflow_definition,
