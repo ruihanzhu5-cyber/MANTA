@@ -109,7 +109,16 @@ def _trace_summary(run_root: Path, log_path: Path) -> dict[str, Any]:
     }
     if not result["complete_artifacts"]:
         result["official_score_available"] = False
-        result["cost_upper_usd"] = 1.0
+        # A process that fails before the CLI starts the benchmark has no
+        # provider request.  Keep this distinct from an interrupted in-flight
+        # request, whose usage remains unknown and must reserve conservatively.
+        if "No frozen public app allowlist" in text or "Traceback" in text and "load_tasks" in text:
+            result["cost_upper_usd"] = 0.0
+            result["failure_category"] = "INFRA_ERROR"
+            result["no_model_request"] = True
+        else:
+            result["cost_upper_usd"] = 1.0
+            result["failure_category"] = "BUDGET_UNCERTAIN_STOP"
         return result
     metrics = json.loads(metrics_files[0].read_text(encoding="utf-8"))
     evaluation = json.loads(eval_files[0].read_text(encoding="utf-8"))
@@ -187,8 +196,21 @@ def run_batch(items: list[tuple[str, str, str]], ledger: dict[str, Any], *, work
     with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
         futures = {pool.submit(run_one, *item, ledger, reserve=reserve, max_seconds=max_seconds, dry_run=dry_run, seed=seed, run_id=run_id, manifest_sha256=manifest_sha256, code_sha=code_sha): item for item in items}
         for future in as_completed(futures):
-            try: results.append(future.result())
-            except Exception as exc: results.append({"item": futures[future], "error": f"{type(exc).__name__}: {exc}"})
+            try:
+                results.append(future.result())
+            except Exception as exc:
+                item = futures[future]
+                row = {
+                    "task_id": item[0], "arm": item[1], "variant": item[2],
+                    "seed": seed, "run_id": run_id, "status": "NOT_RUN_BUDGET",
+                    "official_score_available": False, "official_task_success": False,
+                    "cost_upper_usd": 0.0, "error": f"{type(exc).__name__}: {exc}",
+                    "code_sha": code_sha, "manifest_sha256": manifest_sha256,
+                }
+                with LOCK:
+                    ledger["episodes"].append(row)
+                    write_json(LEDGER, ledger)
+                results.append(row)
     return results
 
 
