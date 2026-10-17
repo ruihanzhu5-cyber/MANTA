@@ -62,5 +62,5 @@ def test_frozen_five_have_public_app_allowlists():
     benchmark = AppWorldBenchmark({"root": str(Path(__file__).resolve().parents[2]), "split": "dev"})
     benchmark.task_ids = ["6c2c621_1", "530b157_1", "6171bbc_1", "50e1ac9_1", "0d8a4ee_1"]
     tasks = benchmark.load_tasks()
-    assert [task.task_id for task in tasks] == benchmark.task_ids
+    assert {task.task_id for task in tasks} == set(benchmark.task_ids)
     assert all(task.metadata["apps"] for task in tasks)

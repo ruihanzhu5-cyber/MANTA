@@ -44,3 +44,7 @@ DeepSeek 请求的检查包括公开任务筛选、桥接 smoke 和单元测试�
 - 初始并发为 2。检查两条独立 Episode 的路径、世界和评测文件后，剩余任务才可升到 4。
 - `MANTA_NATIVE` 沿用原生 self-evolved 执行逻辑，`skill_update_batch_size=0`。
 - 本轮只运行 B0 Clean，不运行 Attack、B1 或 B2。
+
+付费批次开始后还发现并修复了两个只影响启动的工程问题：旧 Native 初始化中错误
+引用 `state` 的 NameError，以及冻结 Spotify 查询任务缺少公开 App 映射。两条修复前
+尝试都没有被冒充成有效评分 Episode，并保留在本地账本。
