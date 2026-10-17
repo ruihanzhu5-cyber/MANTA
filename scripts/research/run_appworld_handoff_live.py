@@ -20,7 +20,7 @@ from dotenv import dotenv_values
 
 ROOT = Path(__file__).resolve().parents[2]
 CONFIG = ROOT / "config/research/appworld_handoff_live_v01.toml"
-OUT = ROOT / "artifacts/appworld_handoff_live"
+OUT = ROOT / "artifacts/appworld_b0_v02"
 LEDGER = OUT / "ledger.json"
 BASE_CONFIG = CONFIG.read_text(encoding="utf-8")
 LOCK = threading.Lock()
@@ -50,16 +50,32 @@ def spent_upper(ledger: dict[str, Any]) -> float:
     )
 
 
-def config_for(arm: str, variant: str) -> Path:
-    topology = "sas" if arm == "SINGLE_AGENT" else "self_evolved"
-    agents = "1" if arm == "SINGLE_AGENT" else "3"
+def config_for(
+    task_id: str,
+    arm: str,
+    variant: str,
+    *,
+    seed: int = 42,
+    run_id: str = "manual",
+) -> Path:
+    """Write an episode-private config; never reuse a shared TOML file."""
+    topology = "sas" if arm in {"SINGLE_AGENT", "SINGLE_AGENT_LH"} else "self_evolved"
+    agents = "1" if arm in {"SINGLE_AGENT", "SINGLE_AGENT_LH"} else "3"
     text = BASE_CONFIG.replace('topology = "self_evolved"', f'topology = "{topology}"', 1)
     text = text.replace("number_of_agents = 3", f"number_of_agents = {agents}", 1)
     text = text.replace('arm = "MANTA_NATIVE"', f'arm = "{arm}"', 1)
     text = text.replace('handoff_variant = "NATIVE_PACKET"', f'handoff_variant = "{variant}"', 1)
-    path = OUT / "configs" / f"{arm}_{variant}.toml"
+    text = text.replace("task_ids = [\"6c2c621_1\", \"530b157_1\"]", f'task_ids = ["{task_id}"]', 1)
+    text = text.replace("seed = 42", f"seed = {int(seed)}", 1)
+    text = text.replace('experiment_tag = "manta_appworld_handoff_live_v01"',
+                        f'experiment_tag = "manta_appworld_b0_v02_{run_id}"', 1)
+    text = text.replace('max_tool_iterations = 12', 'max_tool_iterations = 12\nlong_horizon_max_stages = 3', 1)
+    safe = re.sub(r"[^A-Za-z0-9_.-]+", "_", f"{task_id}_{arm}_{variant}_seed{seed}_{run_id}")
+    path = OUT / "configs" / f"{safe}.toml"
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(text, encoding="utf-8")
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(text, encoding="utf-8")
+    tmp.replace(path)
     return path
 
 
@@ -97,21 +113,21 @@ def _trace_summary(run_root: Path, log_path: Path) -> dict[str, Any]:
     return result
 
 
-def run_one(task_id: str, arm: str, variant: str, ledger: dict[str, Any], *, reserve: float, max_seconds: int, dry_run: bool) -> dict[str, Any]:
-    key = (task_id, arm, variant)
-    prior = [row for row in ledger["episodes"] if (row.get("task_id"), row.get("arm"), row.get("variant")) == key]
+def run_one(task_id: str, arm: str, variant: str, ledger: dict[str, Any], *, reserve: float, max_seconds: int, dry_run: bool, seed: int = 42, run_id: str = "manual") -> dict[str, Any]:
+    key = (task_id, arm, variant, int(seed), run_id)
+    prior = [row for row in ledger["episodes"] if (row.get("task_id"), row.get("arm"), row.get("variant"), int(row.get("seed", 42)), row.get("run_id", "manual")) == key]
     if prior and prior[-1].get("complete_artifacts"):
         return prior[-1]
     if dry_run:
-        return {"task_id": task_id, "arm": arm, "variant": variant, "dry_run": True}
+        return {"task_id": task_id, "arm": arm, "variant": variant, "seed": seed, "run_id": run_id, "dry_run": True}
     with LOCK:
         if spent_upper(ledger) + reserve > float(ledger["approved_cap_usd"]):
             raise RuntimeError("BUDGET_STOP: conservative reservation would exceed cap")
-        inflight = {"task_id": task_id, "arm": arm, "variant": variant, "reserve_usd": reserve,
+        inflight = {"task_id": task_id, "arm": arm, "variant": variant, "seed": seed, "run_id": run_id, "reserve_usd": reserve,
                     "started_utc": datetime.now(UTC).isoformat()}
         ledger["inflight"].append(inflight); write_json(LEDGER, ledger)
-    config = config_for(arm, variant)
-    experiment_id = f"appworld_handoff_{task_id}_{arm.lower()}_{variant.lower()}"
+    config = config_for(task_id, arm, variant, seed=seed, run_id=run_id)
+    experiment_id = f"appworld_b0_v02_{task_id}_{arm.lower()}_{variant.lower()}_seed{seed}_{run_id}"
     run_root = OUT / "raw" / experiment_id
     log_path = OUT / "logs" / f"{experiment_id}.log"
     log_path.parent.mkdir(parents=True, exist_ok=True)
@@ -120,7 +136,7 @@ def run_one(task_id: str, arm: str, variant: str, ledger: dict[str, Any], *, res
                 "OPENROUTER_TEMPERATURE": "0", "DEEPSEEK_MAX_TOKENS": "2048",
                 "MAS_OPENROUTER_TIMEOUT_S": "150", "PYTHONIOENCODING": "utf-8", "PYTHONUTF8": "1"})
     command = [sys.executable, "main.py", "run", "--config", str(config), "--benchmark", "appworld",
-               "--task-ids", task_id, "--runs-per-task", "1", "--seed", "42", "--output-dir", str(OUT / "raw"),
+               "--task-ids", task_id, "--runs-per-task", "1", "--seed", str(seed), "--output-dir", str(OUT / "raw"),
                "--output-layout", "hierarchical", "--experiment-id", experiment_id, "--system-label", arm]
     started = time.monotonic(); return_code = None; error = ""
     try:
@@ -132,7 +148,7 @@ def run_one(task_id: str, arm: str, variant: str, ledger: dict[str, Any], *, res
     except Exception as exc:
         error = f"{type(exc).__name__}: {exc}"
     summary = _trace_summary(run_root, log_path)
-    episode = {"task_id": task_id, "arm": arm, "variant": variant, "return_code": return_code,
+    episode = {"task_id": task_id, "arm": arm, "variant": variant, "seed": seed, "run_id": run_id, "return_code": return_code,
                "error": error, "duration_seconds": round(time.monotonic() - started, 2), **summary}
     with LOCK:
         if inflight in ledger["inflight"]: ledger["inflight"].remove(inflight)
@@ -141,10 +157,10 @@ def run_one(task_id: str, arm: str, variant: str, ledger: dict[str, Any], *, res
     return episode
 
 
-def run_batch(items: list[tuple[str, str, str]], ledger: dict[str, Any], *, workers: int, reserve: float, max_seconds: int, dry_run: bool) -> list[dict[str, Any]]:
+def run_batch(items: list[tuple[str, str, str]], ledger: dict[str, Any], *, workers: int, reserve: float, max_seconds: int, dry_run: bool, seed: int = 42, run_id: str = "manual") -> list[dict[str, Any]]:
     results: list[dict[str, Any]] = []
     with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
-        futures = {pool.submit(run_one, *item, ledger, reserve=reserve, max_seconds=max_seconds, dry_run=dry_run): item for item in items}
+        futures = {pool.submit(run_one, *item, ledger, reserve=reserve, max_seconds=max_seconds, dry_run=dry_run, seed=seed, run_id=run_id): item for item in items}
         for future in as_completed(futures):
             try: results.append(future.result())
             except Exception as exc: results.append({"item": futures[future], "error": f"{type(exc).__name__}: {exc}"})
@@ -159,6 +175,9 @@ def main() -> int:
     parser.add_argument("--model-max-inflight", type=int, default=8)
     parser.add_argument("--max-seconds-per-run", type=int, default=1800)
     parser.add_argument("--task-ids", default="6c2c621_1,530b157_1")
+    parser.add_argument("--clean-manifest", default=str(OUT / "clean_screen_manifest.json"))
+    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--run-id", default=datetime.now(UTC).strftime("run_%Y%m%dT%H%M%SZ"))
     parser.add_argument("--arms", default="")
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
@@ -173,19 +192,40 @@ def main() -> int:
     ids = [item.strip() for item in args.task_ids.split(",") if item.strip()]
     requested_arms = [item.strip() for item in args.arms.split(",") if item.strip()]
     phases = [args.phase] if args.phase != "all" else ["functional", "clean", "attack"]
+    functional_results: list[dict[str, Any]] = []
     for phase in phases:
         workers = args.parallel_episodes or (2 if phase == "functional" else 4)
         if phase == "functional":
-            items = [(task_id, arm, "NATIVE_PACKET") for task_id in ids for arm in (requested_arms or ["SINGLE_AGENT", "MANTA_NATIVE"])]
+            items = [(task_id, arm, "NATIVE_PACKET") for task_id in ids for arm in (requested_arms or ["SINGLE_AGENT_LH", "MANTA_NATIVE"])]
         elif phase == "clean":
-            items = [(ids[0], "MANTA_NATIVE", variant) for variant in sorted(VALID_VARIANTS)]
+            manifest_path = Path(args.clean_manifest)
+            if not manifest_path.exists():
+                print("B0_GATE_STOP: clean manifest is missing; run free screening first")
+                return 3
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            frozen = [str(item.get("task_id")) for item in manifest.get("frozen_cases", []) if item.get("task_id")]
+            if not frozen or manifest.get("status") != "FROZEN":
+                print("B0_GATE_STOP: clean manifest is not frozen")
+                return 3
+            items = [(task_id, arm, "NATIVE_PACKET") for task_id in frozen for arm in (requested_arms or ["SINGLE_AGENT_LH", "MANTA_NATIVE"])]
         else:
             # Attack execution is intentionally gated until a separate clean
             # manifest is written by the analysis step.
             print("NO_VALID_ATTACK_MANIFEST: run clean and review before attack")
             continue
-        run_batch(items, ledger, workers=min(workers, max(1, args.model_max_inflight)), reserve=0.75,
-                  max_seconds=args.max_seconds_per_run, dry_run=args.dry_run)
+        batch = run_batch(items, ledger, workers=min(workers, max(1, args.model_max_inflight)), reserve=0.75,
+                          max_seconds=args.max_seconds_per_run, dry_run=args.dry_run, seed=args.seed, run_id=args.run_id)
+        if phase == "functional":
+            functional_results = batch
+            if args.phase == "all" and not args.dry_run and not any(
+                bool(row.get("official_task_success")) and bool(row.get("official_score_available"))
+                for row in batch
+            ):
+                print("B0_GATE_STOP: no official functional success; clean and attack phases were not started")
+                write_json(LEDGER, ledger)
+                return 4
+        if phase == "attack":
+            print("B1_B2_GATE_STOP: attack phase is fail-closed in this round")
     write_json(LEDGER, ledger)
     return 0
 

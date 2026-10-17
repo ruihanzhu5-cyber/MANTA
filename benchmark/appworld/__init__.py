@@ -39,6 +39,7 @@ class AppWorldBenchmark:
             Path(str(cfg.get("python_executable", "artifacts/appworld-venv/Scripts/python.exe"))).resolve()
         )
         self.max_tool_iterations = int(cfg.get("max_tool_iterations", 12))
+        self.long_horizon_max_stages = int(cfg.get("long_horizon_max_stages", 3))
         self.experiment_tag = str(cfg.get("experiment_tag", "manta_appworld_v01"))
         self.overlay_path = str(cfg.get("attack_overlay_path", "")).strip()
         self.arm = str(cfg.get("arm", "UNSPECIFIED"))
@@ -108,14 +109,23 @@ class AppWorldBenchmark:
                 {"role": "user", "content": bridge.instruction},
             ]
             step_task = BenchmarkTask(task.task_id, prompt, "", dict(task.metadata))
-            result = runner.run_task(
-                task=step_task,
-                run_index=run_index,
-                seed=seed,
-                tools=bridge.tools(),
-                max_tool_iterations=self.max_tool_iterations,
-                benchmark_name="appworld",
-            )
+            if self.arm == "SINGLE_AGENT_LH":
+                result = runner.run_single_agent_long_horizon(
+                    task=step_task,
+                    run_index=run_index,
+                    tools=bridge.tools(),
+                    max_tool_iterations=self.max_tool_iterations,
+                    max_stages=self.long_horizon_max_stages,
+                )
+            else:
+                result = runner.run_task(
+                    task=step_task,
+                    run_index=run_index,
+                    seed=seed,
+                    tools=bridge.tools(),
+                    max_tool_iterations=self.max_tool_iterations,
+                    benchmark_name="appworld",
+                )
             official = bridge.evaluate()
             return MASRunResult(
                 final_answer=result.final_answer,
@@ -131,6 +141,7 @@ class AppWorldBenchmark:
                     "appworld_version": bridge.version,
                     "appworld_bridge_revision": BRIDGE_REVISION,
                     "attack_overlay_applied": bool(overlay and overlay.applied),
+                    "official_evaluator_visible_to_agent": False,
                 },
             )
 

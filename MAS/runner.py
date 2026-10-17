@@ -122,6 +122,31 @@ class MASRunner:
             run_metadata=run_result.run_metadata,
         )
 
+    def run_single_agent_long_horizon(
+        self,
+        task: Any,
+        run_index: int,
+        *,
+        tools: list[dict[str, Any]] | None = None,
+        max_tool_iterations: int = 12,
+        max_stages: int = 3,
+    ) -> MASRunResult:
+        """Run the explicitly separate SINGLE_AGENT_LH diagnostic arm.
+
+        This method does not alter the SAS graph or the self-evolved engine.
+        It is called only by the AppWorld adapter when that arm is selected.
+        """
+        from .long_horizon import run_long_horizon_single_agent
+
+        return run_long_horizon_single_agent(
+            client=self.openrouter_client,
+            task=task,
+            run_index=run_index,
+            max_tool_iterations=max_tool_iterations,
+            tools=list(tools or []),
+            max_stages=max_stages,
+        )
+
     def _resolve_self_evolved_engine(self) -> Any:
         if self._self_evolved_engine is None:
             from .self_evolved.engine import SelfEvolvedEngine
