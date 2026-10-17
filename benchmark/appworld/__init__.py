@@ -42,6 +42,7 @@ class AppWorldBenchmark:
         self.experiment_tag = str(cfg.get("experiment_tag", "manta_appworld_v01"))
         self.overlay_path = str(cfg.get("attack_overlay_path", "")).strip()
         self.arm = str(cfg.get("arm", "UNSPECIFIED"))
+        self.handoff_variant = str(cfg.get("handoff_variant", "NATIVE_PACKET"))
         self.task_ids = [str(value) for value in cfg.get("task_ids", [])]
         self.apps_by_task = {
             str(key): list(value) for key, value in cfg.get("apps_by_task", {}).items()
@@ -73,7 +74,12 @@ class AppWorldBenchmark:
                 task_id=task_id,
                 prompt=instruction,
                 reference_answer="",
-                metadata={"instruction": instruction, "apps": apps, "split": self.split},
+                metadata={
+                    "instruction": instruction,
+                    "apps": apps,
+                    "split": self.split,
+                    "handoff_variant": self.handoff_variant,
+                },
             ))
         return tasks
 

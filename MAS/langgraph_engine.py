@@ -33,6 +33,7 @@ from .artifacts import (
 )
 from .llm import OpenRouterLLMClient
 from .monitor import DescriptorHook, NullDescriptor
+from .self_evolved.handoff_views import render_visible_packets
 from .relay import (
     TOPOLOGY_FULLY_LINKED_DEBATE,
     TOPOLOGY_GROUP_CHAT_DEBATE,
@@ -404,6 +405,9 @@ class LangGraphMASEngine:
             "topology_layout": layout.to_payload(),
             "workflow_definition": workflow_definition,
             "artifact_records": artifacts,
+            "handoff_variant": str((end_state.get("task_metadata") or {}).get(
+                "handoff_variant", "NATIVE_PACKET"
+            )),
             "final_reason": str(end_state.get("final_reason", "")),
         }
 
@@ -2264,6 +2268,18 @@ class LangGraphMASEngine:
         prior_artifact = self._latest_agent_artifact(state, agent_id)
         persona_info = state.get("domain_personas", {}).get(agent_id, {})
 
+        handoff_variant = str(
+            (state.get("task_metadata") or {}).get("handoff_variant", "NATIVE_PACKET")
+        )
+        # ContextPolicy has already filtered this list at the call site.  The
+        # experiment arm changes only the packet rendering, never visibility.
+        visible_messages = render_visible_packets(
+            handoff_variant,
+            state,
+            agent_id,
+            visible_messages,
+        )
+
         prompt = self._build_agent_prompt(
             state=state,
             task_prompt=state.get("task_prompt"),
@@ -2502,6 +2518,14 @@ class LangGraphMASEngine:
             "round_index": round_index,
             "discussion_index": discussion_index,
             "tool_use_retry": tool_retry_used,
+            "handoff_variant": handoff_variant,
+            "evidence_ref_ids": [
+                str(ref.get("handle"))
+                for message in visible_messages
+                for ref in ((message.get("payload") or {}).get("evidence_refs", [])
+                            if isinstance(message.get("payload"), dict) else [])
+                if isinstance(ref, dict) and ref.get("handle")
+            ],
             "prompt_messages": prompt_messages,
             "visible_messages": self._serialize_for_json(visible_messages),
             "prior_artifact": self._serialize_for_json(prior_artifact),

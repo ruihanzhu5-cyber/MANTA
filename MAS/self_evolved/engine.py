@@ -3481,6 +3481,9 @@ class SelfEvolvedEngine:
             "run_index": int(run_index),
             "seed": int(seed),
             "topology": TOPOLOGY_SELF_EVOLVED,
+            "handoff_variant": str(
+                (state.get("task_metadata") or {}).get("handoff_variant", "NATIVE_PACKET")
+            ),
             "layout": layout,
             "workflow_definition": workflow_definition,
             "rounds": int(self.se_config.max_turns),
