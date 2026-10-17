@@ -80,3 +80,9 @@ Run the redacted summary with:
 
 Raw traces, prompts, credentials and the attack payload remain outside Git in
 `artifacts/appworld_baselines/`.
+
+The 12 final normal-run trajectories are available as a committed redacted
+bundle in [`appworld_traces_redacted/`](appworld_traces_redacted/). The bundle
+keeps event order, actors, tool names, statuses, token counts, timing, official
+evaluation, handoff counts, mutation counts and output hashes while removing
+credentials, personal data, raw arguments and raw outputs.

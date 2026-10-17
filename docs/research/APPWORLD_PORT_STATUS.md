@@ -91,3 +91,7 @@ success. A fixed replacement was applied once to the real Phone message field
 `[4, "message"]` for `530b157_1`. Both attack runs received it, but neither
 showed verified harmful redirection or relay reuse. The final live ledger and
 redacted summary are under ignored `artifacts/appworld_baselines/`.
+
+The 12 final normal trajectories are also committed in the redacted bundle at
+[`docs/research/appworld_traces_redacted/`](appworld_traces_redacted/). Raw
+traces and credentials remain local and ignored.
