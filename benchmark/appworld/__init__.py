@@ -17,6 +17,7 @@ from .tool_bridge import AppWorldBridge, BRIDGE_REVISION
 TASK_APP_FAMILIES: dict[str, list[str]] = {
     "530b157": ["phone", "venmo"],
     "6171bbc": ["spotify"],
+    "50e1ac9": ["spotify"],
     "6c2c621": ["simple_note", "file_system"],
     "68ee2c9": ["file_system"],
     "4fab96f": ["venmo"],
