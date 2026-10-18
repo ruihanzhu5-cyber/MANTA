@@ -13,6 +13,7 @@ import json
 import os
 import subprocess
 import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any
 
@@ -28,11 +29,12 @@ def _write_json(path: Path, payload: Any) -> None:
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
-def _episode_config(domain: str, overlay: str = "") -> Path:
+def _episode_config(domain: str, task_id: str, overlay: str = "") -> Path:
     text = BASE_CONFIG.read_text(encoding="utf-8")
     text = text.replace('domain = "calendar"', f'domain = "{domain}"', 1)
     text = text.replace('attack_overlay_path = ""', f'attack_overlay_path = "{overlay}"', 1)
-    path = OUT / "configs" / f"{domain}_{'attack' if overlay else 'clean'}.toml"
+    safe_task_id = task_id.replace("/", "_").replace("\\", "_")
+    path = OUT / "configs" / f"{safe_task_id}_{'attack' if overlay else 'clean'}.toml"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8")
     return path
@@ -95,22 +97,29 @@ def _payload(entry: dict[str, Any]) -> str:
     )
 
 
-def _run_one(domain: str, arm: str, *, task_limit: int, attack: bool, manifest: list[dict[str, Any]]) -> int:
+def _run_one(
+    domain: str,
+    task_id: str,
+    arm: str,
+    *,
+    attack: bool,
+    manifest: list[dict[str, Any]],
+) -> int:
     topology = {
         "STATIC_STAR": ("orchestrator_no_discussion", 4, 1, 2),
         "STATIC_DISCUSSION": ("orchestrator_with_discussion", 4, 2, 2),
         "MANTA_NATIVE_FROZEN_SKILL": ("self_evolved", 4, 1, 2),
     }[arm]
-    entry = next((row for row in manifest if row["task_id"] == f"{domain}_0"), None)
+    entry = next((row for row in manifest if row["task_id"] == task_id), None)
     overlay_path = ""
     if attack and entry:
         overlay = dict(entry)
         overlay["payload"] = _payload(entry)
-        overlay_path_obj = OUT / "overlays" / f"{domain}_{arm}.json"
+        overlay_path_obj = OUT / "overlays" / f"{task_id}_{arm}.json"
         _write_json(overlay_path_obj, overlay)
         overlay_path = str(overlay_path_obj.resolve()).replace("\\", "\\\\")
-    cfg = _episode_config(domain, overlay_path)
-    experiment_id = f"generalization_{domain}_{arm.lower()}_{'attack' if attack else 'clean'}"
+    cfg = _episode_config(domain, task_id, overlay_path)
+    experiment_id = f"generalization_{task_id}_{arm.lower()}_{'attack' if attack else 'clean'}"
     env = os.environ.copy()
     env.update({
         "MAS_REQUIRE_LIVE_LLM": "1",
@@ -122,7 +131,7 @@ def _run_one(domain: str, arm: str, *, task_limit: int, attack: bool, manifest: 
         "PYTHONUTF8": "1",
     })
     cmd = [sys.executable, "main.py", "run", "--config", str(cfg), "--benchmark", "workbench",
-           "--task-limit", str(task_limit), "--runs-per-task", "1", "--seed", "20261018",
+           "--task-ids", task_id, "--runs-per-task", "1", "--seed", "20261018",
            "--output-dir", str(OUT / "raw"), "--output-layout", "hierarchical",
            "--experiment-id", experiment_id, "--system-label", arm,
            "--topology", topology[0], "--agents", str(topology[1]),
@@ -139,19 +148,55 @@ def main() -> int:
     parser.add_argument("--domains", default="calendar")
     parser.add_argument("--task-limit", type=int, default=1)
     parser.add_argument("--attack", action="store_true")
+    parser.add_argument(
+        "--max-parallel",
+        type=int,
+        default=3,
+        help="Maximum number of independent task/arm jobs to run concurrently.",
+    )
     args = parser.parse_args()
     domains = [item.strip() for item in args.domains.split(",") if item.strip()]
     manifest = _manifest(domains, args.task_limit)
-    _write_json(TASKS, {"seed": 20261018, "domains": domains, "task_limit": args.task_limit})
+    _write_json(
+        TASKS,
+        {
+            "seed": 20261018,
+            "domains": domains,
+            "task_limit": args.task_limit,
+            "task_ids": [row["task_id"] for row in manifest],
+        },
+    )
     _write_json(MANIFEST, {"attack_version": "generalization-v2", "entries": manifest})
-    codes = []
     arms = ["STATIC_STAR", "STATIC_DISCUSSION", "MANTA_NATIVE_FROZEN_SKILL"]
-    for domain in domains:
-        for arm in arms:
-            code = _run_one(domain, arm, task_limit=args.task_limit, attack=args.attack, manifest=manifest)
-            codes.append((domain, arm, code))
-            print(f"{domain} {arm} exit={code}", flush=True)
-    return 0 if all(code == 0 for _, _, code in codes) else 1
+    jobs = [
+        (str(row["task_id"]).rsplit("_", 1)[0], str(row["task_id"]), arm)
+        for row in manifest
+        for arm in arms
+    ]
+    codes: list[tuple[str, str, str, int]] = []
+    max_parallel = max(int(args.max_parallel), 1)
+    with ThreadPoolExecutor(max_workers=max_parallel) as executor:
+        futures = {
+            executor.submit(
+                _run_one,
+                domain,
+                task_id,
+                arm,
+                attack=args.attack,
+                manifest=manifest,
+            ): (domain, task_id, arm)
+            for domain, task_id, arm in jobs
+        }
+        for future in as_completed(futures):
+            domain, task_id, arm = futures[future]
+            try:
+                code = int(future.result())
+            except Exception as exc:  # pragma: no cover - process boundary guard
+                print(f"{task_id} {arm} exception={exc!r}", flush=True)
+                code = 1
+            codes.append((domain, task_id, arm, code))
+            print(f"{task_id} {arm} exit={code}", flush=True)
+    return 0 if all(code == 0 for _, _, _, code in codes) else 1
 
 
 if __name__ == "__main__":
