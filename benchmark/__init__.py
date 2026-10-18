@@ -6,6 +6,7 @@ from .base import BenchmarkAdapter, BenchmarkEvaluation, BenchmarkTask
 from .registry import get_benchmark, list_benchmarks
 
 _LAZY_EXPORTS = {
+    "AppWorldBenchmark": ("benchmark.appworld", "AppWorldBenchmark"),
     "BrowseCompBenchmark": ("benchmark.browsecomp", "BrowseCompBenchmark"),
     "FinanceAgentBenchmark": ("benchmark.finance_agent", "FinanceAgentBenchmark"),
     "StableToolBenchBenchmark": ("benchmark.stabletoolbench", "StableToolBenchBenchmark"),
@@ -28,6 +29,7 @@ __all__ = [
     "BenchmarkAdapter",
     "BenchmarkEvaluation",
     "BenchmarkTask",
+    "AppWorldBenchmark",
     "BrowseCompBenchmark",
     "FinanceAgentBenchmark",
     "StableToolBenchBenchmark",

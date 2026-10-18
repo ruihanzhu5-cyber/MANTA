@@ -4,6 +4,7 @@ import importlib
 from typing import Any
 
 BENCHMARK_REGISTRY = {
+    "appworld": ("benchmark.appworld", "AppWorldBenchmark"),
     "agentbench": ("benchmark.agentbench", "AgentBenchBenchmark"),
     "finance_agent": ("benchmark.finance_agent", "FinanceAgentBenchmark"),
     "browsecomp": ("benchmark.browsecomp", "BrowseCompBenchmark"),

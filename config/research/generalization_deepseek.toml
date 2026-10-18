@@ -1,0 +1,53 @@
+# DeepSeek Flash configuration for the generalization experiment.
+# The API key is read from DEEPSEEK_API_KEY; it is never stored in this file.
+[openrouter]
+api_key = ""
+base_url = "https://api.deepseek.com"
+timeout_s = 150
+
+[experiment]
+output_dir = "artifacts/generalization"
+runs_per_task = 1
+seed = 20261018
+task_limit = 1
+
+[models]
+default = "deepseek-flash"
+judge = "deepseek-flash"
+
+[mas]
+topology = "self_evolved"
+number_of_agents = 4
+agent_types = ["general"]
+levels = 1
+intra_level_link_ratio = 1.0
+full_linked = true
+communication_count_internally = 2
+discussion_rounds = 1
+minimum_discussion_rounds = 1
+max_turns = 2
+turn_mode = "multi_turn"
+enable_dynamic_roles = true
+termination_consensus_mode = "llm_judge"
+final_vote_mode = "llm_judge"
+peer_artifact_max_chars = 0
+
+[self_evolved]
+harness_backend = "openrouter"
+initial_planner_mode = "task_conditioned"
+max_initial_agents = 4
+max_total_agents = 8
+max_turns = 2
+repair_budget = 1
+audit_mode = "hybrid"
+playbook_path = "config/topology_playbook.json"
+skill_path = "config/topology_skill.md"
+playbook_read = true
+skill_update_batch_size = 0
+default_packet_max_chars = 0
+
+[workbench]
+domain = "calendar"
+tool_selection = "domains"
+max_tool_iterations = 8
+attack_overlay_path = ""

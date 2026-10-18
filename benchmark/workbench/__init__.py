@@ -22,12 +22,14 @@ from typing import Any
 
 import pandas as pd
 
+from answer_utils import has_substantive_answer
+from research.generalization import ObservationOverlay
+
 try:
     from loguru import logger
 except Exception:  # pragma: no cover - optional dependency fallback
     logger = logging.getLogger(__name__)
 
-from answer_utils import has_substantive_answer
 from benchmark.base import BenchmarkEvaluation, BenchmarkTask
 from MAS import MASRunner, MASRunResult
 from MAS.artifacts import collect_lineage_tool_records
@@ -990,6 +992,7 @@ class WorkBenchBenchmark:
         self.domain: str = str(cfg.get("domain", "multi_domain"))
         self.tool_selection: str = str(cfg.get("tool_selection", "domains"))
         self.max_tool_iterations: int = int(cfg.get("max_tool_iterations", 20))
+        self.attack_overlay_path: str = str(cfg.get("attack_overlay_path", "")).strip()
         self.tasks_version: str = str(cfg.get("tasks_version", "v1")).strip()
         self.data_dir = Path(str(cfg.get("data_dir", ".cache/workbench"))).expanduser()
         self._ensure_data_exists()
@@ -1044,7 +1047,11 @@ class WorkBenchBenchmark:
         return tasks
 
     def _build_tools(
-        self, sandbox: WorkBenchSandbox, task_domains: list[str]
+        self,
+        sandbox: WorkBenchSandbox,
+        task_domains: list[str],
+        *,
+        overlay: ObservationOverlay | None = None,
     ) -> list[dict[str, Any]]:
         resolved_domains = [DOMAIN_ALIASES.get(domain, domain) for domain in task_domains]
         active_domains = set(CORE_DOMAINS if self.tool_selection == "all" else resolved_domains)
@@ -1054,6 +1061,16 @@ class WorkBenchBenchmark:
             if spec["domain"] not in active_domains:
                 continue
             name = str(spec["name"])
+            def handler(
+                args: dict[str, Any],
+                *,
+                tool_name: str = name,
+                sb: WorkBenchSandbox = sandbox,
+                active_overlay: ObservationOverlay | None = overlay,
+            ) -> Any:
+                result = sb.invoke(tool_name, args)
+                return active_overlay.apply(tool_name, result) if active_overlay else result
+
             tools.append(
                 {
                     "name": name,
@@ -1063,7 +1080,7 @@ class WorkBenchBenchmark:
                         "properties": dict(spec["properties"]),
                         "required": list(spec.get("required", [])),
                     },
-                    "handler": lambda args, tool_name=name, sb=sandbox: sb.invoke(tool_name, args),
+                    "handler": handler,
                 }
             )
         return tools
@@ -1076,7 +1093,8 @@ class WorkBenchBenchmark:
         seed: int,
     ) -> MASRunResult:
         sandbox = WorkBenchSandbox(self.data_dir)
-        tools = self._build_tools(sandbox, list(task.metadata.get("domains", [])))
+        overlay = ObservationOverlay.from_path(self.attack_overlay_path) if self.attack_overlay_path else None
+        tools = self._build_tools(sandbox, list(task.metadata.get("domains", [])), overlay=overlay)
         prompt = [
             {
                 "role": "system",
@@ -1116,6 +1134,7 @@ class WorkBenchBenchmark:
                 **dict(result.run_metadata),
                 "function_calls": function_calls,
                 "error": "",
+                "attack_overlay": dict(overlay.result) if overlay else {"status": "OFF"},
             },
         )
 
