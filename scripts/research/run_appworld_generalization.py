@@ -31,6 +31,26 @@ ARMS: dict[str, tuple[str, int, int, int]] = {
 }
 
 
+def _episode_complete(experiment_id: str, arm: str, task_id: str) -> bool:
+    result_dir = OUT / "raw" / experiment_id / "appworld" / arm / task_id
+    required = (
+        "run_0.result.json",
+        "run_0.eval.json",
+        "run_0.metadata.json",
+        "run_0.answer.txt",
+        "run_0.trace.jsonl",
+    )
+    if not all((result_dir / name).is_file() and (result_dir / name).stat().st_size > 0 for name in required):
+        return False
+    try:
+        json.loads((result_dir / "run_0.result.json").read_text(encoding="utf-8"))
+        json.loads((result_dir / "run_0.eval.json").read_text(encoding="utf-8"))
+        json.loads((result_dir / "run_0.metadata.json").read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+    return True
+
+
 def _toml_string(value: str) -> str:
     return json.dumps(value, ensure_ascii=False)
 
@@ -152,6 +172,11 @@ def main() -> int:
     parser.add_argument("--split", default="dev", choices=("dev", "train"))
     parser.add_argument("--task-limit", type=int, default=None)
     parser.add_argument("--max-parallel", type=int, default=16)
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="Skip episodes that already have a complete result/eval/metadata bundle.",
+    )
     parser.add_argument("--attack-overlay-dir", default="")
     parser.add_argument(
         "--manifest",
@@ -206,6 +231,18 @@ def main() -> int:
                     raise FileNotFoundError(f"Missing frozen AppWorld overlay: {candidate}")
                 overlay = str(candidate)
             jobs.append((task_id, arm, overlay))
+
+    if args.resume:
+        original_count = len(jobs)
+        condition = "attack" if args.attack_overlay_dir else "clean"
+        jobs = [
+            job
+            for job in jobs
+            if not _episode_complete(
+                f"appworld_{job[0]}_{job[1].lower()}_{condition}", job[1], job[0]
+            )
+        ]
+        print(f"resume: skipping {original_count - len(jobs)} complete episodes; running {len(jobs)}", flush=True)
 
     max_parallel = max(1, int(args.max_parallel))
     results: list[tuple[str, str, int]] = []

@@ -24,6 +24,26 @@ TASKS = ROOT / "config/research/generalization_tasks.json"
 OUT = ROOT / "artifacts/generalization"
 
 
+def _episode_complete(experiment_id: str, arm: str, task_id: str) -> bool:
+    result_dir = OUT / "raw" / experiment_id / "workbench" / arm / task_id
+    required = (
+        "run_0.result.json",
+        "run_0.eval.json",
+        "run_0.metadata.json",
+        "run_0.answer.txt",
+        "run_0.trace.jsonl",
+    )
+    if not all((result_dir / name).is_file() and (result_dir / name).stat().st_size > 0 for name in required):
+        return False
+    try:
+        json.loads((result_dir / "run_0.result.json").read_text(encoding="utf-8"))
+        json.loads((result_dir / "run_0.eval.json").read_text(encoding="utf-8"))
+        json.loads((result_dir / "run_0.metadata.json").read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+    return True
+
+
 def _write_json(path: Path, payload: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -188,6 +208,11 @@ def main() -> int:
         default=16,
         help="Maximum number of independent task/arm jobs to run concurrently.",
     )
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="Skip episodes that already have a complete result/eval/metadata bundle.",
+    )
     args = parser.parse_args()
     domains = [item.strip() for item in args.domains.split(",") if item.strip()]
     candidate_manifest = _manifest(domains, args.task_limit)
@@ -223,6 +248,18 @@ def main() -> int:
         for row in eligible
         for arm in arms
     ]
+    if args.resume:
+        original_count = len(jobs)
+        jobs = [
+            job
+            for job in jobs
+            if not _episode_complete(
+                f"generalization_{job[1]}_{job[2].lower()}_{'attack' if args.attack else 'clean'}",
+                job[2],
+                job[1],
+            )
+        ]
+        print(f"resume: skipping {original_count - len(jobs)} complete episodes; running {len(jobs)}", flush=True)
     codes: list[tuple[str, str, str, int]] = []
     max_parallel = max(int(args.max_parallel), 1)
     with ThreadPoolExecutor(max_workers=max_parallel) as executor:
