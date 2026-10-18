@@ -161,7 +161,7 @@ def main() -> int:
     parser.add_argument(
         "--max-parallel",
         type=int,
-        default=8,
+        default=16,
         help="Maximum number of independent task/arm jobs to run concurrently.",
     )
     args = parser.parse_args()
