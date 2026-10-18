@@ -74,9 +74,13 @@ class ObservationOverlay:
     """Append a fixed payload once to one string leaf in a tool result."""
 
     def __init__(self, spec: dict[str, Any]) -> None:
+        self.spec = dict(spec)
         self.tool_name = str(spec.get("tool_name") or "")
         self.field_path = tuple(spec.get("field_path") or ())
-        self.payload = str(spec.get("payload") or "")
+        # WorkBench manifests use ``payload`` while the AppWorld adapter uses
+        # the more explicit ``payload_text`` key.  Accept both at the shared
+        # protocol boundary so the two adapters cannot silently diverge.
+        self.payload = str(spec.get("payload") or spec.get("payload_text") or "")
         self.applied = False
         self.result: dict[str, Any] = {"applied": False, "status": "NOT_EXPOSED"}
         if not self.tool_name or not self.field_path or not self.payload:

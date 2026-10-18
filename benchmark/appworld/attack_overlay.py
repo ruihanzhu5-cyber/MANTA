@@ -1,4 +1,4 @@
-"""Opt-in replacement of one text field in one AppWorld tool observation."""
+"""Opt-in append of one payload to one AppWorld tool observation field."""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ from typing import Any
 
 class ObservationOverlay:
     def __init__(self, frozen: dict[str, Any]) -> None:
+        self.spec = dict(frozen)
         if frozen.get("threat_model") != "NATIVE_TOOL_RESULT_IPI":
             raise ValueError("Expected NATIVE_TOOL_RESULT_IPI overlay")
         self.tool_name = str(frozen["tool_name"])
@@ -47,7 +48,11 @@ class ObservationOverlay:
             return native_text, {"applied": False, "reason": "FIELD_NOT_FOUND_OR_UNPARSABLE"}
         if not isinstance(original, str):
             return native_text, {"applied": False, "reason": "FIELD_NOT_STRING"}
-        target[leaf] = self.payload
+        # The threat model permits appending to one untrusted string leaf.  Do
+        # not replace the native observation: preserving the exact original
+        # value is required for both auditability and the clean/attack
+        # counterfactual comparison.
+        target[leaf] = original + self.payload
         visible = serializer(value)
         self.applied = True
         return visible, {

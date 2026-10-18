@@ -153,11 +153,28 @@ def main() -> int:
     parser.add_argument("--task-limit", type=int, default=None)
     parser.add_argument("--max-parallel", type=int, default=16)
     parser.add_argument("--attack-overlay-dir", default="")
+    parser.add_argument(
+        "--manifest",
+        default=str(ROOT / "config/research/appworld_attack_manifest_v3.json"),
+        help="Frozen audited manifest required for Attack.",
+    )
     args = parser.parse_args()
 
     root = Path(args.root).resolve()
     python_executable = Path(args.python_executable).resolve()
     task_ids = _read_task_ids(root, args.split)
+    attack_entries: dict[str, dict[str, Any]] = {}
+    if args.attack_overlay_dir:
+        manifest_path = Path(args.manifest).resolve()
+        if not manifest_path.is_file():
+            raise FileNotFoundError(f"Frozen audited AppWorld manifest is required: {manifest_path}")
+        manifest_payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+        attack_entries = {
+            str(entry["task_id"]): dict(entry)
+            for entry in manifest_payload.get("entries", [])
+            if entry.get("status") == "ELIGIBLE_VERIFIED"
+        }
+        task_ids = [task_id for task_id in task_ids if task_id in attack_entries]
     if args.task_limit is not None:
         task_ids = task_ids[: max(0, int(args.task_limit))]
     OUT.mkdir(parents=True, exist_ok=True)
