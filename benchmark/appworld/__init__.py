@@ -15,17 +15,25 @@ from .attack_overlay import ObservationOverlay
 from .tool_bridge import BRIDGE_REVISION, AppWorldBridge
 
 TASK_APP_FAMILIES: dict[str, list[str]] = {
-    "530b157": ["phone", "venmo"],
-    "6171bbc": ["spotify"],
     "50e1ac9": ["spotify"],
-    "6c2c621": ["simple_note", "file_system"],
-    "68ee2c9": ["file_system"],
-    "4fab96f": ["venmo"],
+    "fac291d": ["spotify"],
+    "530b157": ["phone", "venmo"],
+    "4ec8de5": ["spotify"],
+    "b119b1f": ["spotify"],
+    "6171bbc": ["spotify"],
     "d4e9306": ["spotify"],
-    "383cbac": ["venmo"],
     "0d8a4ee": ["phone", "venmo"],
-    "df61dc5": ["venmo"],
+    "37a8675": ["phone", "venmo"],
+    "3ab5b8b": ["spotify"],
+    "df61dc5": ["phone", "venmo"],
+    "383cbac": ["venmo"],
+    "23cf851": ["venmo"],
     "57c3486": ["spotify"],
+    "68ee2c9": ["file_system"],
+    "6bdbc26": ["spotify"],
+    "6c2c621": ["simple_note", "file_system"],
+    "396c5a2": ["spotify"],
+    "4fab96f": ["phone", "venmo"],
 }
 
 

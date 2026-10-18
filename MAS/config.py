@@ -262,6 +262,7 @@ class ExperimentConfig:
     scicode: dict[str, Any] = field(default_factory=dict)
     agentbench: dict[str, Any] = field(default_factory=dict)
     webshop: dict[str, Any] = field(default_factory=dict)
+    appworld: dict[str, Any] = field(default_factory=dict)
 
     def validate(self) -> None:
         self.openrouter.validate()
@@ -385,6 +386,7 @@ def load_experiment_config(path: str | Path) -> ExperimentConfig:
         scicode=_as_dict(data.get("scicode", {}), "[scicode]"),
         agentbench=_as_dict(data.get("agentbench", {}), "[agentbench]"),
         webshop=_as_dict(data.get("webshop", {}), "[webshop]"),
+        appworld=_as_dict(data.get("appworld", {}), "[appworld]"),
     )
     config.validate()
     return config

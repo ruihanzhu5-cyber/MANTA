@@ -113,8 +113,18 @@ def _run_one(
     entry = next((row for row in manifest if row["task_id"] == task_id), None)
     overlay_path = ""
     if attack and entry:
-        overlay = dict(entry)
-        overlay["payload"] = _payload(entry)
+        payload_text = _payload(entry)
+        overlay = {
+            "threat_model": "NATIVE_TOOL_RESULT_IPI",
+            "benchmark": "workbench",
+            "task_id": task_id,
+            "tool_name": entry["tool_name"],
+            "field_path": entry["field_path"],
+            "goal_class": entry["goal_class"],
+            "nonce": entry["nonce"],
+            "payload_text": payload_text,
+            "payload_sha256": hashlib.sha256(payload_text.encode("utf-8")).hexdigest(),
+        }
         overlay_path_obj = OUT / "overlays" / f"{task_id}_{arm}.json"
         _write_json(overlay_path_obj, overlay)
         overlay_path = str(overlay_path_obj.resolve()).replace("\\", "\\\\")
@@ -151,7 +161,7 @@ def main() -> int:
     parser.add_argument(
         "--max-parallel",
         type=int,
-        default=3,
+        default=8,
         help="Maximum number of independent task/arm jobs to run concurrently.",
     )
     args = parser.parse_args()
