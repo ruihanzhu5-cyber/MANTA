@@ -1,8 +1,8 @@
 """Run the frozen AppWorld Dev generalization batch with episode-level isolation.
 
 Each task/arm/condition gets a private TOML, output tree, AppWorld SDK process,
-and log.  The default concurrency is eight Episodes, which keeps the maximum
-number of simultaneous model workers at the protocol's 32-worker ceiling for
+and log.  The default concurrency is sixteen Episodes, which keeps the maximum
+number of simultaneous model workers at the protocol's 64-worker ceiling for
 the four-agent arms.
 """
 
@@ -151,7 +151,7 @@ def main() -> int:
     parser.add_argument("--python-executable", default=str(APPWORLD_PYTHON))
     parser.add_argument("--split", default="dev", choices=("dev", "train"))
     parser.add_argument("--task-limit", type=int, default=None)
-    parser.add_argument("--max-parallel", type=int, default=8)
+    parser.add_argument("--max-parallel", type=int, default=16)
     parser.add_argument("--attack-overlay-dir", default="")
     args = parser.parse_args()
 
