@@ -1,0 +1,109 @@
+[20261018T074917Z] Loaded run configuration benchmark=workbench system=MANTA_NATIVE_FROZEN_SKILL tasks=1 runs_per_task=1 seed=20261018 prompting_baseline=direct topology=self_evolved agents=4 rounds=2 discussion_rounds=1 communication_budget=2
+[20261018T074917Z] TASK_START index=1/1 task_id=calendar_12
+[20261018T074917Z] RUN_START task_id=calendar_12 run_index=0 seed=20261018
+[llm] START request_id=llm-1 task_id=calendar_12 run_index=0 agent_id=topology_planner agent_type=planner model=deepseek-flash messages=2 tools=0 max_tool_iterations=8
+[llm] DONE request_id=llm-1 task_id=calendar_12 run_index=0 agent_id=topology_planner model=deepseek-flash mode=chat elapsed_s=7.07 token_in=1541 token_out=236
+[llm] START request_id=llm-2 task_id=role_assignment run_index=0 agent_id=role_assigner agent_type=default model=deepseek-flash messages=2 tools=0 max_tool_iterations=8
+[llm] DONE request_id=llm-2 task_id=role_assignment run_index=0 agent_id=role_assigner model=deepseek-flash mode=chat elapsed_s=1.37 token_in=802 token_out=31
+[llm] START request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 agent_type=general model=deepseek-flash messages=4 tools=3 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=1 tool_calls=1 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=1 tool_name=calendar.search_events args={"query": "December 4", "time_min": "2023-12-04 00:00:00", "time_max": "2023-12-04 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=1 tool_name=calendar.search_events status=completed output="No events found."
+[llm] TOOL_LOOP request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=2/8 messages=6
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=2 tool_calls=2 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=2 tool_name=calendar.search_events args={"query": "", "time_min": "2023-12-04 00:00:00", "time_max": "2023-12-04 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=2 tool_name=calendar.search_events status=completed output=[{"event_id": "00000137", "event_name": "process review", "participant_email": "amir.ali@atlas.com", "event_start": "2023-12-04 09:30:00", "duration": "60"}, {"event_id": "00000109", "event_name": "project debrief", "participant_email": ...
+[llm] TOOL_CALL request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=2 tool_name=calendar.search_events args={"query": "meeting", "time_min": "2023-12-04 00:00:00", "time_max": "2023-12-04 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=2 tool_name=calendar.search_events status=completed output="No events found."
+[llm] TOOL_LOOP request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=3/8 messages=9
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=3 tool_calls=4 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=3 tool_name=calendar.get_event_information_by_id args={"event_id": "00000062", "field": "event_name"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=3 tool_name=calendar.get_event_information_by_id status=completed output={"event_name": "performance evaluation"}
+[llm] TOOL_CALL request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=3 tool_name=calendar.get_event_information_by_id args={"event_id": "00000062", "field": "event_start"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=3 tool_name=calendar.get_event_information_by_id status=completed output={"event_start": "2023-12-04 14:30:00"}
+[llm] TOOL_CALL request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=3 tool_name=calendar.get_event_information_by_id args={"event_id": "00000062", "field": "duration"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=3 tool_name=calendar.get_event_information_by_id status=completed output={"duration": "120"}
+[llm] TOOL_CALL request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=3 tool_name=calendar.get_event_information_by_id args={"event_id": "00000062", "field": "participant_email"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=3 tool_name=calendar.get_event_information_by_id status=completed output={"participant_email": "yuki.tanaka@atlas.com"}
+[llm] TOOL_CONTEXT request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 raw_turns=2 summarized_turns=1 summary_chars=480
+[llm] TOOL_LOOP request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=4/8 messages=13
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=4 tool_calls=0 assistant_text_chars=2405
+[llm] DONE request_id=llm-3 task_id=calendar_12 run_index=0 agent_id=agent_0 model=deepseek-flash mode=tools elapsed_s=9.09 token_in=8098 token_out=1209 tool_calls=7
+[llm] START request_id=llm-4 task_id=calendar_12 run_index=0 agent_id=agent_1 agent_type=general model=deepseek-flash messages=4 tools=3 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-4 task_id=calendar_12 run_index=0 agent_id=agent_1 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-4 task_id=calendar_12 run_index=0 agent_id=agent_1 iteration=1 tool_calls=4 assistant_text_chars=105
+[llm] TOOL_CALL request_id=llm-4 task_id=calendar_12 run_index=0 agent_id=agent_1 iteration=1 tool_name=calendar.search_events args={"query": "", "time_min": "2023-12-04 00:00:00", "time_max": "2023-12-04 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=calendar_12 run_index=0 agent_id=agent_1 iteration=1 tool_name=calendar.search_events status=completed output=[{"event_id": "00000137", "event_name": "process review", "participant_email": "amir.ali@atlas.com", "event_start": "2023-12-04 09:30:00", "duration": "60"}, {"event_id": "00000109", "event_name": "project debrief", "participant_email": ...
+[llm] TOOL_CALL request_id=llm-4 task_id=calendar_12 run_index=0 agent_id=agent_1 iteration=1 tool_name=calendar.get_event_information_by_id args={"event_id": "00000062", "field": "event_name"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=calendar_12 run_index=0 agent_id=agent_1 iteration=1 tool_name=calendar.get_event_information_by_id status=completed output={"event_name": "performance evaluation"}
+[llm] TOOL_CALL request_id=llm-4 task_id=calendar_12 run_index=0 agent_id=agent_1 iteration=1 tool_name=calendar.get_event_information_by_id args={"event_id": "00000062", "field": "event_start"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=calendar_12 run_index=0 agent_id=agent_1 iteration=1 tool_name=calendar.get_event_information_by_id status=completed output={"event_start": "2023-12-04 14:30:00"}
+[llm] TOOL_CALL request_id=llm-4 task_id=calendar_12 run_index=0 agent_id=agent_1 iteration=1 tool_name=calendar.get_event_information_by_id args={"event_id": "00000062", "field": "duration"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=calendar_12 run_index=0 agent_id=agent_1 iteration=1 tool_name=calendar.get_event_information_by_id status=completed output={"duration": "120"}
+[llm] TOOL_LOOP request_id=llm-4 task_id=calendar_12 run_index=0 agent_id=agent_1 iteration=2/8 messages=9
+[llm] TOOL_LOOP_RESULT request_id=llm-4 task_id=calendar_12 run_index=0 agent_id=agent_1 iteration=2 tool_calls=0 assistant_text_chars=2697
+[llm] DONE request_id=llm-4 task_id=calendar_12 run_index=0 agent_id=agent_1 model=deepseek-flash mode=tools elapsed_s=5.93 token_in=5786 token_out=1044 tool_calls=4
+[llm] START request_id=llm-5 task_id=calendar_12 run_index=0 agent_id=agent_2 agent_type=general model=deepseek-flash messages=4 tools=3 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-5 task_id=calendar_12 run_index=0 agent_id=agent_2 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-5 task_id=calendar_12 run_index=0 agent_id=agent_2 iteration=1 tool_calls=4 assistant_text_chars=105
+[llm] TOOL_CALL request_id=llm-5 task_id=calendar_12 run_index=0 agent_id=agent_2 iteration=1 tool_name=calendar.search_events args={"query": "December 4", "time_min": "2023-12-04 00:00:00", "time_max": "2023-12-04 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=calendar_12 run_index=0 agent_id=agent_2 iteration=1 tool_name=calendar.search_events status=completed output="No events found."
+[llm] TOOL_CALL request_id=llm-5 task_id=calendar_12 run_index=0 agent_id=agent_2 iteration=1 tool_name=calendar.get_event_information_by_id args={"event_id": "00000062", "field": "event_name"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=calendar_12 run_index=0 agent_id=agent_2 iteration=1 tool_name=calendar.get_event_information_by_id status=completed output={"event_name": "performance evaluation"}
+[llm] TOOL_CALL request_id=llm-5 task_id=calendar_12 run_index=0 agent_id=agent_2 iteration=1 tool_name=calendar.get_event_information_by_id args={"event_id": "00000062", "field": "event_start"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=calendar_12 run_index=0 agent_id=agent_2 iteration=1 tool_name=calendar.get_event_information_by_id status=completed output={"event_start": "2023-12-04 14:30:00"}
+[llm] TOOL_CALL request_id=llm-5 task_id=calendar_12 run_index=0 agent_id=agent_2 iteration=1 tool_name=calendar.get_event_information_by_id args={"event_id": "00000062", "field": "duration"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=calendar_12 run_index=0 agent_id=agent_2 iteration=1 tool_name=calendar.get_event_information_by_id status=completed output={"duration": "120"}
+[llm] TOOL_LOOP request_id=llm-5 task_id=calendar_12 run_index=0 agent_id=agent_2 iteration=2/8 messages=9
+[llm] TOOL_LOOP_RESULT request_id=llm-5 task_id=calendar_12 run_index=0 agent_id=agent_2 iteration=2 tool_calls=3 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-5 task_id=calendar_12 run_index=0 agent_id=agent_2 iteration=2 tool_name=calendar.search_events args={"query": "performance evaluation", "time_min": "2023-12-04 00:00:00", "time_max": "2023-12-04 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=calendar_12 run_index=0 agent_id=agent_2 iteration=2 tool_name=calendar.search_events status=completed output=[{"event_id": "00000062", "event_name": "performance evaluation", "participant_email": "yuki.tanaka@atlas.com", "event_start": "2023-12-04 14:30:00", "duration": "120"}]
+[llm] TOOL_CALL request_id=llm-5 task_id=calendar_12 run_index=0 agent_id=agent_2 iteration=2 tool_name=calendar.search_events args={"query": "review", "time_min": "2023-12-04 00:00:00", "time_max": "2023-12-04 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=calendar_12 run_index=0 agent_id=agent_2 iteration=2 tool_name=calendar.search_events status=completed output=[{"event_id": "00000137", "event_name": "process review", "participant_email": "amir.ali@atlas.com", "event_start": "2023-12-04 09:30:00", "duration": "60"}]
+[llm] TOOL_CALL request_id=llm-5 task_id=calendar_12 run_index=0 agent_id=agent_2 iteration=2 tool_name=calendar.search_events args={"query": "debrief", "time_min": "2023-12-04 00:00:00", "time_max": "2023-12-04 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=calendar_12 run_index=0 agent_id=agent_2 iteration=2 tool_name=calendar.search_events status=completed output=[{"event_id": "00000109", "event_name": "project debrief", "participant_email": "kofi.mensah@atlas.com", "event_start": "2023-12-04 10:30:00", "duration": "60"}]
+[llm] TOOL_LOOP request_id=llm-5 task_id=calendar_12 run_index=0 agent_id=agent_2 iteration=3/8 messages=13
+[llm] TOOL_LOOP_RESULT request_id=llm-5 task_id=calendar_12 run_index=0 agent_id=agent_2 iteration=3 tool_calls=0 assistant_text_chars=3407
+[llm] DONE request_id=llm-5 task_id=calendar_12 run_index=0 agent_id=agent_2 model=deepseek-flash mode=tools elapsed_s=9.09 token_in=9099 token_out=1501 tool_calls=7
+[llm] START request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 agent_type=general model=deepseek-flash messages=4 tools=6 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=1 tool_calls=5 assistant_text_chars=77
+[llm] TOOL_CALL request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=1 tool_name=calendar.search_events args={"query": "performance evaluation", "time_min": "2023-12-04 00:00:00", "time_max": "2023-12-04 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=1 tool_name=calendar.search_events status=completed output=[{"event_id": "00000062", "event_name": "performance evaluation", "participant_email": "yuki.tanaka@atlas.com", "event_start": "2023-12-04 14:30:00", "duration": "120"}]
+[llm] TOOL_CALL request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=1 tool_name=calendar.search_events args={"query": "review", "time_min": "2023-12-04 00:00:00", "time_max": "2023-12-04 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=1 tool_name=calendar.search_events status=completed output=[{"event_id": "00000137", "event_name": "process review", "participant_email": "amir.ali@atlas.com", "event_start": "2023-12-04 09:30:00", "duration": "60"}]
+[llm] TOOL_CALL request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=1 tool_name=calendar.search_events args={"query": "debrief", "time_min": "2023-12-04 00:00:00", "time_max": "2023-12-04 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=1 tool_name=calendar.search_events status=completed output=[{"event_id": "00000109", "event_name": "project debrief", "participant_email": "kofi.mensah@atlas.com", "event_start": "2023-12-04 10:30:00", "duration": "60"}]
+[llm] TOOL_CALL request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=1 tool_name=calendar.get_event_information_by_id args={"event_id": "00000062", "field": "event_name"}
+[llm] TOOL_CALL_RESULT request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=1 tool_name=calendar.get_event_information_by_id status=completed output={"event_name": "performance evaluation"}
+[llm] TOOL_CALL request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=1 tool_name=calendar.get_event_information_by_id args={"event_id": "00000062", "field": "event_start"}
+[llm] TOOL_CALL_RESULT request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=1 tool_name=calendar.get_event_information_by_id status=completed output={"event_start": "2023-12-04 14:30:00"}
+[llm] TOOL_LOOP request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=2/8 messages=10
+[llm] TOOL_LOOP_RESULT request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=2 tool_calls=1 assistant_text_chars=98
+[llm] TOOL_CALL request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=2 tool_name=calendar.update_event args={"event_id": "00000062", "field": "event_name", "new_value": "weekly summary"}
+[llm] TOOL_CALL_RESULT request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=2 tool_name=calendar.update_event status=completed output="Event updated successfully."
+[llm] TOOL_LOOP request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=3/8 messages=12
+[llm] TOOL_LOOP_RESULT request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=3 tool_calls=1 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=3 tool_name=calendar.get_event_information_by_id args={"event_id": "00000062", "field": "event_name"}
+[llm] TOOL_CALL_RESULT request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=3 tool_name=calendar.get_event_information_by_id status=completed output={"event_name": "weekly summary"}
+[llm] TOOL_CONTEXT request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 raw_turns=2 summarized_turns=1 summary_chars=1669
+[llm] TOOL_LOOP request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=4/8 messages=9
+[llm] TOOL_LOOP_RESULT request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 iteration=4 tool_calls=0 assistant_text_chars=1406
+[llm] DONE request_id=llm-6 task_id=calendar_12 run_index=0 agent_id=agent_0 model=deepseek-flash mode=tools elapsed_s=9.92 token_in=30367 token_out=914 tool_calls=7
+[llm] START request_id=llm-7 task_id=calendar_12 run_index=0 agent_id=trace_auditor agent_type=auditor model=deepseek-flash messages=2 tools=0 max_tool_iterations=8
+[llm] DONE request_id=llm-7 task_id=calendar_12 run_index=0 agent_id=trace_auditor model=deepseek-flash mode=chat elapsed_s=1.63 token_in=5942 token_out=65
+[llm] START request_id=llm-8 task_id=calendar_12 run_index=0 agent_id=meta_termination_termination_judge agent_type=judge model=deepseek-flash messages=2 tools=0 max_tool_iterations=1
+[llm] DONE request_id=llm-8 task_id=calendar_12 run_index=0 agent_id=meta_termination_termination_judge model=deepseek-flash mode=chat elapsed_s=1.75 token_in=2508 token_out=112
+[20261018T075003Z] RUN_FINISH task_id=calendar_12 run_index=0 elapsed_s=46.08 trace_events=79 final_answer_chars=242 status=completed
+[20261018T075003Z] TRACE_WRITTEN task_id=calendar_12 run_index=0 path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_calendar_12_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\calendar_12\run_0.trace.jsonl
+[20261018T075003Z] RAW_OUTPUT_WRITTEN task_id=calendar_12 run_index=0 path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_calendar_12_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\calendar_12\run_0.raw.json
+[20261018T075004Z] EVAL_FINISH task_id=calendar_12 run_index=0 score=1.0000 success=True
+[20261018T075004Z] RUN_ARTIFACTS_WRITTEN task_id=calendar_12 run_index=0 metadata_path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_calendar_12_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\calendar_12\run_0.metadata.json eval_path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_calendar_12_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\calendar_12\run_0.eval.json
+[20261018T075004Z] TASK_CHECKPOINT_WRITTEN task_id=calendar_12 completed_runs=1/1 path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_calendar_12_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\calendar_12\task_summary.json
+[20261018T075004Z] TASK_ANALYZE_START task_id=calendar_12
+[20261018T075004Z] TASK_ANALYZE_FINISH task_id=calendar_12 avg_score=1.0000 success_rate=1.0000 completion_rate=1.0000
+[20261018T075004Z] TASK_FINISH index=1/1 task_id=calendar_12 task_dir=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_calendar_12_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\calendar_12 failures=0 fallbacks=0 needs_rerun=False
+[20261018T075004Z] SUMMARY_WRITTEN summary_json=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_calendar_12_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\summary.json summary_csv=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_calendar_12_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\summary.csv
+[20261018T075004Z] RUN_STATUS_SUMMARY benchmark=workbench system=MANTA_NATIVE_FROZEN_SKILL run_failures=0 fallbacks=0 needs_rerun_tasks=0 needs_rerun_task_ids=none
+Run complete: C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_calendar_12_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL

@@ -1,0 +1,67 @@
+[20261018T062333Z] Loaded run configuration benchmark=workbench system=MANTA_NATIVE_FROZEN_SKILL tasks=1 runs_per_task=1 seed=20261018 prompting_baseline=direct topology=self_evolved agents=4 rounds=2 discussion_rounds=1 communication_budget=2
+[20261018T062333Z] TASK_START index=1/1 task_id=multi_domain_5
+[20261018T062333Z] RUN_START task_id=multi_domain_5 run_index=0 seed=20261018
+[llm] START request_id=llm-1 task_id=multi_domain_5 run_index=0 agent_id=topology_planner agent_type=planner model=deepseek-flash messages=2 tools=0 max_tool_iterations=8
+[llm] DONE request_id=llm-1 task_id=multi_domain_5 run_index=0 agent_id=topology_planner model=deepseek-flash mode=chat elapsed_s=6.02 token_in=1580 token_out=264
+[llm] START request_id=llm-2 task_id=role_assignment run_index=0 agent_id=role_assigner agent_type=default model=deepseek-flash messages=2 tools=0 max_tool_iterations=8
+[llm] DONE request_id=llm-2 task_id=role_assignment run_index=0 agent_id=role_assigner model=deepseek-flash mode=chat elapsed_s=1.74 token_in=841 token_out=30
+[llm] START request_id=llm-3 task_id=multi_domain_5 run_index=0 agent_id=agent_0 agent_type=general model=deepseek-flash messages=4 tools=5 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-3 task_id=multi_domain_5 run_index=0 agent_id=agent_0 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=multi_domain_5 run_index=0 agent_id=agent_0 iteration=1 tool_calls=1 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-3 task_id=multi_domain_5 run_index=0 agent_id=agent_0 iteration=1 tool_name=customer_relationship_manager.search_customers args={"customer_name": "Quinn Brown"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=multi_domain_5 run_index=0 agent_id=agent_0 iteration=1 tool_name=customer_relationship_manager.search_customers status=completed output=[{"customer_id": "00000188", "assigned_to_email": "lena.schmidt@atlas.com", "customer_name": "Quinn Brown", "customer_email": "quinn.brown@peaknetworks", "customer_phone": "429-948-5055", "last_contact_date": "2023-11-18", "product_inter...
+[llm] TOOL_LOOP request_id=llm-3 task_id=multi_domain_5 run_index=0 agent_id=agent_0 iteration=2/8 messages=6
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=multi_domain_5 run_index=0 agent_id=agent_0 iteration=2 tool_calls=1 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-3 task_id=multi_domain_5 run_index=0 agent_id=agent_0 iteration=2 tool_name=calendar.find_first_available_slot args={"time_min": "2023-12-01 09:00:00", "time_max": "2023-12-01 18:00:00", "duration": "30"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=multi_domain_5 run_index=0 agent_id=agent_0 iteration=2 tool_name=calendar.find_first_available_slot status=completed output={"available": true, "event_start": "2023-12-01 13:00:00", "duration": "30", "considered_intervals": [{"event_id": "00000165", "start": "2023-12-01 09:00:00", "end": "2023-12-01 10:00:00"}, {"event_id": "00000091", "start": "2023-12-01 10...
+[llm] TOOL_LOOP request_id=llm-3 task_id=multi_domain_5 run_index=0 agent_id=agent_0 iteration=3/8 messages=8
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=multi_domain_5 run_index=0 agent_id=agent_0 iteration=3 tool_calls=0 assistant_text_chars=2059
+[llm] DONE request_id=llm-3 task_id=multi_domain_5 run_index=0 agent_id=agent_0 model=deepseek-flash mode=tools elapsed_s=6.30 token_in=8236 token_out=738 tool_calls=2
+[llm] START request_id=llm-4 task_id=multi_domain_5 run_index=0 agent_id=agent_1 agent_type=general model=deepseek-flash messages=4 tools=5 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-4 task_id=multi_domain_5 run_index=0 agent_id=agent_1 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-4 task_id=multi_domain_5 run_index=0 agent_id=agent_1 iteration=1 tool_calls=2 assistant_text_chars=63
+[llm] TOOL_CALL request_id=llm-4 task_id=multi_domain_5 run_index=0 agent_id=agent_1 iteration=1 tool_name=customer_relationship_manager.search_customers args={"customer_name": "Quinn Brown"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=multi_domain_5 run_index=0 agent_id=agent_1 iteration=1 tool_name=customer_relationship_manager.search_customers status=completed output=[{"customer_id": "00000188", "assigned_to_email": "lena.schmidt@atlas.com", "customer_name": "Quinn Brown", "customer_email": "quinn.brown@peaknetworks", "customer_phone": "429-948-5055", "last_contact_date": "2023-11-18", "product_inter...
+[llm] TOOL_CALL request_id=llm-4 task_id=multi_domain_5 run_index=0 agent_id=agent_1 iteration=1 tool_name=calendar.find_first_available_slot args={"time_min": "2023-12-01 09:00:00", "time_max": "2023-12-01 18:00:00", "duration": "30"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=multi_domain_5 run_index=0 agent_id=agent_1 iteration=1 tool_name=calendar.find_first_available_slot status=completed output={"available": true, "event_start": "2023-12-01 13:00:00", "duration": "30", "considered_intervals": [{"event_id": "00000165", "start": "2023-12-01 09:00:00", "end": "2023-12-01 10:00:00"}, {"event_id": "00000091", "start": "2023-12-01 10...
+[llm] TOOL_LOOP request_id=llm-4 task_id=multi_domain_5 run_index=0 agent_id=agent_1 iteration=2/8 messages=7
+[llm] TOOL_LOOP_RESULT request_id=llm-4 task_id=multi_domain_5 run_index=0 agent_id=agent_1 iteration=2 tool_calls=0 assistant_text_chars=1709
+[llm] DONE request_id=llm-4 task_id=multi_domain_5 run_index=0 agent_id=agent_1 model=deepseek-flash mode=tools elapsed_s=4.92 token_in=7304 token_out=644 tool_calls=2
+[llm] START request_id=llm-5 task_id=multi_domain_5 run_index=0 agent_id=agent_2 agent_type=general model=deepseek-flash messages=4 tools=5 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-5 task_id=multi_domain_5 run_index=0 agent_id=agent_2 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-5 task_id=multi_domain_5 run_index=0 agent_id=agent_2 iteration=1 tool_calls=2 assistant_text_chars=54
+[llm] TOOL_CALL request_id=llm-5 task_id=multi_domain_5 run_index=0 agent_id=agent_2 iteration=1 tool_name=customer_relationship_manager.search_customers args={"customer_name": "Quinn Brown"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=multi_domain_5 run_index=0 agent_id=agent_2 iteration=1 tool_name=customer_relationship_manager.search_customers status=completed output=[{"customer_id": "00000188", "assigned_to_email": "lena.schmidt@atlas.com", "customer_name": "Quinn Brown", "customer_email": "quinn.brown@peaknetworks", "customer_phone": "429-948-5055", "last_contact_date": "2023-11-18", "product_inter...
+[llm] TOOL_CALL request_id=llm-5 task_id=multi_domain_5 run_index=0 agent_id=agent_2 iteration=1 tool_name=calendar.find_first_available_slot args={"time_min": "2023-12-01 09:00:00", "time_max": "2023-12-01 18:00:00", "duration": "30"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=multi_domain_5 run_index=0 agent_id=agent_2 iteration=1 tool_name=calendar.find_first_available_slot status=completed output={"available": true, "event_start": "2023-12-01 13:00:00", "duration": "30", "considered_intervals": [{"event_id": "00000165", "start": "2023-12-01 09:00:00", "end": "2023-12-01 10:00:00"}, {"event_id": "00000091", "start": "2023-12-01 10...
+[llm] TOOL_LOOP request_id=llm-5 task_id=multi_domain_5 run_index=0 agent_id=agent_2 iteration=2/8 messages=7
+[llm] TOOL_LOOP_RESULT request_id=llm-5 task_id=multi_domain_5 run_index=0 agent_id=agent_2 iteration=2 tool_calls=0 assistant_text_chars=2014
+[llm] DONE request_id=llm-5 task_id=multi_domain_5 run_index=0 agent_id=agent_2 model=deepseek-flash mode=tools elapsed_s=5.90 token_in=7318 token_out=749 tool_calls=2
+[llm] START request_id=llm-6 task_id=multi_domain_5 run_index=0 agent_id=agent_0 agent_type=general model=deepseek-flash messages=4 tools=11 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-6 task_id=multi_domain_5 run_index=0 agent_id=agent_0 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-6 task_id=multi_domain_5 run_index=0 agent_id=agent_0 iteration=1 tool_calls=1 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-6 task_id=multi_domain_5 run_index=0 agent_id=agent_0 iteration=1 tool_name=customer_relationship_manager.search_customers args={"customer_name": "Quinn Brown"}
+[llm] TOOL_CALL_RESULT request_id=llm-6 task_id=multi_domain_5 run_index=0 agent_id=agent_0 iteration=1 tool_name=customer_relationship_manager.search_customers status=completed output=[{"customer_id": "00000188", "assigned_to_email": "lena.schmidt@atlas.com", "customer_name": "Quinn Brown", "customer_email": "quinn.brown@peaknetworks", "customer_phone": "429-948-5055", "last_contact_date": "2023-11-18", "product_inter...
+[llm] TOOL_LOOP request_id=llm-6 task_id=multi_domain_5 run_index=0 agent_id=agent_0 iteration=2/8 messages=6
+[llm] TOOL_LOOP_RESULT request_id=llm-6 task_id=multi_domain_5 run_index=0 agent_id=agent_0 iteration=2 tool_calls=0 assistant_text_chars=1929
+[llm] DONE request_id=llm-6 task_id=multi_domain_5 run_index=0 agent_id=agent_0 model=deepseek-flash mode=tools elapsed_s=4.86 token_in=16101 token_out=606 tool_calls=1
+[llm] START request_id=llm-7 task_id=multi_domain_5 run_index=0 agent_id=trace_auditor agent_type=auditor model=deepseek-flash messages=2 tools=0 max_tool_iterations=8
+[llm] DONE request_id=llm-7 task_id=multi_domain_5 run_index=0 agent_id=trace_auditor model=deepseek-flash mode=chat elapsed_s=1.60 token_in=4445 token_out=55
+[llm] START request_id=llm-8 task_id=multi_domain_5 run_index=0 agent_id=meta_termination_termination_judge agent_type=judge model=deepseek-flash messages=2 tools=0 max_tool_iterations=1
+[llm] DONE request_id=llm-8 task_id=multi_domain_5 run_index=0 agent_id=meta_termination_termination_judge model=deepseek-flash mode=chat elapsed_s=1.53 token_in=2022 token_out=83
+[llm] START request_id=llm-9 task_id=multi_domain_5 run_index=0 agent_id=final_synthesizer agent_type=general model=deepseek-flash messages=2 tools=0 max_tool_iterations=1
+[llm] DONE request_id=llm-9 task_id=multi_domain_5 run_index=0 agent_id=final_synthesizer model=deepseek-flash mode=chat elapsed_s=3.38 token_in=1702 token_out=530
+[llm] START request_id=llm-10 task_id=multi_domain_5 run_index=0 agent_id=constraint_reconciler agent_type=general model=deepseek-flash messages=2 tools=0 max_tool_iterations=1
+[llm] DONE request_id=llm-10 task_id=multi_domain_5 run_index=0 agent_id=constraint_reconciler model=deepseek-flash mode=chat elapsed_s=3.99 token_in=1251 token_out=768
+[20261018T062413Z] RUN_FINISH task_id=multi_domain_5 run_index=0 elapsed_s=40.41 trace_events=45 final_answer_chars=474 status=completed
+[20261018T062413Z] TRACE_WRITTEN task_id=multi_domain_5 run_index=0 path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_5_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\multi_domain_5\run_0.trace.jsonl
+[20261018T062413Z] RAW_OUTPUT_WRITTEN task_id=multi_domain_5 run_index=0 path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_5_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\multi_domain_5\run_0.raw.json
+[20261018T062414Z] EVAL_FINISH task_id=multi_domain_5 run_index=0 score=1.0000 success=True
+[20261018T062414Z] RUN_ARTIFACTS_WRITTEN task_id=multi_domain_5 run_index=0 metadata_path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_5_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\multi_domain_5\run_0.metadata.json eval_path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_5_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\multi_domain_5\run_0.eval.json
+[20261018T062414Z] TASK_CHECKPOINT_WRITTEN task_id=multi_domain_5 completed_runs=1/1 path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_5_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\multi_domain_5\task_summary.json
+[20261018T062414Z] TASK_ANALYZE_START task_id=multi_domain_5
+[20261018T062414Z] TASK_ANALYZE_FINISH task_id=multi_domain_5 avg_score=1.0000 success_rate=1.0000 completion_rate=1.0000
+[20261018T062414Z] TASK_FINISH index=1/1 task_id=multi_domain_5 task_dir=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_5_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\multi_domain_5 failures=0 fallbacks=0 needs_rerun=False
+[20261018T062414Z] SUMMARY_WRITTEN summary_json=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_5_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\summary.json summary_csv=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_5_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\summary.csv
+[20261018T062414Z] RUN_STATUS_SUMMARY benchmark=workbench system=MANTA_NATIVE_FROZEN_SKILL run_failures=0 fallbacks=0 needs_rerun_tasks=0 needs_rerun_task_ids=none
+Run complete: C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_5_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL

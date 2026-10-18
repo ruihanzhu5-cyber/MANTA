@@ -1,0 +1,116 @@
+[20261018T072401Z] Loaded run configuration benchmark=workbench system=STATIC_STAR tasks=1 runs_per_task=1 seed=20261018 prompting_baseline=direct topology=orchestrator_no_discussion agents=4 rounds=2 discussion_rounds=1 communication_budget=2
+[20261018T072407Z] TASK_START index=1/1 task_id=analytics_18
+[20261018T072407Z] RUN_START task_id=analytics_18 run_index=0 seed=20261018
+[llm] START request_id=llm-1 task_id=role_assignment run_index=0 agent_id=role_assigner agent_type=default model=deepseek-flash messages=2 tools=0 max_tool_iterations=8
+[llm] DONE request_id=llm-1 task_id=role_assignment run_index=0 agent_id=role_assigner model=deepseek-flash mode=chat elapsed_s=4.60 token_in=841 token_out=43
+[llm] START request_id=llm-2 task_id=analytics_18 run_index=0 agent_id=agent_0 agent_type=general model=deepseek-flash messages=4 tools=7 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-2 task_id=analytics_18 run_index=0 agent_id=agent_0 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-2 task_id=analytics_18 run_index=0 agent_id=agent_0 iteration=1 tool_calls=0 assistant_text_chars=2100
+[llm] DONE request_id=llm-2 task_id=analytics_18 run_index=0 agent_id=agent_0 model=deepseek-flash mode=tools elapsed_s=3.51 token_in=2065 token_out=550 tool_calls=0
+[llm] START request_id=llm-3 task_id=analytics_18 run_index=0 agent_id=agent_1 agent_type=general model=deepseek-flash messages=4 tools=7 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-3 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=1/8 messages=4
+[llm] START request_id=llm-4 task_id=analytics_18 run_index=0 agent_id=agent_2 agent_type=general model=deepseek-flash messages=4 tools=7 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-4 task_id=analytics_18 run_index=0 agent_id=agent_2 iteration=1/8 messages=4
+[llm] START request_id=llm-5 task_id=analytics_18 run_index=0 agent_id=agent_3 agent_type=general model=deepseek-flash messages=4 tools=7 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-5 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=1 tool_calls=2 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-3 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=1 tool_name=analytics.engaged_users_count args={"time_min": "2023-11-29 00:00:00", "time_max": "2023-11-29 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=1 tool_name=analytics.engaged_users_count status=completed output={}
+[llm] TOOL_CALL request_id=llm-3 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=1 tool_name=analytics.create_plot args={"time_min": "2023-11-29 00:00:00", "time_max": "2023-11-29 23:59:59", "value_to_plot": "engaged_users", "plot_type": "distribution"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=1 tool_name=analytics.create_plot status=completed output="Value to plot must be one of 'total_visits', 'session_duration_seconds', 'user_engaged', 'direct', 'referral', 'search engine', 'social media'"
+[llm] TOOL_LOOP request_id=llm-3 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=2/8 messages=7
+[llm] TOOL_LOOP_RESULT request_id=llm-5 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=1 tool_calls=2 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-5 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=1 tool_name=analytics.engaged_users_count args={"time_min": "2023-11-29 00:00:00", "time_max": "2023-11-29 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=1 tool_name=analytics.engaged_users_count status=completed output={}
+[llm] TOOL_CALL request_id=llm-5 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=1 tool_name=analytics.create_plot args={"time_min": "2023-11-29 00:00:00", "time_max": "2023-11-29 23:59:59", "value_to_plot": "engaged_users", "plot_type": "distribution"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=1 tool_name=analytics.create_plot status=completed output="Value to plot must be one of 'total_visits', 'session_duration_seconds', 'user_engaged', 'direct', 'referral', 'search engine', 'social media'"
+[llm] TOOL_LOOP request_id=llm-5 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=2/8 messages=7
+[llm] TOOL_LOOP_RESULT request_id=llm-4 task_id=analytics_18 run_index=0 agent_id=agent_2 iteration=1 tool_calls=2 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-4 task_id=analytics_18 run_index=0 agent_id=agent_2 iteration=1 tool_name=analytics.engaged_users_count args={"time_min": "2023-11-29 00:00:00", "time_max": "2023-11-29 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=analytics_18 run_index=0 agent_id=agent_2 iteration=1 tool_name=analytics.engaged_users_count status=completed output={}
+[llm] TOOL_CALL request_id=llm-4 task_id=analytics_18 run_index=0 agent_id=agent_2 iteration=1 tool_name=analytics.create_plot args={"time_min": "2023-11-29 00:00:00", "time_max": "2023-11-29 23:59:59", "value_to_plot": "engaged_users", "plot_type": "distribution"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=analytics_18 run_index=0 agent_id=agent_2 iteration=1 tool_name=analytics.create_plot status=completed output="Value to plot must be one of 'total_visits', 'session_duration_seconds', 'user_engaged', 'direct', 'referral', 'search engine', 'social media'"
+[llm] TOOL_LOOP request_id=llm-4 task_id=analytics_18 run_index=0 agent_id=agent_2 iteration=2/8 messages=7
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=2 tool_calls=1 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-3 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=2 tool_name=analytics.create_plot args={"plot_type": "distribution", "time_max": "2023-11-29 23:59:59", "time_min": "2023-11-29 00:00:00", "value_to_plot": "user_engaged"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=2 tool_name=analytics.create_plot status=completed output="Plot type must be one of 'bar', 'line', 'scatter', or 'histogram'"
+[llm] TOOL_LOOP request_id=llm-3 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=3/8 messages=9
+[llm] TOOL_LOOP_RESULT request_id=llm-5 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=2 tool_calls=1 assistant_text_chars=0
+[llm] TOOL_LOOP_RESULT request_id=llm-4 task_id=analytics_18 run_index=0 agent_id=agent_2 iteration=2 tool_calls=1 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-5 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=2 tool_name=analytics.create_plot args={"plot_type": "distribution", "time_max": "2023-11-29 23:59:59", "time_min": "2023-11-29 00:00:00", "value_to_plot": "user_engaged"}
+[llm] TOOL_CALL request_id=llm-4 task_id=analytics_18 run_index=0 agent_id=agent_2 iteration=2 tool_name=analytics.create_plot args={"plot_type": "distribution", "time_max": "2023-11-29 23:59:59", "time_min": "2023-11-29 00:00:00", "value_to_plot": "user_engaged"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=2 tool_name=analytics.create_plot status=completed output="Plot type must be one of 'bar', 'line', 'scatter', or 'histogram'"
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=analytics_18 run_index=0 agent_id=agent_2 iteration=2 tool_name=analytics.create_plot status=completed output="Plot type must be one of 'bar', 'line', 'scatter', or 'histogram'"
+[llm] TOOL_LOOP request_id=llm-5 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=3/8 messages=9
+[llm] TOOL_LOOP request_id=llm-4 task_id=analytics_18 run_index=0 agent_id=agent_2 iteration=3/8 messages=9
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=3 tool_calls=1 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-3 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=3 tool_name=analytics.create_plot args={"plot_type": "histogram", "time_max": "2023-11-29 23:59:59", "time_min": "2023-11-29 00:00:00", "value_to_plot": "user_engaged"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=3 tool_name=analytics.create_plot status=completed output="plots/2023-11-29 00:00:00_2023-11-29 23:59:59_user_engaged_histogram.png"
+[llm] TOOL_CONTEXT request_id=llm-3 task_id=analytics_18 run_index=0 agent_id=agent_1 raw_turns=2 summarized_turns=1 summary_chars=795
+[llm] TOOL_LOOP request_id=llm-3 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=4/8 messages=9
+[llm] TOOL_LOOP_RESULT request_id=llm-4 task_id=analytics_18 run_index=0 agent_id=agent_2 iteration=3 tool_calls=1 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-4 task_id=analytics_18 run_index=0 agent_id=agent_2 iteration=3 tool_name=analytics.create_plot args={"plot_type": "histogram", "time_max": "2023-11-29 23:59:59", "time_min": "2023-11-29 00:00:00", "value_to_plot": "user_engaged"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=analytics_18 run_index=0 agent_id=agent_2 iteration=3 tool_name=analytics.create_plot status=completed output="plots/2023-11-29 00:00:00_2023-11-29 23:59:59_user_engaged_histogram.png"
+[llm] TOOL_CONTEXT request_id=llm-4 task_id=analytics_18 run_index=0 agent_id=agent_2 raw_turns=2 summarized_turns=1 summary_chars=795
+[llm] TOOL_LOOP request_id=llm-4 task_id=analytics_18 run_index=0 agent_id=agent_2 iteration=4/8 messages=9
+[llm] TOOL_LOOP_RESULT request_id=llm-5 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=3 tool_calls=1 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-5 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=3 tool_name=analytics.create_plot args={"plot_type": "histogram", "time_max": "2023-11-29 23:59:59", "time_min": "2023-11-29 00:00:00", "value_to_plot": "user_engaged"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=3 tool_name=analytics.create_plot status=completed output="plots/2023-11-29 00:00:00_2023-11-29 23:59:59_user_engaged_histogram.png"
+[llm] TOOL_CONTEXT request_id=llm-5 task_id=analytics_18 run_index=0 agent_id=agent_3 raw_turns=2 summarized_turns=1 summary_chars=795
+[llm] TOOL_LOOP request_id=llm-5 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=4/8 messages=9
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=4 tool_calls=0 assistant_text_chars=1511
+[llm] DONE request_id=llm-3 task_id=analytics_18 run_index=0 agent_id=agent_1 model=deepseek-flash mode=tools elapsed_s=8.47 token_in=13494 token_out=870 tool_calls=4
+[llm] TOOL_LOOP_RESULT request_id=llm-4 task_id=analytics_18 run_index=0 agent_id=agent_2 iteration=4 tool_calls=0 assistant_text_chars=1574
+[llm] DONE request_id=llm-4 task_id=analytics_18 run_index=0 agent_id=agent_2 model=deepseek-flash mode=tools elapsed_s=9.43 token_in=13578 token_out=872 tool_calls=4
+[llm] TOOL_LOOP_RESULT request_id=llm-5 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=4 tool_calls=0 assistant_text_chars=1681
+[llm] DONE request_id=llm-5 task_id=analytics_18 run_index=0 agent_id=agent_3 model=deepseek-flash mode=tools elapsed_s=10.17 token_in=13602 token_out=921 tool_calls=4
+[llm] START request_id=llm-6 task_id=analytics_18 run_index=0 agent_id=agent_0 agent_type=general model=deepseek-flash messages=4 tools=7 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-6 task_id=analytics_18 run_index=0 agent_id=agent_0 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-6 task_id=analytics_18 run_index=0 agent_id=agent_0 iteration=1 tool_calls=0 assistant_text_chars=1728
+[llm] DONE request_id=llm-6 task_id=analytics_18 run_index=0 agent_id=agent_0 model=deepseek-flash mode=tools elapsed_s=3.03 token_in=4843 token_out=482 tool_calls=0
+[llm] START request_id=llm-7 task_id=analytics_18 run_index=0 agent_id=termination_checker_termination_judge agent_type=judge model=deepseek-flash messages=2 tools=0 max_tool_iterations=1
+[llm] DONE request_id=llm-7 task_id=analytics_18 run_index=0 agent_id=termination_checker_termination_judge model=deepseek-flash mode=chat elapsed_s=1.74 token_in=2306 token_out=89
+[llm] START request_id=llm-8 task_id=analytics_18 run_index=0 agent_id=agent_1 agent_type=general model=deepseek-flash messages=4 tools=7 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-8 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=1/8 messages=4
+[llm] START request_id=llm-9 task_id=analytics_18 run_index=0 agent_id=agent_2 agent_type=general model=deepseek-flash messages=4 tools=7 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-9 task_id=analytics_18 run_index=0 agent_id=agent_2 iteration=1/8 messages=4
+[llm] START request_id=llm-10 task_id=analytics_18 run_index=0 agent_id=agent_3 agent_type=general model=deepseek-flash messages=4 tools=7 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-10 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-8 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=1 tool_calls=2 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-8 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=1 tool_name=analytics.create_plot args={"time_min": "2023-11-29 00:00:00", "time_max": "2023-11-29 23:59:59", "value_to_plot": "user_engaged", "plot_type": "histogram"}
+[llm] TOOL_CALL_RESULT request_id=llm-8 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=1 tool_name=analytics.create_plot status=completed output="plots/2023-11-29 00:00:00_2023-11-29 23:59:59_user_engaged_histogram.png"
+[llm] TOOL_CALL request_id=llm-8 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=1 tool_name=analytics.engaged_users_count args={"time_min": "2023-11-29 00:00:00", "time_max": "2023-11-29 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-8 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=1 tool_name=analytics.engaged_users_count status=completed output={}
+[llm] TOOL_LOOP request_id=llm-8 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=2/8 messages=7
+[llm] TOOL_LOOP_RESULT request_id=llm-10 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=1 tool_calls=2 assistant_text_chars=92
+[llm] TOOL_CALL request_id=llm-10 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=1 tool_name=analytics.create_plot args={"time_min": "2023-11-29 00:00:00", "time_max": "2023-11-29 23:59:59", "value_to_plot": "user_engaged", "plot_type": "histogram"}
+[llm] TOOL_CALL_RESULT request_id=llm-10 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=1 tool_name=analytics.create_plot status=completed output="plots/2023-11-29 00:00:00_2023-11-29 23:59:59_user_engaged_histogram.png"
+[llm] TOOL_CALL request_id=llm-10 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=1 tool_name=analytics.engaged_users_count args={"time_min": "2023-11-29 00:00:00", "time_max": "2023-11-29 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-10 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=1 tool_name=analytics.engaged_users_count status=completed output={}
+[llm] TOOL_LOOP request_id=llm-10 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=2/8 messages=7
+[llm] TOOL_LOOP_RESULT request_id=llm-9 task_id=analytics_18 run_index=0 agent_id=agent_2 iteration=1 tool_calls=0 assistant_text_chars=1720
+[llm] DONE request_id=llm-9 task_id=analytics_18 run_index=0 agent_id=agent_2 model=deepseek-flash mode=tools elapsed_s=2.94 token_in=3639 token_out=481 tool_calls=0
+[llm] TOOL_LOOP_RESULT request_id=llm-8 task_id=analytics_18 run_index=0 agent_id=agent_1 iteration=2 tool_calls=0 assistant_text_chars=1351
+[llm] DONE request_id=llm-8 task_id=analytics_18 run_index=0 agent_id=agent_1 model=deepseek-flash mode=tools elapsed_s=4.66 token_in=7477 token_out=593 tool_calls=2
+[llm] TOOL_LOOP_RESULT request_id=llm-10 task_id=analytics_18 run_index=0 agent_id=agent_3 iteration=2 tool_calls=0 assistant_text_chars=1629
+[llm] DONE request_id=llm-10 task_id=analytics_18 run_index=0 agent_id=agent_3 model=deepseek-flash mode=tools elapsed_s=5.81 token_in=7645 token_out=663 tool_calls=2
+[llm] START request_id=llm-11 task_id=analytics_18 run_index=0 agent_id=agent_0 agent_type=general model=deepseek-flash messages=4 tools=7 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-11 task_id=analytics_18 run_index=0 agent_id=agent_0 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-11 task_id=analytics_18 run_index=0 agent_id=agent_0 iteration=1 tool_calls=0 assistant_text_chars=1782
+[llm] DONE request_id=llm-11 task_id=analytics_18 run_index=0 agent_id=agent_0 model=deepseek-flash mode=tools elapsed_s=2.81 token_in=4772 token_out=496 tool_calls=0
+[llm] START request_id=llm-12 task_id=analytics_18 run_index=0 agent_id=termination_checker_termination_judge agent_type=judge model=deepseek-flash messages=2 tools=0 max_tool_iterations=1
+[llm] DONE request_id=llm-12 task_id=analytics_18 run_index=0 agent_id=termination_checker_termination_judge model=deepseek-flash mode=chat elapsed_s=1.47 token_in=2379 token_out=84
+[llm] START request_id=llm-13 task_id=analytics_18 run_index=0 agent_id=finalize_final_vote_judge agent_type=judge model=deepseek-flash messages=2 tools=0 max_tool_iterations=1
+[llm] DONE request_id=llm-13 task_id=analytics_18 run_index=0 agent_id=finalize_final_vote_judge model=deepseek-flash mode=chat elapsed_s=1.70 token_in=2219 token_out=86
+[20261018T072442Z] RUN_FINISH task_id=analytics_18 run_index=0 elapsed_s=35.05 trace_events=83 final_answer_chars=72 status=completed
+[20261018T072442Z] TRACE_WRITTEN task_id=analytics_18 run_index=0 path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_analytics_18_static_star_clean\workbench\STATIC_STAR\analytics_18\run_0.trace.jsonl
+[20261018T072442Z] RAW_OUTPUT_WRITTEN task_id=analytics_18 run_index=0 path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_analytics_18_static_star_clean\workbench\STATIC_STAR\analytics_18\run_0.raw.json
+[20261018T072442Z] EVAL_FINISH task_id=analytics_18 run_index=0 score=0.0000 success=False
+[20261018T072442Z] RUN_ARTIFACTS_WRITTEN task_id=analytics_18 run_index=0 metadata_path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_analytics_18_static_star_clean\workbench\STATIC_STAR\analytics_18\run_0.metadata.json eval_path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_analytics_18_static_star_clean\workbench\STATIC_STAR\analytics_18\run_0.eval.json
+[20261018T072442Z] TASK_CHECKPOINT_WRITTEN task_id=analytics_18 completed_runs=1/1 path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_analytics_18_static_star_clean\workbench\STATIC_STAR\analytics_18\task_summary.json
+[20261018T072442Z] TASK_ANALYZE_START task_id=analytics_18
+[20261018T072442Z] TASK_ANALYZE_FINISH task_id=analytics_18 avg_score=0.0000 success_rate=0.0000 completion_rate=1.0000
+[20261018T072442Z] TASK_FINISH index=1/1 task_id=analytics_18 task_dir=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_analytics_18_static_star_clean\workbench\STATIC_STAR\analytics_18 failures=0 fallbacks=0 needs_rerun=False
+[20261018T072442Z] SUMMARY_WRITTEN summary_json=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_analytics_18_static_star_clean\workbench\STATIC_STAR\summary.json summary_csv=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_analytics_18_static_star_clean\workbench\STATIC_STAR\summary.csv
+[20261018T072442Z] RUN_STATUS_SUMMARY benchmark=workbench system=STATIC_STAR run_failures=0 fallbacks=0 needs_rerun_tasks=0 needs_rerun_task_ids=none
+Run complete: C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_analytics_18_static_star_clean\workbench\STATIC_STAR

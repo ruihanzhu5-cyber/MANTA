@@ -1,0 +1,73 @@
+[20261018T061613Z] Loaded run configuration benchmark=workbench system=MANTA_NATIVE_FROZEN_SKILL tasks=1 runs_per_task=1 seed=20261018 prompting_baseline=direct topology=self_evolved agents=4 rounds=2 discussion_rounds=1 communication_budget=2
+[20261018T061613Z] TASK_START index=1/1 task_id=multi_domain_0
+[20261018T061613Z] RUN_START task_id=multi_domain_0 run_index=0 seed=20261018
+[llm] START request_id=llm-1 task_id=multi_domain_0 run_index=0 agent_id=topology_planner agent_type=planner model=deepseek-flash messages=2 tools=0 max_tool_iterations=8
+[llm] DONE request_id=llm-1 task_id=multi_domain_0 run_index=0 agent_id=topology_planner model=deepseek-flash mode=chat elapsed_s=6.60 token_in=1566 token_out=327
+[llm] START request_id=llm-2 task_id=role_assignment run_index=0 agent_id=role_assigner agent_type=default model=deepseek-flash messages=2 tools=0 max_tool_iterations=8
+[llm] DONE request_id=llm-2 task_id=role_assignment run_index=0 agent_id=role_assigner model=deepseek-flash mode=chat elapsed_s=1.37 token_in=827 token_out=31
+[llm] START request_id=llm-3 task_id=multi_domain_0 run_index=0 agent_id=agent_0 agent_type=general model=deepseek-flash messages=4 tools=5 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-3 task_id=multi_domain_0 run_index=0 agent_id=agent_0 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=multi_domain_0 run_index=0 agent_id=agent_0 iteration=1 tool_calls=1 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-3 task_id=multi_domain_0 run_index=0 agent_id=agent_0 iteration=1 tool_name=customer_relationship_manager.search_customers args={"customer_name": "Cameron Anderson"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=multi_domain_0 run_index=0 agent_id=agent_0 iteration=1 tool_name=customer_relationship_manager.search_customers status=completed output=[{"customer_id": "00000048", "assigned_to_email": "sofia.santos@atlas.com", "customer_name": "Cameron Anderson", "customer_email": "cameron.anderson@quantedgesecurity", "customer_phone": NaN, "last_contact_date": "2023-10-14", "product_i...
+[llm] TOOL_LOOP request_id=llm-3 task_id=multi_domain_0 run_index=0 agent_id=agent_0 iteration=2/8 messages=6
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=multi_domain_0 run_index=0 agent_id=agent_0 iteration=2 tool_calls=1 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-3 task_id=multi_domain_0 run_index=0 agent_id=agent_0 iteration=2 tool_name=calendar.find_first_available_slot args={"time_min": "2023-12-01 09:00:00", "time_max": "2023-12-01 18:00:00", "duration": "30"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=multi_domain_0 run_index=0 agent_id=agent_0 iteration=2 tool_name=calendar.find_first_available_slot status=completed output={"available": true, "event_start": "2023-12-01 13:00:00", "duration": "30", "considered_intervals": [{"event_id": "00000165", "start": "2023-12-01 09:00:00", "end": "2023-12-01 10:00:00"}, {"event_id": "00000091", "start": "2023-12-01 10...
+[llm] TOOL_LOOP request_id=llm-3 task_id=multi_domain_0 run_index=0 agent_id=agent_0 iteration=3/8 messages=8
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=multi_domain_0 run_index=0 agent_id=agent_0 iteration=3 tool_calls=0 assistant_text_chars=2654
+[llm] DONE request_id=llm-3 task_id=multi_domain_0 run_index=0 agent_id=agent_0 model=deepseek-flash mode=tools elapsed_s=7.23 token_in=8192 token_out=939 tool_calls=2
+[llm] START request_id=llm-4 task_id=multi_domain_0 run_index=0 agent_id=agent_1 agent_type=general model=deepseek-flash messages=4 tools=5 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-4 task_id=multi_domain_0 run_index=0 agent_id=agent_1 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-4 task_id=multi_domain_0 run_index=0 agent_id=agent_1 iteration=1 tool_calls=2 assistant_text_chars=72
+[llm] TOOL_CALL request_id=llm-4 task_id=multi_domain_0 run_index=0 agent_id=agent_1 iteration=1 tool_name=customer_relationship_manager.search_customers args={"customer_name": "Cameron Anderson"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=multi_domain_0 run_index=0 agent_id=agent_1 iteration=1 tool_name=customer_relationship_manager.search_customers status=completed output=[{"customer_id": "00000048", "assigned_to_email": "sofia.santos@atlas.com", "customer_name": "Cameron Anderson", "customer_email": "cameron.anderson@quantedgesecurity", "customer_phone": NaN, "last_contact_date": "2023-10-14", "product_i...
+[llm] TOOL_CALL request_id=llm-4 task_id=multi_domain_0 run_index=0 agent_id=agent_1 iteration=1 tool_name=calendar.find_first_available_slot args={"time_min": "2023-12-01 09:00:00", "time_max": "2023-12-01 18:00:00", "duration": "30"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=multi_domain_0 run_index=0 agent_id=agent_1 iteration=1 tool_name=calendar.find_first_available_slot status=completed output={"available": true, "event_start": "2023-12-01 13:00:00", "duration": "30", "considered_intervals": [{"event_id": "00000165", "start": "2023-12-01 09:00:00", "end": "2023-12-01 10:00:00"}, {"event_id": "00000091", "start": "2023-12-01 10...
+[llm] TOOL_LOOP request_id=llm-4 task_id=multi_domain_0 run_index=0 agent_id=agent_1 iteration=2/8 messages=7
+[llm] TOOL_LOOP_RESULT request_id=llm-4 task_id=multi_domain_0 run_index=0 agent_id=agent_1 iteration=2 tool_calls=0 assistant_text_chars=3672
+[llm] DONE request_id=llm-4 task_id=multi_domain_0 run_index=0 agent_id=agent_1 model=deepseek-flash mode=tools elapsed_s=6.67 token_in=7786 token_out=1244 tool_calls=2
+[llm] START request_id=llm-5 task_id=multi_domain_0 run_index=0 agent_id=agent_2 agent_type=general model=deepseek-flash messages=4 tools=5 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-5 task_id=multi_domain_0 run_index=0 agent_id=agent_2 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-5 task_id=multi_domain_0 run_index=0 agent_id=agent_2 iteration=1 tool_calls=2 assistant_text_chars=104
+[llm] TOOL_CALL request_id=llm-5 task_id=multi_domain_0 run_index=0 agent_id=agent_2 iteration=1 tool_name=customer_relationship_manager.search_customers args={"customer_name": "Cameron Anderson"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=multi_domain_0 run_index=0 agent_id=agent_2 iteration=1 tool_name=customer_relationship_manager.search_customers status=completed output=[{"customer_id": "00000048", "assigned_to_email": "sofia.santos@atlas.com", "customer_name": "Cameron Anderson", "customer_email": "cameron.anderson@quantedgesecurity", "customer_phone": NaN, "last_contact_date": "2023-10-14", "product_i...
+[llm] TOOL_CALL request_id=llm-5 task_id=multi_domain_0 run_index=0 agent_id=agent_2 iteration=1 tool_name=calendar.find_first_available_slot args={"time_min": "2023-12-01 09:00:00", "time_max": "2023-12-01 18:00:00", "duration": "30"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=multi_domain_0 run_index=0 agent_id=agent_2 iteration=1 tool_name=calendar.find_first_available_slot status=completed output={"available": true, "event_start": "2023-12-01 13:00:00", "duration": "30", "considered_intervals": [{"event_id": "00000165", "start": "2023-12-01 09:00:00", "end": "2023-12-01 10:00:00"}, {"event_id": "00000091", "start": "2023-12-01 10...
+[llm] TOOL_LOOP request_id=llm-5 task_id=multi_domain_0 run_index=0 agent_id=agent_2 iteration=2/8 messages=7
+[llm] TOOL_LOOP_RESULT request_id=llm-5 task_id=multi_domain_0 run_index=0 agent_id=agent_2 iteration=2 tool_calls=0 assistant_text_chars=3161
+[llm] DONE request_id=llm-5 task_id=multi_domain_0 run_index=0 agent_id=agent_2 model=deepseek-flash mode=tools elapsed_s=6.15 token_in=7799 token_out=1095 tool_calls=2
+[llm] START request_id=llm-6 task_id=multi_domain_0 run_index=0 agent_id=agent_0 agent_type=general model=deepseek-flash messages=4 tools=11 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-6 task_id=multi_domain_0 run_index=0 agent_id=agent_0 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-6 task_id=multi_domain_0 run_index=0 agent_id=agent_0 iteration=1 tool_calls=2 assistant_text_chars=77
+[llm] TOOL_CALL request_id=llm-6 task_id=multi_domain_0 run_index=0 agent_id=agent_0 iteration=1 tool_name=customer_relationship_manager.search_customers args={"customer_name": "Cameron Anderson"}
+[llm] TOOL_CALL_RESULT request_id=llm-6 task_id=multi_domain_0 run_index=0 agent_id=agent_0 iteration=1 tool_name=customer_relationship_manager.search_customers status=completed output=[{"customer_id": "00000048", "assigned_to_email": "sofia.santos@atlas.com", "customer_name": "Cameron Anderson", "customer_email": "cameron.anderson@quantedgesecurity", "customer_phone": NaN, "last_contact_date": "2023-10-14", "product_i...
+[llm] TOOL_CALL request_id=llm-6 task_id=multi_domain_0 run_index=0 agent_id=agent_0 iteration=1 tool_name=calendar.find_first_available_slot args={"time_min": "2023-12-01 09:00:00", "time_max": "2023-12-01 18:00:00", "duration": "30"}
+[llm] TOOL_CALL_RESULT request_id=llm-6 task_id=multi_domain_0 run_index=0 agent_id=agent_0 iteration=1 tool_name=calendar.find_first_available_slot status=completed output={"available": true, "event_start": "2023-12-01 13:00:00", "duration": "30", "considered_intervals": [{"event_id": "00000165", "start": "2023-12-01 09:00:00", "end": "2023-12-01 10:00:00"}, {"event_id": "00000091", "start": "2023-12-01 10...
+[llm] TOOL_LOOP request_id=llm-6 task_id=multi_domain_0 run_index=0 agent_id=agent_0 iteration=2/8 messages=7
+[llm] TOOL_LOOP_RESULT request_id=llm-6 task_id=multi_domain_0 run_index=0 agent_id=agent_0 iteration=2 tool_calls=1 assistant_text_chars=54
+[llm] TOOL_CALL request_id=llm-6 task_id=multi_domain_0 run_index=0 agent_id=agent_0 iteration=2 tool_name=calendar.create_event args={"event_name": "Update on Cameron Anderson", "participant_email": "sofia.santos@atlas.com", "event_start": "2023-12-01 13:00:00", "duration": "30"}
+[llm] TOOL_CALL_RESULT request_id=llm-6 task_id=multi_domain_0 run_index=0 agent_id=agent_0 iteration=2 tool_name=calendar.create_event status=completed output="00000300"
+[llm] TOOL_LOOP request_id=llm-6 task_id=multi_domain_0 run_index=0 agent_id=agent_0 iteration=3/8 messages=9
+[llm] TOOL_LOOP_RESULT request_id=llm-6 task_id=multi_domain_0 run_index=0 agent_id=agent_0 iteration=3 tool_calls=0 assistant_text_chars=2284
+[llm] DONE request_id=llm-6 task_id=multi_domain_0 run_index=0 agent_id=agent_0 model=deepseek-flash mode=tools elapsed_s=7.62 token_in=29185 token_out=926 tool_calls=3
+[llm] START request_id=llm-7 task_id=multi_domain_0 run_index=0 agent_id=trace_auditor agent_type=auditor model=deepseek-flash messages=2 tools=0 max_tool_iterations=8
+[llm] DONE request_id=llm-7 task_id=multi_domain_0 run_index=0 agent_id=trace_auditor model=deepseek-flash mode=chat elapsed_s=1.75 token_in=5999 token_out=57
+[llm] START request_id=llm-8 task_id=multi_domain_0 run_index=0 agent_id=meta_termination_termination_judge agent_type=judge model=deepseek-flash messages=2 tools=0 max_tool_iterations=1
+[llm] DONE request_id=llm-8 task_id=multi_domain_0 run_index=0 agent_id=meta_termination_termination_judge model=deepseek-flash mode=chat elapsed_s=1.68 token_in=2131 token_out=154
+[llm] START request_id=llm-9 task_id=multi_domain_0 run_index=0 agent_id=final_synthesizer agent_type=general model=deepseek-flash messages=2 tools=0 max_tool_iterations=1
+[llm] DONE request_id=llm-9 task_id=multi_domain_0 run_index=0 agent_id=final_synthesizer model=deepseek-flash mode=chat elapsed_s=3.59 token_in=1781 token_out=605
+[llm] START request_id=llm-10 task_id=multi_domain_0 run_index=0 agent_id=constraint_reconciler agent_type=general model=deepseek-flash messages=2 tools=0 max_tool_iterations=1
+[llm] DONE request_id=llm-10 task_id=multi_domain_0 run_index=0 agent_id=constraint_reconciler model=deepseek-flash mode=chat elapsed_s=3.76 token_in=1331 token_out=741
+[20261018T061700Z] RUN_FINISH task_id=multi_domain_0 run_index=0 elapsed_s=46.65 trace_events=49 final_answer_chars=912 status=completed
+[20261018T061700Z] TRACE_WRITTEN task_id=multi_domain_0 run_index=0 path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_0_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\multi_domain_0\run_0.trace.jsonl
+[20261018T061700Z] RAW_OUTPUT_WRITTEN task_id=multi_domain_0 run_index=0 path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_0_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\multi_domain_0\run_0.raw.json
+[20261018T061700Z] EVAL_FINISH task_id=multi_domain_0 run_index=0 score=1.0000 success=True
+[20261018T061700Z] RUN_ARTIFACTS_WRITTEN task_id=multi_domain_0 run_index=0 metadata_path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_0_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\multi_domain_0\run_0.metadata.json eval_path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_0_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\multi_domain_0\run_0.eval.json
+[20261018T061701Z] TASK_CHECKPOINT_WRITTEN task_id=multi_domain_0 completed_runs=1/1 path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_0_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\multi_domain_0\task_summary.json
+[20261018T061701Z] TASK_ANALYZE_START task_id=multi_domain_0
+[20261018T061701Z] TASK_ANALYZE_FINISH task_id=multi_domain_0 avg_score=1.0000 success_rate=1.0000 completion_rate=1.0000
+[20261018T061701Z] TASK_FINISH index=1/1 task_id=multi_domain_0 task_dir=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_0_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\multi_domain_0 failures=0 fallbacks=0 needs_rerun=False
+[20261018T061701Z] SUMMARY_WRITTEN summary_json=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_0_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\summary.json summary_csv=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_0_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL\summary.csv
+[20261018T061701Z] RUN_STATUS_SUMMARY benchmark=workbench system=MANTA_NATIVE_FROZEN_SKILL run_failures=0 fallbacks=0 needs_rerun_tasks=0 needs_rerun_task_ids=none
+Run complete: C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_0_manta_native_frozen_skill_clean\workbench\MANTA_NATIVE_FROZEN_SKILL

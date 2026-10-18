@@ -1,0 +1,63 @@
+[20261018T061854Z] Loaded run configuration benchmark=workbench system=STATIC_STAR tasks=1 runs_per_task=1 seed=20261018 prompting_baseline=direct topology=orchestrator_no_discussion agents=4 rounds=2 discussion_rounds=1 communication_budget=2
+[20261018T061902Z] TASK_START index=1/1 task_id=multi_domain_2
+[20261018T061902Z] RUN_START task_id=multi_domain_2 run_index=0 seed=20261018
+[llm] START request_id=llm-1 task_id=role_assignment run_index=0 agent_id=role_assigner agent_type=default model=deepseek-flash messages=2 tools=0 max_tool_iterations=8
+[llm] DONE request_id=llm-1 task_id=role_assignment run_index=0 agent_id=role_assigner model=deepseek-flash mode=chat elapsed_s=5.09 token_in=867 token_out=41
+[llm] START request_id=llm-2 task_id=multi_domain_2 run_index=0 agent_id=agent_0 agent_type=general model=deepseek-flash messages=4 tools=10 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-2 task_id=multi_domain_2 run_index=0 agent_id=agent_0 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-2 task_id=multi_domain_2 run_index=0 agent_id=agent_0 iteration=1 tool_calls=0 assistant_text_chars=2866
+[llm] DONE request_id=llm-2 task_id=multi_domain_2 run_index=0 agent_id=agent_0 model=deepseek-flash mode=tools elapsed_s=4.59 token_in=3238 token_out=774 tool_calls=0
+[llm] START request_id=llm-3 task_id=multi_domain_2 run_index=0 agent_id=agent_1 agent_type=general model=deepseek-flash messages=4 tools=10 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-3 task_id=multi_domain_2 run_index=0 agent_id=agent_1 iteration=1/8 messages=4
+[llm] START request_id=llm-4 task_id=multi_domain_2 run_index=0 agent_id=agent_2 agent_type=general model=deepseek-flash messages=4 tools=10 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-4 task_id=multi_domain_2 run_index=0 agent_id=agent_2 iteration=1/8 messages=4
+[llm] START request_id=llm-5 task_id=multi_domain_2 run_index=0 agent_id=agent_3 agent_type=general model=deepseek-flash messages=4 tools=10 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-5 task_id=multi_domain_2 run_index=0 agent_id=agent_3 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=multi_domain_2 run_index=0 agent_id=agent_1 iteration=1 tool_calls=2 assistant_text_chars=81
+[llm] TOOL_CALL request_id=llm-3 task_id=multi_domain_2 run_index=0 agent_id=agent_1 iteration=1 tool_name=customer_relationship_manager.search_customers args={"customer_name": "Jessie Thomas"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=multi_domain_2 run_index=0 agent_id=agent_1 iteration=1 tool_name=customer_relationship_manager.search_customers status=completed output=[{"customer_id": "00000149", "assigned_to_email": "raj.patel@atlas.com", "customer_name": "Jessie Thomas", "customer_email": "jessie.thomas@greendynamicsecurity", "customer_phone": NaN, "last_contact_date": "2023-11-29", "product_interes...
+[llm] TOOL_CALL request_id=llm-3 task_id=multi_domain_2 run_index=0 agent_id=agent_1 iteration=1 tool_name=calendar.search_events args={"query": "", "time_min": "2023-12-01 09:00:00", "time_max": "2023-12-01 18:00:00"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=multi_domain_2 run_index=0 agent_id=agent_1 iteration=1 tool_name=calendar.search_events status=completed output=[{"event_id": "00000165", "event_name": "Corporate Social Responsibility Initiative", "participant_email": "olga.petrova@atlas.com", "event_start": "2023-12-01 09:00:00", "duration": "60"}, {"event_id": "00000091", "event_name": "Year-En...
+[llm] TOOL_LOOP request_id=llm-3 task_id=multi_domain_2 run_index=0 agent_id=agent_1 iteration=2/8 messages=7
+[llm] TOOL_LOOP_RESULT request_id=llm-4 task_id=multi_domain_2 run_index=0 agent_id=agent_2 iteration=1 tool_calls=2 assistant_text_chars=0
+[llm] TOOL_CALL request_id=llm-4 task_id=multi_domain_2 run_index=0 agent_id=agent_2 iteration=1 tool_name=customer_relationship_manager.search_customers args={"customer_name": "Jessie Thomas"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=multi_domain_2 run_index=0 agent_id=agent_2 iteration=1 tool_name=customer_relationship_manager.search_customers status=completed output=[{"customer_id": "00000149", "assigned_to_email": "raj.patel@atlas.com", "customer_name": "Jessie Thomas", "customer_email": "jessie.thomas@greendynamicsecurity", "customer_phone": NaN, "last_contact_date": "2023-11-29", "product_interes...
+[llm] TOOL_CALL request_id=llm-4 task_id=multi_domain_2 run_index=0 agent_id=agent_2 iteration=1 tool_name=calendar.search_events args={"query": "", "time_min": "2023-12-01 09:00:00", "time_max": "2023-12-01 18:00:00"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=multi_domain_2 run_index=0 agent_id=agent_2 iteration=1 tool_name=calendar.search_events status=completed output=[{"event_id": "00000165", "event_name": "Corporate Social Responsibility Initiative", "participant_email": "olga.petrova@atlas.com", "event_start": "2023-12-01 09:00:00", "duration": "60"}, {"event_id": "00000091", "event_name": "Year-En...
+[llm] TOOL_LOOP request_id=llm-4 task_id=multi_domain_2 run_index=0 agent_id=agent_2 iteration=2/8 messages=7
+[llm] TOOL_LOOP_RESULT request_id=llm-5 task_id=multi_domain_2 run_index=0 agent_id=agent_3 iteration=1 tool_calls=2 assistant_text_chars=81
+[llm] TOOL_CALL request_id=llm-5 task_id=multi_domain_2 run_index=0 agent_id=agent_3 iteration=1 tool_name=customer_relationship_manager.search_customers args={"customer_name": "Jessie Thomas"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=multi_domain_2 run_index=0 agent_id=agent_3 iteration=1 tool_name=customer_relationship_manager.search_customers status=completed output=[{"customer_id": "00000149", "assigned_to_email": "raj.patel@atlas.com", "customer_name": "Jessie Thomas", "customer_email": "jessie.thomas@greendynamicsecurity", "customer_phone": NaN, "last_contact_date": "2023-11-29", "product_interes...
+[llm] TOOL_CALL request_id=llm-5 task_id=multi_domain_2 run_index=0 agent_id=agent_3 iteration=1 tool_name=calendar.search_events args={"query": "", "time_min": "2023-12-01 09:00:00", "time_max": "2023-12-01 18:00:00"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=multi_domain_2 run_index=0 agent_id=agent_3 iteration=1 tool_name=calendar.search_events status=completed output=[{"event_id": "00000165", "event_name": "Corporate Social Responsibility Initiative", "participant_email": "olga.petrova@atlas.com", "event_start": "2023-12-01 09:00:00", "duration": "60"}, {"event_id": "00000091", "event_name": "Year-En...
+[llm] TOOL_LOOP request_id=llm-5 task_id=multi_domain_2 run_index=0 agent_id=agent_3 iteration=2/8 messages=7
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=multi_domain_2 run_index=0 agent_id=agent_1 iteration=2 tool_calls=1 assistant_text_chars=181
+[llm] TOOL_CALL request_id=llm-3 task_id=multi_domain_2 run_index=0 agent_id=agent_1 iteration=2 tool_name=customer_relationship_manager.search_customers args={"customer_name": "Jessie Thomas", "last_contact_date_max": "2023-11-15"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=multi_domain_2 run_index=0 agent_id=agent_1 iteration=2 tool_name=customer_relationship_manager.search_customers status=completed output=[]
+[llm] TOOL_LOOP request_id=llm-3 task_id=multi_domain_2 run_index=0 agent_id=agent_1 iteration=3/8 messages=9
+[llm] TOOL_LOOP_RESULT request_id=llm-4 task_id=multi_domain_2 run_index=0 agent_id=agent_2 iteration=2 tool_calls=0 assistant_text_chars=1197
+[llm] DONE request_id=llm-4 task_id=multi_domain_2 run_index=0 agent_id=agent_2 model=deepseek-flash mode=tools elapsed_s=5.35 token_in=9572 token_out=470 tool_calls=2
+[llm] TOOL_LOOP_RESULT request_id=llm-5 task_id=multi_domain_2 run_index=0 agent_id=agent_3 iteration=2 tool_calls=0 assistant_text_chars=1412
+[llm] DONE request_id=llm-5 task_id=multi_domain_2 run_index=0 agent_id=agent_3 model=deepseek-flash mode=tools elapsed_s=5.35 token_in=9599 token_out=531 tool_calls=2
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=multi_domain_2 run_index=0 agent_id=agent_1 iteration=3 tool_calls=0 assistant_text_chars=1848
+[llm] DONE request_id=llm-3 task_id=multi_domain_2 run_index=0 agent_id=agent_1 model=deepseek-flash mode=tools elapsed_s=7.42 token_in=14839 token_out=750 tool_calls=3
+[llm] START request_id=llm-6 task_id=multi_domain_2 run_index=0 agent_id=agent_0 agent_type=general model=deepseek-flash messages=4 tools=10 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-6 task_id=multi_domain_2 run_index=0 agent_id=agent_0 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-6 task_id=multi_domain_2 run_index=0 agent_id=agent_0 iteration=1 tool_calls=0 assistant_text_chars=1705
+[llm] DONE request_id=llm-6 task_id=multi_domain_2 run_index=0 agent_id=agent_0 model=deepseek-flash mode=tools elapsed_s=3.03 token_in=5996 token_out=456 tool_calls=0
+[llm] START request_id=llm-7 task_id=multi_domain_2 run_index=0 agent_id=termination_checker_termination_judge agent_type=judge model=deepseek-flash messages=2 tools=0 max_tool_iterations=1
+[llm] DONE request_id=llm-7 task_id=multi_domain_2 run_index=0 agent_id=termination_checker_termination_judge model=deepseek-flash mode=chat elapsed_s=1.46 token_in=2177 token_out=101
+[llm] START request_id=llm-8 task_id=multi_domain_2 run_index=0 agent_id=finalize_final_vote_judge agent_type=judge model=deepseek-flash messages=2 tools=0 max_tool_iterations=1
+[llm] DONE request_id=llm-8 task_id=multi_domain_2 run_index=0 agent_id=finalize_final_vote_judge model=deepseek-flash mode=chat elapsed_s=1.66 token_in=2147 token_out=84
+[20261018T061926Z] RUN_FINISH task_id=multi_domain_2 run_index=0 elapsed_s=23.45 trace_events=41 final_answer_chars=403 status=completed
+[20261018T061926Z] TRACE_WRITTEN task_id=multi_domain_2 run_index=0 path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_2_static_star_clean\workbench\STATIC_STAR\multi_domain_2\run_0.trace.jsonl
+[20261018T061926Z] RAW_OUTPUT_WRITTEN task_id=multi_domain_2 run_index=0 path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_2_static_star_clean\workbench\STATIC_STAR\multi_domain_2\run_0.raw.json
+[20261018T061926Z] EVAL_FINISH task_id=multi_domain_2 run_index=0 score=1.0000 success=True
+[20261018T061926Z] RUN_ARTIFACTS_WRITTEN task_id=multi_domain_2 run_index=0 metadata_path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_2_static_star_clean\workbench\STATIC_STAR\multi_domain_2\run_0.metadata.json eval_path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_2_static_star_clean\workbench\STATIC_STAR\multi_domain_2\run_0.eval.json
+[20261018T061926Z] TASK_CHECKPOINT_WRITTEN task_id=multi_domain_2 completed_runs=1/1 path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_2_static_star_clean\workbench\STATIC_STAR\multi_domain_2\task_summary.json
+[20261018T061926Z] TASK_ANALYZE_START task_id=multi_domain_2
+[20261018T061926Z] TASK_ANALYZE_FINISH task_id=multi_domain_2 avg_score=1.0000 success_rate=1.0000 completion_rate=1.0000
+[20261018T061926Z] TASK_FINISH index=1/1 task_id=multi_domain_2 task_dir=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_2_static_star_clean\workbench\STATIC_STAR\multi_domain_2 failures=0 fallbacks=0 needs_rerun=False
+[20261018T061926Z] SUMMARY_WRITTEN summary_json=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_2_static_star_clean\workbench\STATIC_STAR\summary.json summary_csv=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_2_static_star_clean\workbench\STATIC_STAR\summary.csv
+[20261018T061926Z] RUN_STATUS_SUMMARY benchmark=workbench system=STATIC_STAR run_failures=0 fallbacks=0 needs_rerun_tasks=0 needs_rerun_task_ids=none
+Run complete: C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_2_static_star_clean\workbench\STATIC_STAR

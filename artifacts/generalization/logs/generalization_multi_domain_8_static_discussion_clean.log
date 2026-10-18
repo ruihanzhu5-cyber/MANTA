@@ -1,0 +1,103 @@
+[20261018T062816Z] Loaded run configuration benchmark=workbench system=STATIC_DISCUSSION tasks=1 runs_per_task=1 seed=20261018 prompting_baseline=direct topology=orchestrator_with_discussion agents=4 rounds=2 discussion_rounds=2 communication_budget=2
+[20261018T062840Z] TASK_START index=1/1 task_id=multi_domain_8
+[20261018T062840Z] RUN_START task_id=multi_domain_8 run_index=0 seed=20261018
+[llm] START request_id=llm-1 task_id=role_assignment run_index=0 agent_id=role_assigner agent_type=default model=deepseek-flash messages=2 tools=0 max_tool_iterations=8
+[llm] DONE request_id=llm-1 task_id=role_assignment run_index=0 agent_id=role_assigner model=deepseek-flash mode=chat elapsed_s=19.69 token_in=867 token_out=41
+[llm] START request_id=llm-2 task_id=multi_domain_8 run_index=0 agent_id=agent_0 agent_type=general model=deepseek-flash messages=4 tools=10 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-2 task_id=multi_domain_8 run_index=0 agent_id=agent_0 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-2 task_id=multi_domain_8 run_index=0 agent_id=agent_0 iteration=1 tool_calls=0 assistant_text_chars=3289
+[llm] DONE request_id=llm-2 task_id=multi_domain_8 run_index=0 agent_id=agent_0 model=deepseek-flash mode=tools elapsed_s=4.98 token_in=3234 token_out=895 tool_calls=0
+[llm] START request_id=llm-3 task_id=multi_domain_8 run_index=0 agent_id=agent_1 agent_type=general model=deepseek-flash messages=4 tools=10 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-3 task_id=multi_domain_8 run_index=0 agent_id=agent_1 iteration=1/8 messages=4
+[llm] START request_id=llm-4 task_id=multi_domain_8 run_index=0 agent_id=agent_2 agent_type=general model=deepseek-flash messages=4 tools=10 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-4 task_id=multi_domain_8 run_index=0 agent_id=agent_2 iteration=1/8 messages=4
+[llm] START request_id=llm-5 task_id=multi_domain_8 run_index=0 agent_id=agent_3 agent_type=general model=deepseek-flash messages=4 tools=10 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-5 task_id=multi_domain_8 run_index=0 agent_id=agent_3 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=multi_domain_8 run_index=0 agent_id=agent_1 iteration=1 tool_calls=2 assistant_text_chars=81
+[llm] TOOL_CALL request_id=llm-3 task_id=multi_domain_8 run_index=0 agent_id=agent_1 iteration=1 tool_name=customer_relationship_manager.search_customers args={"customer_name": "Jordan Jones"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=multi_domain_8 run_index=0 agent_id=agent_1 iteration=1 tool_name=customer_relationship_manager.search_customers status=completed output=[{"customer_id": "00000027", "assigned_to_email": "nadia.moreau@atlas.com", "customer_name": "Jordan Jones", "customer_email": "jordan.jones@pointelectronics", "customer_phone": NaN, "last_contact_date": "2023-11-20", "product_interest":...
+[llm] TOOL_CALL request_id=llm-3 task_id=multi_domain_8 run_index=0 agent_id=agent_1 iteration=1 tool_name=calendar.search_events args={"query": "", "time_min": "2023-12-01 00:00:00", "time_max": "2023-12-01 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=multi_domain_8 run_index=0 agent_id=agent_1 iteration=1 tool_name=calendar.search_events status=completed output=[{"event_id": "00000165", "event_name": "Corporate Social Responsibility Initiative", "participant_email": "olga.petrova@atlas.com", "event_start": "2023-12-01 09:00:00", "duration": "60"}, {"event_id": "00000091", "event_name": "Year-En...
+[llm] TOOL_LOOP request_id=llm-3 task_id=multi_domain_8 run_index=0 agent_id=agent_1 iteration=2/8 messages=7
+[llm] TOOL_LOOP_RESULT request_id=llm-4 task_id=multi_domain_8 run_index=0 agent_id=agent_2 iteration=1 tool_calls=1 assistant_text_chars=49
+[llm] TOOL_CALL request_id=llm-4 task_id=multi_domain_8 run_index=0 agent_id=agent_2 iteration=1 tool_name=customer_relationship_manager.search_customers args={"customer_name": "Jordan Jones"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=multi_domain_8 run_index=0 agent_id=agent_2 iteration=1 tool_name=customer_relationship_manager.search_customers status=completed output=[{"customer_id": "00000027", "assigned_to_email": "nadia.moreau@atlas.com", "customer_name": "Jordan Jones", "customer_email": "jordan.jones@pointelectronics", "customer_phone": NaN, "last_contact_date": "2023-11-20", "product_interest":...
+[llm] TOOL_LOOP request_id=llm-4 task_id=multi_domain_8 run_index=0 agent_id=agent_2 iteration=2/8 messages=6
+[llm] TOOL_LOOP_RESULT request_id=llm-5 task_id=multi_domain_8 run_index=0 agent_id=agent_3 iteration=1 tool_calls=2 assistant_text_chars=81
+[llm] TOOL_CALL request_id=llm-5 task_id=multi_domain_8 run_index=0 agent_id=agent_3 iteration=1 tool_name=customer_relationship_manager.search_customers args={"customer_name": "Jordan Jones"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=multi_domain_8 run_index=0 agent_id=agent_3 iteration=1 tool_name=customer_relationship_manager.search_customers status=completed output=[{"customer_id": "00000027", "assigned_to_email": "nadia.moreau@atlas.com", "customer_name": "Jordan Jones", "customer_email": "jordan.jones@pointelectronics", "customer_phone": NaN, "last_contact_date": "2023-11-20", "product_interest":...
+[llm] TOOL_CALL request_id=llm-5 task_id=multi_domain_8 run_index=0 agent_id=agent_3 iteration=1 tool_name=calendar.search_events args={"query": "", "time_min": "2023-12-01 00:00:00", "time_max": "2023-12-01 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=multi_domain_8 run_index=0 agent_id=agent_3 iteration=1 tool_name=calendar.search_events status=completed output=[{"event_id": "00000165", "event_name": "Corporate Social Responsibility Initiative", "participant_email": "olga.petrova@atlas.com", "event_start": "2023-12-01 09:00:00", "duration": "60"}, {"event_id": "00000091", "event_name": "Year-En...
+[llm] TOOL_LOOP request_id=llm-5 task_id=multi_domain_8 run_index=0 agent_id=agent_3 iteration=2/8 messages=7
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=multi_domain_8 run_index=0 agent_id=agent_1 iteration=2 tool_calls=1 assistant_text_chars=133
+[llm] TOOL_CALL request_id=llm-3 task_id=multi_domain_8 run_index=0 agent_id=agent_1 iteration=2 tool_name=customer_relationship_manager.search_customers args={"customer_name": "Jordan Jones", "last_contact_date_max": "2023-11-15"}
+[llm] TOOL_CALL_RESULT request_id=llm-3 task_id=multi_domain_8 run_index=0 agent_id=agent_1 iteration=2 tool_name=customer_relationship_manager.search_customers status=completed output=[]
+[llm] TOOL_LOOP request_id=llm-3 task_id=multi_domain_8 run_index=0 agent_id=agent_1 iteration=3/8 messages=9
+[llm] TOOL_LOOP_RESULT request_id=llm-5 task_id=multi_domain_8 run_index=0 agent_id=agent_3 iteration=2 tool_calls=1 assistant_text_chars=126
+[llm] TOOL_CALL request_id=llm-5 task_id=multi_domain_8 run_index=0 agent_id=agent_3 iteration=2 tool_name=calendar.search_events args={"query": "Jordan Jones", "time_min": "2023-11-01 00:00:00", "time_max": "2023-12-31 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-5 task_id=multi_domain_8 run_index=0 agent_id=agent_3 iteration=2 tool_name=calendar.search_events status=completed output="No events found."
+[llm] TOOL_LOOP request_id=llm-5 task_id=multi_domain_8 run_index=0 agent_id=agent_3 iteration=3/8 messages=9
+[llm] TOOL_LOOP_RESULT request_id=llm-4 task_id=multi_domain_8 run_index=0 agent_id=agent_2 iteration=2 tool_calls=1 assistant_text_chars=129
+[llm] TOOL_CALL request_id=llm-4 task_id=multi_domain_8 run_index=0 agent_id=agent_2 iteration=2 tool_name=calendar.search_events args={"query": "Jordan Jones", "time_min": "2023-11-16 00:00:00", "time_max": "2023-11-30 23:59:59"}
+[llm] TOOL_CALL_RESULT request_id=llm-4 task_id=multi_domain_8 run_index=0 agent_id=agent_2 iteration=2 tool_name=calendar.search_events status=completed output="No events found."
+[llm] TOOL_LOOP request_id=llm-4 task_id=multi_domain_8 run_index=0 agent_id=agent_2 iteration=3/8 messages=8
+[llm] TOOL_LOOP_RESULT request_id=llm-3 task_id=multi_domain_8 run_index=0 agent_id=agent_1 iteration=3 tool_calls=0 assistant_text_chars=1913
+[llm] DONE request_id=llm-3 task_id=multi_domain_8 run_index=0 agent_id=agent_1 model=deepseek-flash mode=tools elapsed_s=6.98 token_in=15330 token_out=794 tool_calls=3
+[llm] TOOL_LOOP_RESULT request_id=llm-4 task_id=multi_domain_8 run_index=0 agent_id=agent_2 iteration=3 tool_calls=0 assistant_text_chars=1472
+[llm] DONE request_id=llm-4 task_id=multi_domain_8 run_index=0 agent_id=agent_2 model=deepseek-flash mode=tools elapsed_s=7.27 token_in=14530 token_out=591 tool_calls=2
+[llm] TOOL_LOOP_RESULT request_id=llm-5 task_id=multi_domain_8 run_index=0 agent_id=agent_3 iteration=3 tool_calls=0 assistant_text_chars=1548
+[llm] DONE request_id=llm-5 task_id=multi_domain_8 run_index=0 agent_id=agent_3 model=deepseek-flash mode=tools elapsed_s=7.44 token_in=15318 token_out=713 tool_calls=3
+[llm] START request_id=llm-6 task_id=multi_domain_8 run_index=0 agent_id=orchestrator_relay_termination_judge agent_type=judge model=deepseek-flash messages=2 tools=0 max_tool_iterations=1
+[llm] DONE request_id=llm-6 task_id=multi_domain_8 run_index=0 agent_id=orchestrator_relay_termination_judge model=deepseek-flash mode=chat elapsed_s=1.81 token_in=3227 token_out=94
+[llm] START request_id=llm-7 task_id=multi_domain_8 run_index=0 agent_id=orchestrator_relay_transcript_summarizer agent_type=judge model=deepseek-flash messages=2 tools=0 max_tool_iterations=1
+[llm] DONE request_id=llm-7 task_id=multi_domain_8 run_index=0 agent_id=orchestrator_relay_transcript_summarizer model=deepseek-flash mode=chat elapsed_s=3.12 token_in=1635 token_out=572
+[llm] START request_id=llm-8 task_id=multi_domain_8 run_index=0 agent_id=agent_1 agent_type=general model=deepseek-flash messages=4 tools=10 max_tool_iterations=8
+[llm] START request_id=llm-9 task_id=multi_domain_8 run_index=0 agent_id=agent_2 agent_type=general model=deepseek-flash messages=4 tools=10 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-8 task_id=multi_domain_8 run_index=0 agent_id=agent_1 iteration=1/8 messages=4
+[llm] TOOL_LOOP request_id=llm-9 task_id=multi_domain_8 run_index=0 agent_id=agent_2 iteration=1/8 messages=4
+[llm] START request_id=llm-10 task_id=multi_domain_8 run_index=0 agent_id=agent_3 agent_type=general model=deepseek-flash messages=4 tools=10 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-10 task_id=multi_domain_8 run_index=0 agent_id=agent_3 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-8 task_id=multi_domain_8 run_index=0 agent_id=agent_1 iteration=1 tool_calls=0 assistant_text_chars=2013
+[llm] DONE request_id=llm-8 task_id=multi_domain_8 run_index=0 agent_id=agent_1 model=deepseek-flash mode=tools elapsed_s=3.34 token_in=5961 token_out=555 tool_calls=0
+[llm] TOOL_LOOP_RESULT request_id=llm-9 task_id=multi_domain_8 run_index=0 agent_id=agent_2 iteration=1 tool_calls=0 assistant_text_chars=2285
+[llm] DONE request_id=llm-9 task_id=multi_domain_8 run_index=0 agent_id=agent_2 model=deepseek-flash mode=tools elapsed_s=3.59 token_in=5953 token_out=634 tool_calls=0
+[llm] TOOL_LOOP_RESULT request_id=llm-10 task_id=multi_domain_8 run_index=0 agent_id=agent_3 iteration=1 tool_calls=0 assistant_text_chars=2369
+[llm] DONE request_id=llm-10 task_id=multi_domain_8 run_index=0 agent_id=agent_3 model=deepseek-flash mode=tools elapsed_s=4.75 token_in=6015 token_out=653 tool_calls=0
+[llm] START request_id=llm-11 task_id=multi_domain_8 run_index=0 agent_id=orchestrator_relay_termination_judge agent_type=judge model=deepseek-flash messages=2 tools=0 max_tool_iterations=1
+[llm] DONE request_id=llm-11 task_id=multi_domain_8 run_index=0 agent_id=orchestrator_relay_termination_judge model=deepseek-flash mode=chat elapsed_s=1.54 token_in=3487 token_out=100
+[llm] START request_id=llm-12 task_id=multi_domain_8 run_index=0 agent_id=orchestrator_relay_transcript_summarizer agent_type=judge model=deepseek-flash messages=2 tools=0 max_tool_iterations=1
+[llm] DONE request_id=llm-12 task_id=multi_domain_8 run_index=0 agent_id=orchestrator_relay_transcript_summarizer model=deepseek-flash mode=chat elapsed_s=2.98 token_in=2679 token_out=559
+[llm] START request_id=llm-13 task_id=multi_domain_8 run_index=0 agent_id=agent_1 agent_type=general model=deepseek-flash messages=4 tools=10 max_tool_iterations=8
+[llm] START request_id=llm-14 task_id=multi_domain_8 run_index=0 agent_id=agent_2 agent_type=general model=deepseek-flash messages=4 tools=10 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-13 task_id=multi_domain_8 run_index=0 agent_id=agent_1 iteration=1/8 messages=4
+[llm] TOOL_LOOP request_id=llm-14 task_id=multi_domain_8 run_index=0 agent_id=agent_2 iteration=1/8 messages=4
+[llm] START request_id=llm-15 task_id=multi_domain_8 run_index=0 agent_id=agent_3 agent_type=general model=deepseek-flash messages=4 tools=10 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-15 task_id=multi_domain_8 run_index=0 agent_id=agent_3 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-14 task_id=multi_domain_8 run_index=0 agent_id=agent_2 iteration=1 tool_calls=0 assistant_text_chars=1987
+[llm] DONE request_id=llm-14 task_id=multi_domain_8 run_index=0 agent_id=agent_2 model=deepseek-flash mode=tools elapsed_s=5.53 token_in=6463 token_out=550 tool_calls=0
+[llm] TOOL_LOOP_RESULT request_id=llm-13 task_id=multi_domain_8 run_index=0 agent_id=agent_1 iteration=1 tool_calls=0 assistant_text_chars=2193
+[llm] DONE request_id=llm-13 task_id=multi_domain_8 run_index=0 agent_id=agent_1 model=deepseek-flash mode=tools elapsed_s=5.77 token_in=6411 token_out=599 tool_calls=0
+[llm] TOOL_LOOP_RESULT request_id=llm-15 task_id=multi_domain_8 run_index=0 agent_id=agent_3 iteration=1 tool_calls=0 assistant_text_chars=2249
+[llm] DONE request_id=llm-15 task_id=multi_domain_8 run_index=0 agent_id=agent_3 model=deepseek-flash mode=tools elapsed_s=7.84 token_in=6441 token_out=606 tool_calls=0
+[llm] START request_id=llm-16 task_id=multi_domain_8 run_index=0 agent_id=orchestrator_relay_termination_judge agent_type=judge model=deepseek-flash messages=2 tools=0 max_tool_iterations=1
+[llm] DONE request_id=llm-16 task_id=multi_domain_8 run_index=0 agent_id=orchestrator_relay_termination_judge model=deepseek-flash mode=chat elapsed_s=1.57 token_in=3293 token_out=95
+[llm] START request_id=llm-17 task_id=multi_domain_8 run_index=0 agent_id=agent_0 agent_type=general model=deepseek-flash messages=4 tools=10 max_tool_iterations=8
+[llm] TOOL_LOOP request_id=llm-17 task_id=multi_domain_8 run_index=0 agent_id=agent_0 iteration=1/8 messages=4
+[llm] TOOL_LOOP_RESULT request_id=llm-17 task_id=multi_domain_8 run_index=0 agent_id=agent_0 iteration=1 tool_calls=0 assistant_text_chars=2173
+[llm] DONE request_id=llm-17 task_id=multi_domain_8 run_index=0 agent_id=agent_0 model=deepseek-flash mode=tools elapsed_s=3.61 token_in=7429 token_out=606 tool_calls=0
+[llm] START request_id=llm-18 task_id=multi_domain_8 run_index=0 agent_id=cycle_termination_checker_termination_judge agent_type=judge model=deepseek-flash messages=2 tools=0 max_tool_iterations=1
+[llm] DONE request_id=llm-18 task_id=multi_domain_8 run_index=0 agent_id=cycle_termination_checker_termination_judge model=deepseek-flash mode=chat elapsed_s=1.61 token_in=2379 token_out=101
+[llm] START request_id=llm-19 task_id=multi_domain_8 run_index=0 agent_id=finalize_final_vote_judge agent_type=judge model=deepseek-flash messages=2 tools=0 max_tool_iterations=1
+[llm] DONE request_id=llm-19 task_id=multi_domain_8 run_index=0 agent_id=finalize_final_vote_judge model=deepseek-flash mode=chat elapsed_s=1.78 token_in=2349 token_out=86
+[20261018T062943Z] RUN_FINISH task_id=multi_domain_8 run_index=0 elapsed_s=63.03 trace_events=88 final_answer_chars=353 status=completed
+[20261018T062943Z] TRACE_WRITTEN task_id=multi_domain_8 run_index=0 path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_8_static_discussion_clean\workbench\STATIC_DISCUSSION\multi_domain_8\run_0.trace.jsonl
+[20261018T062943Z] RAW_OUTPUT_WRITTEN task_id=multi_domain_8 run_index=0 path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_8_static_discussion_clean\workbench\STATIC_DISCUSSION\multi_domain_8\run_0.raw.json
+[20261018T062943Z] EVAL_FINISH task_id=multi_domain_8 run_index=0 score=1.0000 success=True
+[20261018T062943Z] RUN_ARTIFACTS_WRITTEN task_id=multi_domain_8 run_index=0 metadata_path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_8_static_discussion_clean\workbench\STATIC_DISCUSSION\multi_domain_8\run_0.metadata.json eval_path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_8_static_discussion_clean\workbench\STATIC_DISCUSSION\multi_domain_8\run_0.eval.json
+[20261018T062944Z] TASK_CHECKPOINT_WRITTEN task_id=multi_domain_8 completed_runs=1/1 path=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_8_static_discussion_clean\workbench\STATIC_DISCUSSION\multi_domain_8\task_summary.json
+[20261018T062944Z] TASK_ANALYZE_START task_id=multi_domain_8
+[20261018T062944Z] TASK_ANALYZE_FINISH task_id=multi_domain_8 avg_score=1.0000 success_rate=1.0000 completion_rate=1.0000
+[20261018T062944Z] TASK_FINISH index=1/1 task_id=multi_domain_8 task_dir=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_8_static_discussion_clean\workbench\STATIC_DISCUSSION\multi_domain_8 failures=0 fallbacks=0 needs_rerun=False
+[20261018T062944Z] SUMMARY_WRITTEN summary_json=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_8_static_discussion_clean\workbench\STATIC_DISCUSSION\summary.json summary_csv=C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_8_static_discussion_clean\workbench\STATIC_DISCUSSION\summary.csv
+[20261018T062944Z] RUN_STATUS_SUMMARY benchmark=workbench system=STATIC_DISCUSSION run_failures=0 fallbacks=0 needs_rerun_tasks=0 needs_rerun_task_ids=none
+Run complete: C:\Users\larei\.codex\worktrees\3e3f\manta\artifacts\generalization\raw\generalization_multi_domain_8_static_discussion_clean\workbench\STATIC_DISCUSSION
